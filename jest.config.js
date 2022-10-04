@@ -44,6 +44,6 @@ module.exports = {
       //  statements: 50
     },
   },
-  coverageReporters: ['lcov', 'cobertura', 'text-summary'],
+  coverageReporters: ['lcov', 'cobertura', 'text-summary', 'text'],
   transformIgnorePatterns: [`node_modules/(?!(${esModules}))`],
 };
