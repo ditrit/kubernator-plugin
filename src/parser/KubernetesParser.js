@@ -1,6 +1,6 @@
-import {DefaultParser} from 'leto-modelizer-plugin-core';
+import { DefaultParser } from 'leto-modelizer-plugin-core';
 
-class MyPluginParser extends DefaultParser {
+class KubernetesParser extends DefaultParser {
   isParsable(fileName) {
     /*
      * Implement this to indicate which fileName your provider can manage.
@@ -12,14 +12,16 @@ class MyPluginParser extends DefaultParser {
     return super.isParsable(fileName);
   }
 
+  // eslint-disable-next-line no-unused-vars
   parse(inputs = []) {
     /*
      * Implement your own parse function here.
      *
      * You receive in `inputs` a list of content file.
      *
-     * In our plugin managing the terraform files, we use antlr for parsing. You can find an example of the terraform
-     * parser in https://github.com/ditrit/iactor/blob/dev/src/parser/TerraformParser.js.
+     * In our plugin managing the terraform files, we use antlr for parsing.
+     * You can find an example of the terraform parser in
+     * https://github.com/ditrit/iactor/blob/dev/src/parser/TerraformParser.js.
      */
     return {
       components: [], // return Array of Component or Object that extends Component class
@@ -29,4 +31,4 @@ class MyPluginParser extends DefaultParser {
   }
 }
 
-export default MyPluginParser;
+export default KubernetesParser;

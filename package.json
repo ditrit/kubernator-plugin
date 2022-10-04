@@ -1,12 +1,11 @@
 {
-  "name": "leto-modelizer-plugin-template",
+  "name": "kubernator-plugin",
   "version": "0.1.0",
   "description": "Template for plugin creation",
-  "main": "dist/my-plugin.js",
-  "exports": "./dist/my-plugin.js",
+  "main": "dist/kubernator-plugin.js",
+  "exports": "./dist/kubernator-plugin.js",
   "scripts": {
     "build": "webpack",
-    "build:resources": "node scripts/generateResources.js",
     "lint": "eslint --ext .js src",
     "lint:fix": "eslint --fix --ext .js src",
     "lint:report": "eslint --ext .js src -f json-relative > eslint.json",
@@ -15,20 +14,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ditrit/leto-modelizer-plugin-template.git"
+    "url": "git+https://github.com/ditrit/kubernator-plugin.git"
   },
   "keywords": [
     "Leto-modelizer",
-    "plugin-template"
+    "kubernator-plugin",
+    "kubernetes"
   ],
   "author": "Vincent Moittie <moittie.vincent@gmail.com>",
   "license": "Mozilla Public License 2.0",
   "bugs": {
-    "url": "https://github.com/ditrit/leto-modelizer-plugin-template/issues"
+    "url": "https://github.com/ditrit/kubernator-plugin/issues"
   },
-  "homepage": "https://github.com/ditrit/leto-modelizer-plugin-template#readme",
+  "homepage": "https://github.com/ditrit/kubernator-plugin#readme",
   "dependencies": {
-    "leto-modelizer-plugin-core": "github:ditrit/leto-modelizer-plugin-core#0.2.0"
+    "leto-modelizer-plugin-core": "github:ditrit/leto-modelizer-plugin-core#0.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.9",
