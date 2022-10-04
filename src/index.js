@@ -1,13 +1,12 @@
-import MyPluginDrawer from './draw/MyPluginDrawer';
-import MyPluginMetadata from './metadata/MyPluginMetadata';
-import MyPluginParser from './parser/MyPluginParser';
-import MyPluginRenderer from './render/MyPluginRenderer';
-import resources from './assets';
+import KubernetesDrawer from 'src/draw/KubernetesDrawer';
+import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
+import KubernetesParser from 'src/parser/KubernetesParser';
+import KubernetesRenderer from 'src/render/KubernetesRenderer';
 
 /*
  * your plugins, for instance :
  *
- * import MyPluginDrawer from './draw/MyPluginDrawer';
+ * import KubernetesDrawer from './draw/KubernetesDrawer';
  * will be replaced by
  * import [NameOfYourPlugin]Drawer from './draw/[NameOfYourPlugin]Drawer';
  *
@@ -19,9 +18,8 @@ import resources from './assets';
  * - resources
  */
 export default {
-  PluginDrawer: MyPluginDrawer,
-  PluginMetadata: MyPluginMetadata,
-  PluginParser: MyPluginParser,
-  PluginRenderer: MyPluginRenderer,
-  resources,
+  PluginDrawer: KubernetesDrawer,
+  PluginMetadata: KubernetesMetadata,
+  PluginParser: KubernetesParser,
+  PluginRenderer: KubernetesRenderer,
 };
