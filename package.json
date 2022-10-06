@@ -10,7 +10,8 @@
     "lint:fix": "eslint --fix --ext .js src",
     "lint:report": "eslint --ext .js src -f json-relative > eslint.json",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "generate:parser": "node scripts/generate_parser.js"
   },
   "repository": {
     "type": "git",
