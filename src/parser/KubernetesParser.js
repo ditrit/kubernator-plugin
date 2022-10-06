@@ -1,32 +1,50 @@
 import { DefaultParser } from 'leto-modelizer-plugin-core';
+import { parse as lidyParse } from 'src/lidy/k8s';
+import KubernetesListener from 'src/parser/KubernetesListener';
 
+/**
+ *  Class to parse and retrieve components/links from Kubernetes files.
+ */
 class KubernetesParser extends DefaultParser {
-  isParsable(fileName) {
-    /*
-     * Implement this to indicate which fileName your provider can manage.
-     *
-     * You just have to return a Boolean to say if your parser can manage the file or not.
-     *
-     * By default, this function return false only on null/undefined fileName.
-     */
-    return super.isParsable(fileName);
+  /**
+   * Indicate if this parser can parse this file.
+   * @param {FileInformation} [fileInformation] - File information.
+   * @return {Boolean} - Boolean that indicates if this file can be parsed or not.
+   */
+  isParsable(fileInformation) {
+    return /^.*\.yml$/.test(fileInformation.path);
   }
 
-  // eslint-disable-next-line no-unused-vars
+  /**
+   * Convert the content of files into Components.
+   * @param {FileInput[]} [inputs=[]] - Data you want to parse.
+   * @return {Object} - Object that contains all components, links and errors.
+   */
   parse(inputs = []) {
-    /*
-     * Implement your own parse function here.
-     *
-     * You receive in `inputs` a list of content file.
-     *
-     * In our plugin managing the terraform files, we use antlr for parsing.
-     * You can find an example of the terraform parser in
-     * https://github.com/ditrit/iactor/blob/dev/src/parser/TerraformParser.js.
-     */
+    const components = [];
+    inputs.forEach((input) => {
+      const listener = new KubernetesListener(input, this.definitions.components);
+
+      lidyParse({
+        src_data: input.content,
+        listener,
+        path: input.path,
+        prog: {
+          errors: [],
+          warnings: [],
+          imports: [],
+          alreadyImported: [],
+          root: [],
+        },
+      });
+
+      components.push(listener.component);
+    });
+
     return {
-      components: [], // return Array of Component or Object that extends Component class
-      links: [], // return Array of ComponentLink or Object that extends ComponentLink class
-      errors: [], // return Array of ParseError
+      components,
+      links: [],
+      errors: [],
     };
   }
 }
