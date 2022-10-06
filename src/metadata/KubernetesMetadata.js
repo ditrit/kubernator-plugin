@@ -92,7 +92,7 @@ class KubernetesMetadata extends DefaultMetadata {
 
   getDeploymentDefinition() {
     return new KubernetesComponentDefinition({
-      type: 'Secret',
+      type: 'Deployment',
       icon: 'resources/labeled/deploy',
       model: 'DefaultModel',
       definedAttributes: [
