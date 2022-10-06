@@ -10,5 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Setup project
+- First version of Kubernetes parser
 
 [Unreleased]: https://github.com/ditrit/kubernator-plugin/blob/main/changelog.md
