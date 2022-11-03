@@ -1,7 +1,7 @@
 {
   "name": "kubernator-plugin",
   "version": "0.1.0",
-  "description": "Template for plugin creation",
+  "description": "Kubernetes plugin for Leto-Modelizer.",
   "main": "dist/kubernator-plugin.js",
   "exports": "./dist/kubernator-plugin.js",
   "scripts": {

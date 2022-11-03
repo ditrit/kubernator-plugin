@@ -24,7 +24,7 @@ class KubernetesMetadata extends DefaultMetadata {
   getConfigMapDefinition() {
     return new KubernetesComponentDefinition({
       type: 'ConfigMap',
-      icon: 'resources/labeled/cm',
+      icon: 'resources/unlabeled/cm',
       model: 'DefaultModel',
       definedAttributes: [
         {
@@ -50,7 +50,7 @@ class KubernetesMetadata extends DefaultMetadata {
   getSecretDefinition() {
     return new KubernetesComponentDefinition({
       type: 'Secret',
-      icon: 'resources/labeled/secret',
+      icon: 'resources/unlabeled/secret',
       model: 'DefaultModel',
       definedAttributes: [
         {
@@ -93,7 +93,7 @@ class KubernetesMetadata extends DefaultMetadata {
   getDeploymentDefinition() {
     return new KubernetesComponentDefinition({
       type: 'Deployment',
-      icon: 'resources/labeled/deploy',
+      icon: 'resources/unlabeled/deploy',
       model: 'DefaultModel',
       definedAttributes: [
         {
