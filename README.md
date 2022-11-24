@@ -2,10 +2,45 @@
 
 Plugin for managing Kubernetes files in [Leto-Modelizer](https://github.com/ditrit/leto-modelizer).
 
-## Build your plugin
+## Default commands
 
-```
-npm run build
+Usage explanation of scripts in `package.json`.
+
+### build
+
+Build the application in `dist` folder.
+
+### lint
+
+Run eslint to check on the project.
+
+### lint:fix
+
+Run eslint to fix on the project.
+
+### lint:report
+
+Generate issues report with eslint for sonar.
+
+### test
+
+Run all the unit tests.
+
+### test:coverage
+
+Run all the unit tests and generate coverage report of the unit tests for sonar.
+
+### generate:parser
+
+Generate lidy parser for your grammar. It uses `src/lidy/k8s.yml` as grammar.
+
+Every time you modify the grammar, you need to launch this script to generate the parser.
+It will generate a `src/lidy/k8s.js`.
+
+Lidy is not perfect, so you have to modify the import in the `src/lidy/k8s.js` to make it work.
+Modify import with this value:
+```js
+import { parse as parse_input } from 'lidy-js';
 ```
 
 ## Development
