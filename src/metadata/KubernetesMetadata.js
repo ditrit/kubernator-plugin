@@ -1,12 +1,7 @@
 import { DefaultMetadata } from 'leto-modelizer-plugin-core';
 
-/*
- * Metadata is used to generate definition of Component, ComponentAttribute and ComponentLink.
- *
- * In our plugin managing Terraform, we use [Ajv](https://ajv.js.org/) to validate metadata.
- * And we provide a `metadata.json` to define all metadata.
- *
- * Feel free to manage your metadata as you wish.
+/**
+ * Class to validate and retrieve components definitions from Kubernetes metadata.
  */
 class KubernetesMetadata extends DefaultMetadata {
   validate() {
@@ -22,10 +17,9 @@ class KubernetesMetadata extends DefaultMetadata {
    *
    * Both of them can be also used to check components in parser and generate error.
    */
-  getDefinitions() {
-    return {
+  parse() {
+    this.pluginData.definitions = {
       components: [],
-      links: [],
     };
   }
 }
