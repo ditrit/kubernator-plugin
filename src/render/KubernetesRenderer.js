@@ -1,17 +1,18 @@
 import { DefaultRender } from 'leto-modelizer-plugin-core';
 
+/**
+ * Class to render Kubernetes files from components.
+ */
 class KubernetesRenderer extends DefaultRender {
-  /*
-   * The purpose of this function is to generate the content of one file.
-   *
-   * You have to map all the given components and links into a file content.
+  /**
+   * Convert all provided components and links in terraform files.
+   * @return {FileInput[]} - Array of generated files from components and links.
    */
-  // eslint-disable-next-line no-unused-vars
-  render(components = [], links = [], defaultFileName = null) {
+  render() {
     /*
      * Implement your own parse function here.
      */
-    return '';
+    return [];
   }
 }
 

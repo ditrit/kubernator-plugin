@@ -3,7 +3,7 @@ import { parse as lidyParse } from 'src/lidy/k8s';
 import KubernetesListener from 'src/parser/KubernetesListener';
 
 /**
- *  Class to parse and retrieve components/links from Kubernetes files.
+ *  Class to parse and retrieve components from Kubernetes files.
  */
 class KubernetesParser extends DefaultParser {
   /**
@@ -18,12 +18,13 @@ class KubernetesParser extends DefaultParser {
   /**
    * Convert the content of files into Components.
    * @param {FileInput[]} [inputs=[]] - Data you want to parse.
-   * @return {Object} - Object that contains all components, links and errors.
    */
   parse(inputs = []) {
-    const components = [];
+    this.pluginData.components = [];
+    this.pluginData.parseErrors = [];
+
     inputs.forEach((input) => {
-      const listener = new KubernetesListener(input, this.definitions.components);
+      const listener = new KubernetesListener(input, this.pluginData.definitions.components);
 
       lidyParse({
         src_data: input.content,
@@ -38,14 +39,8 @@ class KubernetesParser extends DefaultParser {
         },
       });
 
-      components.push(listener.component);
+      this.pluginData.components.push(listener.component);
     });
-
-    return {
-      components,
-      links: [],
-      errors: [],
-    };
   }
 }
 
