@@ -1,6 +1,6 @@
 import { DefaultParser } from 'leto-modelizer-plugin-core';
-import { parse as lidyParse } from 'src/lidy/k8s';
-import KubernetesListener from 'src/parser/KubernetesListener';
+import { parse as lidyParse } from '../lidy/k8s';
+import KubernetesListener from './KubernetesListener';
 
 /**
  *  Class to parse and retrieve components from Kubernetes files.

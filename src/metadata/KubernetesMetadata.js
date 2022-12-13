@@ -1,5 +1,5 @@
 import { DefaultMetadata } from 'leto-modelizer-plugin-core';
-import KubernetesComponentDefinition from 'src/models/KubernetesComponentDefinition';
+import KubernetesComponentDefinition from '../models/KubernetesComponentDefinition';
 
 /**
  * Class to validate and retrieve components definitions from Kubernetes metadata.
