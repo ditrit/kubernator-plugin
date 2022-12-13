@@ -8,8 +8,9 @@ import KubernetesListener from 'src/parser/KubernetesListener';
 class KubernetesParser extends DefaultParser {
   /**
    * Indicate if this parser can parse this file.
+   *
    * @param {FileInformation} [fileInformation] - File information.
-   * @return {Boolean} - Boolean that indicates if this file can be parsed or not.
+   * @returns {boolean} Boolean that indicates if this file can be parsed or not.
    */
   isParsable(fileInformation) {
     return /^.*\.yml$/.test(fileInformation.path);
@@ -17,6 +18,7 @@ class KubernetesParser extends DefaultParser {
 
   /**
    * Convert the content of files into Components.
+   *
    * @param {FileInput[]} [inputs=[]] - Data you want to parse.
    */
   parse(inputs = []) {
