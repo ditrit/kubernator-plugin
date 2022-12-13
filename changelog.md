@@ -12,4 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Setup project
 - First version of Kubernetes parser
 
+### Changed
+
+- Replace documentation generation library ESDoc by JSDoc
+
 [Unreleased]: https://github.com/ditrit/kubernator-plugin/blob/main/changelog.md
