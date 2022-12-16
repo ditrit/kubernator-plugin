@@ -6,17 +6,20 @@ import { Component } from 'leto-modelizer-plugin-core';
 class KubernetesListener {
   /**
    * Default constructor.
+   *
    * @param {FileInformation} fileInformation - File information.
    * @param {ComponentDefinition[]} [definitions=[]] - All component definitions.
    */
   constructor(fileInformation, definitions = []) {
     /**
      * File information.
+     *
      * @type {FileInformation}
      */
     this.fileInformation = fileInformation;
     /**
      * Array of component definitions.
+     *
      * @type {ComponentDefinition[]}
      */
     this.definitions = definitions;
@@ -28,7 +31,8 @@ class KubernetesListener {
 
   /**
    * Function call when attribute `kind` is parsed.
-   * @param {String} value - Kind value.
+   *
+   * @param {string} value - Kind value.
    */
   exit_kind({ value }) {
     this.component.definition = this.definitions
