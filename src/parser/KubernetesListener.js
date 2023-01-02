@@ -38,6 +38,16 @@ class KubernetesListener {
     this.component.definition = this.definitions
       .find((definition) => definition.type === value);
   }
+
+  exit_stringAttr(parsed_rule) {
+    console.log('exit_string');
+    console.log(parsed_rule);
+  }
+
+  exit_intAttr({ value }) {
+    console.log('exit_int');
+    console.log(value);
+  }
 }
 
 export default KubernetesListener;

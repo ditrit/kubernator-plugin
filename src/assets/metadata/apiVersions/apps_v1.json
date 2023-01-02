@@ -16,6 +16,16 @@
           {
             "name": "strategy",
             "type": "String"
+          },
+          {
+            "name": "selector",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "matchLabels",
+                "type": "Object"
+              }
+            ]
           }
         ]
       }

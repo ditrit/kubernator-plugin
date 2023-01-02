@@ -13,7 +13,7 @@ class KubernetesParser extends DefaultParser {
    * @returns {boolean} Boolean that indicates if this file can be parsed or not.
    */
   isParsable(fileInformation) {
-    return /^.*\.yml$/.test(fileInformation.path);
+    return /\.ya?ml$/.test(fileInformation.path);
   }
 
   /**
@@ -28,18 +28,30 @@ class KubernetesParser extends DefaultParser {
     inputs.forEach((input) => {
       const listener = new KubernetesListener(input, this.pluginData.definitions.components);
 
+      const errors = [];
+      const warnings = [];
+      const imports = [];
+      const alreadyImported = [];
+      const root = [];
+
       lidyParse({
         src_data: input.content,
         listener,
         path: input.path,
         prog: {
-          errors: [],
-          warnings: [],
-          imports: [],
-          alreadyImported: [],
-          root: [],
+          errors: errors,
+          warnings: warnings,
+          imports: imports,
+          alreadyImported: alreadyImported,
+          root: root,
         },
       });
+
+      // console.log(errors);
+      // console.log(warnings);
+      // console.log(imports);
+      // console.log(alreadyImported);
+      // console.log(root);
 
       this.pluginData.components.push(listener.component);
     });

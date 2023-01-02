@@ -10,8 +10,28 @@
         "type": "Object",
         "attributes": [
           {
-            "name": "test",
-            "type": "String"
+            "name": "containers",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": "test",
+                "type": "String"
+              },
+              {
+                "name": "image",
+                "type": "String"
+              },
+              {
+                "name": "ports",
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "containerPort",
+                    "type": "Number"
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

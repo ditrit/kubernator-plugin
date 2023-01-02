@@ -6,12 +6,53 @@ root:
     kind: kind
   _mapFacultative:
     metadata: metadata
-  _mapOf: { string: string }
+    spec: deploymentSpec
+
+########## CALLBACKS ###########################################################
 
 kind: string
-
 apiVersion: string
+name: string
+
+stringAttr: any
+intAttr: int
+
+########## COMMON STRUCTS ######################################################
 
 metadata:
-  _mapOf: { string: string }
+  _mapFacultative:
+    name: name
+    namespace: stringAttr
+    labels: labels
+    annotations:
+      _mapOf: { string: stringAttr }
 
+labels:
+  _mapOf: { string: stringAttr }
+
+selector:
+  _mapFacultative:
+    matchLabels: labels
+
+########## SPECS ###############################################################
+
+deploymentSpec:
+  _mapFacultative:
+    replicas: intAttr
+    selector: selector
+    template:
+      _mapFacultative:
+        metadata: metadata
+        spec: podSpec
+
+podSpec:
+  _mapFacultative:
+    containers:
+      _listOf:
+        _mapFacultative:
+          name: stringAttr
+          image: stringAttr
+          ports:
+            _listOf:
+              _mapFacultative:
+                containerPort: intAttr
