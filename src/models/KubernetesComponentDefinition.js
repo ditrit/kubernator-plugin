@@ -1,49 +1,23 @@
 import { ComponentDefinition } from 'leto-modelizer-plugin-core';
 
 /**
- * Specific Kubernetes component definition.
- * @extends {ComponentDefinition}
+ * Kubernetes component definition.
  */
 class KubernetesComponentDefinition extends ComponentDefinition {
   /**
-   * Override ComponentDefinition constructor with ...
-   * @param {ComponentAttributeDefinition[]} [props.definedAttributes=[]] - Defined attributes for
-   * this type.
-   * @see ComponentDefinition
+   * Default constructor.
+   * @param {Object} [props] - Object that contains all properties to set.
+   * @param {String} [props.apiVersion] - Kubernetes apiVersion (<apiGroup>/<version>).
    */
   constructor(props = {
-    definedAttributes: [],
+    apiVersion
   }) {
-    props.definedAttributes = props.definedAttributes.concat([
-      {
-        name: 'metadata',
-        type: 'Object',
-        required: true,
-        definedAttributes: [
-          {
-            name: 'name',
-            type: 'String',
-            required: true,
-          },
-          {
-            name: 'namespace',
-            type: 'String',
-            required: false,
-          },
-          {
-            name: 'labels',
-            type: 'Object',
-            required: false,
-          },
-          {
-            name: 'annotations',
-            type: 'Object',
-            required: false,
-          },
-        ],
-      },
-    ]);
     super(props);
+    /**
+     * Kubernetes apiVersion (<apiGroup>/<version>)
+     * @type {String}
+     */
+    this.apiVersion = props.apiVersion;
   }
 }
 

@@ -1,0 +1,3 @@
+/*! Browser bundle of nunjucks 3.2.3  */
+
+/*! For license information please see leto-modelizer-plugin-core.js.LICENSE.txt */

@@ -1,149 +1,99 @@
-import { DefaultMetadata } from 'leto-modelizer-plugin-core';
+import {
+  ComponentAttributeDefinition,
+  DefaultMetadata,
+} from 'leto-modelizer-plugin-core';
 import KubernetesComponentDefinition from '../models/KubernetesComponentDefinition';
+import metadata from '../assets/metadata';
 
 /**
- * Class to validate and retrieve components definitions from Kubernetes metadata.
+ * Class to validate and retrieve component definitions from Kubernetes metadata.
  */
 class KubernetesMetadata extends DefaultMetadata {
+  constructor(pluginData) {
+    super(pluginData);
+    this.getAttributeDefinition = this.getAttributeDefinition.bind(this);
+    this.commonAttributes = metadata.commonAttributes
+      .map(this.getAttributeDefinition);
+  }
+
   /**
-   * Get all component/link definitions from metadata.
-   * @return {Object} - Object that contains component/link definitions.
+   * Validate the provided metadata with a schemas.
+   *
+   * @returns {boolean} True if metadata is valid.
+   */
+  validate() {
+    return true;
+  }
+
+  /**
+   * Parse all component definitions from metadata.
    */
   parse() {
+    const componentDefinitions = [];
+
+    Object.keys(metadata.apiVersions).forEach((apiVersion) => {
+      metadata.apiVersions[apiVersion].forEach((component) => {
+        componentDefinitions.push(this.getComponentDefinition(apiVersion, component));
+      });
+    });
+
+    this.setChildrenTypes(componentDefinitions);
+
     this.pluginData.definitions = {
-      components: [],
-      components: [
-        this.getConfigMapDefinition(),
-        this.getSecretDefinition(),
-        this.getDeploymentDefinition(),
-      ],
-      links: [],
+      components: componentDefinitions
     };
   }
 
-  getConfigMapDefinition() {
+  /**
+   * Convert a JSON component definition object to a KubernetesComponentDefinition.
+   *
+   * @param {string} apiVersion - Kubernetes API version of the component definition.
+   * @param {object} component - JSON component definition object to parse.
+   * @returns {KubernetesComponentDefinition} Parsed component definition.
+   */
+  getComponentDefinition(apiVersion, component) {
+    const attributes = component.attributes || [];
     return new KubernetesComponentDefinition({
-      type: 'ConfigMap',
-      icon: 'resources/unlabeled/cm',
-      model: 'DefaultModel',
-      definedAttributes: [
-        {
-          name: 'data',
-          type: 'Object',
-          required: false,
-        },
-        {
-          name: 'binaryData',
-          type: 'Object',
-          required: false,
-        },
-        {
-          name: 'immutable',
-          type: 'Boolean',
-          required: false,
-        },
-      ],
-      isContainer: false,
+      apiVersion,
+      ...component,
+      definedAttributes: this.commonAttributes.concat(
+        attributes.map(this.getAttributeDefinition)
+      )
     });
   }
 
-  getSecretDefinition() {
-    return new KubernetesComponentDefinition({
-      type: 'Secret',
-      icon: 'resources/unlabeled/secret',
-      model: 'DefaultModel',
-      definedAttributes: [
-        {
-          name: 'type',
-          type: 'String',
-          required: false,
-          rules: {
-            values: [
-              'Opaque',
-              'kubernetes.io/service-account-token',
-              'kubernetes.io/dockercfg',
-              'kubernetes.io/dockerconfigjson',
-              'kubernetes.io/basic-auth',
-              'kubernetes.io/ssh-auth',
-              'kubernetes.io/tls',
-              'bootstrap.kubernetes.io/token',
-            ],
-          },
-        },
-        {
-          name: 'data',
-          type: 'Object',
-          required: false,
-        },
-        {
-          name: 'stringData',
-          type: 'Object',
-          required: false,
-        },
-        {
-          name: 'immutable',
-          type: 'Boolean',
-          required: false,
-        },
-      ],
-      isContainer: false,
+  /**
+   * Convert a JSON attribute object to a ComponentAttributeDefinition.
+   *
+   * @param {object} attribute - JSON attribute definition object to parse.
+   * @returns {ComponentAttributeDefinition} Parsed attribute definition.
+   */
+  getAttributeDefinition(attribute) {
+    const subAttributes = attribute.attributes || [];
+    return new ComponentAttributeDefinition({
+      ...attribute,
+      definedAttributes: subAttributes.map(this.getAttributeDefinition),
     });
   }
 
-  getDeploymentDefinition() {
-    return new KubernetesComponentDefinition({
-      type: 'Deployment',
-      icon: 'resources/unlabeled/deploy',
-      model: 'DefaultModel',
-      definedAttributes: [
-        {
-          name: 'spec',
-          type: 'Object',
-          required: true,
-          definedAttributes: [
-            this.getLabelSelectorAttributeDefinition(),
-          ],
-        },
-      ],
-      isContainer: false,
-    });
-  }
-
-  getLabelSelectorAttributeDefinition() {
-    return {
-      name: 'selector',
-      type: 'String',
-      required: true,
-      definedAttributes: [
-        {
-          name: 'matchExpressions',
-          type: 'Object',
-          required: false,
-        },
-        {
-          name: 'matchLabels',
-          type: 'Object',
-          required: false,
-          definedAttributes: [
-            {
-              name: 'key',
-              type: 'String',
-              required: true,
-            },
-            {
-              name: 'operator',
-              type: 'String',
-              required: true,
-            },
-            {
-              name: 'values',
-              type: 'Array',
-              required: false,
-            },
-          ],
-        },
-      ],
-    };
+  /**
+   * Set the childrenTypes of all containers from children's parentType..
+   *
+   * @param {ComponentDefinition[]} componentDefinitions - Array of component definitions.
+   */
+  setChildrenTypes(componentDefinitions) {
+    const children = componentDefinitions
+      .filter((def) => def.parentTypes.length > 0)
+      .reduce((acc, def) => {
+        def.parentTypes.forEach((parentType) => {
+          acc[parentType] = [...(acc[parentType] || []), def.type];
+        });
+        return acc;
+      }, {});
+    componentDefinitions.filter((def) => children[def.type])
+      .forEach((def) => {
+        def.childrenTypes = children[def.type];
+      });
   }
 }
 

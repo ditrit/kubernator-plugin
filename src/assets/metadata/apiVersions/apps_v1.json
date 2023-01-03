@@ -1,0 +1,24 @@
+[
+  {
+    "type": "Deployment",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/deploy",
+    "isContainer": true,
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "replicas",
+            "type": "Number"
+          },
+          {
+            "name": "strategy",
+            "type": "String"
+          }
+        ]
+      }
+    ]
+  }
+]

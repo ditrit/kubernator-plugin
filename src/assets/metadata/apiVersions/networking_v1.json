@@ -1,0 +1,20 @@
+[
+  {
+    "type": "Ingress",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/ing",
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "test",
+            "type": "String"
+          }
+        ]
+      }
+    ]
+  }
+]
+

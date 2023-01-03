@@ -1,0 +1,72 @@
+[
+  {
+    "type": "Pod",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/pod",
+    "parentTypes": ["Deployment"],
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "test",
+            "type": "String"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Service",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/svc",
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "test",
+            "type": "String"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "ConfigMap",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/cm",
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "test",
+            "type": "String"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Secret",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/secret",
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "test",
+            "type": "String"
+          }
+        ]
+      }
+    ]
+  }
+]
+
