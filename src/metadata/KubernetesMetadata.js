@@ -40,7 +40,7 @@ class KubernetesMetadata extends DefaultMetadata {
     this.setChildrenTypes(componentDefinitions);
 
     this.pluginData.definitions = {
-      components: componentDefinitions
+      components: componentDefinitions,
     };
   }
 

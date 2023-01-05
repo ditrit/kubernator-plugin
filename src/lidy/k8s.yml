@@ -2,57 +2,82 @@ main: root
 
 root:
   _map:
-    apiVersion: apiVersion
-    kind: kind
+    apiVersion: string
+    kind: string
   _mapFacultative:
     metadata: metadata
     spec: deploymentSpec
 
+# spec:
+#   _oneOf:
+#     - simpleSpec
+#     - compoundSpec
+
+# simpleSpec:
+#   _oneOf:
+#     - podSpec
+#     - serviceSpec
+#     - ingressSpec
+#     - configMapSpec
+#     - secretSpec
+
+# compoundSpec: # special cases: spec containing multiple components
+#   _oneOf:
+#     - deploymentSpec # Deployments and their Pod template are treated as separate components
+
 ########## CALLBACKS ###########################################################
 
-kind: string
-apiVersion: string
-name: string
+uint16: int
 
-stringAttr: any
-intAttr: int
-
-########## COMMON STRUCTS ######################################################
+########## COMMON STRUCTS (to reuse in SPECS) ##################################
 
 metadata:
   _mapFacultative:
-    name: name
-    namespace: stringAttr
-    labels: labels
+    name: string
+    namespace: string
+    labels:
+      _mapOf: { string: string }
     annotations:
-      _mapOf: { string: stringAttr }
-
-labels:
-  _mapOf: { string: stringAttr }
+      _mapOf: { string: string }
 
 selector:
   _mapFacultative:
-    matchLabels: labels
+    matchLabels:
+      _mapOf: { string: string }
 
-########## SPECS ###############################################################
+########## SPECS (used for type/structure checks only) #########################
 
 deploymentSpec:
   _mapFacultative:
-    replicas: intAttr
+    replicas: int
     selector: selector
-    template:
-      _mapFacultative:
-        metadata: metadata
-        spec: podSpec
+    # template: podTemplate
+
+podTemplate:
+  _mapFacultative:
+    metadata: metadata
+    spec: podSpec
 
 podSpec:
   _mapFacultative:
     containers:
       _listOf:
         _mapFacultative:
-          name: stringAttr
-          image: stringAttr
+          name: string
+          image: string
           ports:
             _listOf:
               _mapFacultative:
-                containerPort: intAttr
+                containerPort: uint16
+
+# serviceSpec:
+#   todo: string
+
+# ingressSpec:
+#   todo: string
+
+# configMapSpec:
+#   todo: string
+
+# secretSpec:
+#   todo: string
