@@ -14,20 +14,50 @@
             "type": "Array",
             "attributes": [
               {
-                "name": "test",
-                "type": "String"
-              },
-              {
-                "name": "image",
-                "type": "String"
-              },
-              {
-                "name": "ports",
+                "name": "???",
                 "type": "Object",
                 "attributes": [
                   {
-                    "name": "containerPort",
-                    "type": "Number"
+                    "name": "name",
+                    "type": "String"
+                  },
+                  {
+                    "name": "image",
+                    "type": "String"
+                  },
+                  {
+                    "name": "ports",
+                    "type": "Array",
+                    "attributes": [
+                      {
+                        "name": "???",
+                        "type": "Object",
+                        "attributes": [
+                          {
+                            "name": "ports",
+                            "type": "Array",
+                            "attributes": [
+                              {
+                                "name": "???",
+                                "type": "Object",
+                                "attributes": [
+                                  {
+                                    "name": "ports",
+                                    "type": "Array",
+                                    "attributes": [
+                                      {
+                                        "name": "containerPort",
+                                        "type": "String"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
@@ -89,4 +119,3 @@
     ]
   }
 ]
-
