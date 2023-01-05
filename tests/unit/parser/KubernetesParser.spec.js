@@ -1,7 +1,8 @@
 import fs from 'fs';
 import KubernetesParser from 'src/parser/KubernetesParser';
+import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
 import { FileInput, FileInformation, DefaultData } from 'leto-modelizer-plugin-core';
-import DeploymentComponents from 'tests/resources/yml/deploymentComponents';
+import DeploymentComponents from 'tests/resources/yml/DeploymentComponents';
 
 describe('Test KubernetesParser', () => {
   describe('Test functions', () => {
@@ -54,6 +55,8 @@ describe('Test KubernetesParser', () => {
 
       it('Parse simple.yml should set valid component', () => {
         const pluginData = new DefaultData();
+        const metadata = new KubernetesMetadata(pluginData);
+        metadata.parse();
         const parser = new KubernetesParser(pluginData);
         const file = new FileInput({
           path: './deployment.yml',
@@ -61,7 +64,6 @@ describe('Test KubernetesParser', () => {
         });
         parser.parse([file]);
 
-        expect(true).toEqual(false);
         expect(pluginData.components).toEqual(DeploymentComponents);
       });
     });
