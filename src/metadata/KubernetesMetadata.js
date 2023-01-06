@@ -11,9 +11,8 @@ import metadata from '../assets/metadata';
 class KubernetesMetadata extends DefaultMetadata {
   constructor(pluginData) {
     super(pluginData);
-    this.getAttributeDefinition = this.getAttributeDefinition.bind(this);
     this.commonAttributes = metadata.commonAttributes
-      .map(this.getAttributeDefinition);
+      .map(this.getAttributeDefinition, this);
   }
 
   /**
@@ -29,18 +28,14 @@ class KubernetesMetadata extends DefaultMetadata {
    * Parse all component definitions from metadata.
    */
   parse() {
-    const componentDefinitions = [];
-
-    Object.keys(metadata.apiVersions).forEach((apiVersion) => {
-      metadata.apiVersions[apiVersion].forEach((component) => {
-        componentDefinitions.push(this.getComponentDefinition(apiVersion, component));
-      });
-    });
-
-    this.setChildrenTypes(componentDefinitions);
-
+    const componentDefs = Object.keys(metadata.apiVersions).flatMap(
+      (apiVersion) => metadata.apiVersions[apiVersion].map(
+        (component) => this.getComponentDefinition(apiVersion, component)
+      )
+    );
+    this.setChildrenTypes(componentDefs);
     this.pluginData.definitions = {
-      components: componentDefinitions,
+      components: componentDefs,
     };
   }
 
@@ -57,7 +52,7 @@ class KubernetesMetadata extends DefaultMetadata {
       apiVersion,
       ...component,
       definedAttributes: this.commonAttributes.concat(
-        attributes.map(this.getAttributeDefinition)
+        attributes.map(this.getAttributeDefinition, this)
       )
     });
   }
@@ -72,7 +67,7 @@ class KubernetesMetadata extends DefaultMetadata {
     const subAttributes = attribute.attributes || [];
     return new ComponentAttributeDefinition({
       ...attribute,
-      definedAttributes: subAttributes.map(this.getAttributeDefinition),
+      definedAttributes: subAttributes.map(this.getAttributeDefinition, this),
     });
   }
 

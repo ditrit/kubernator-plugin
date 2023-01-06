@@ -50,6 +50,7 @@ class KubernetesListener {
 
   createComponentFromTree(rootNode, kind, apiVersion) {
     const name = rootNode.value.metadata?.value.name?.value || 'random'; // TODO: confirm if we need to generate a random name here
+    delete rootNode.value.metadata?.value.name; // we don't want to create an attribute for the name, because the component already has a name
     const definition = this.definitions.find((definition) =>
       definition.type === kind && definition.apiVersion === apiVersion
     );
@@ -66,7 +67,7 @@ class KubernetesListener {
     return Object.keys(parentNode.value).map(childKey => {
       const childNode = parentNode.value[childKey];
       const definition = parentDefinition?.definedAttributes
-          .find(({ name }) => name === childKey);
+        .find(({ name }) => name === childKey);
       return new ComponentAttribute({
         name: childKey,
         type: this.lidyToLetoType(childNode.type),

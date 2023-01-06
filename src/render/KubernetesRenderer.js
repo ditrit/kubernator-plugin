@@ -8,47 +8,42 @@ import yaml from 'js-yaml'
  * Class to render Kubernetes files from components.
  */
 class KubernetesRenderer extends DefaultRender {
-  constructor(pluginData) {
-    super(pluginData);
-    this.renderComponent = this.renderComponent.bind(this);
-    this.renderAttributes = this.renderAttributes.bind(this);
-  }
-
   /**
    * Convert all provided components and links to Kubernetes files.
    *
    * @returns {FileInput[]} Array of generated files from components and links.
    */
   render() {
-    console.log('Renderer');
-    console.log(this.pluginData.components);
     return this.pluginData.components.map(this.renderComponent);
   }
 
   renderComponent(component) {
-    const renderedComponent = {
+    const formattedComponent = {
       apiVersion: component.definition.apiVersion,
       kind: component.definition.type,
-      ...this.renderAttributes(component.attributes),
+      ...this.formatAttributes(component.attributes),
     };
-    const metadata = renderedComponent.metadata || {};
+    const metadata = formattedComponent.metadata || {};
     metadata.name = component.name;
-    renderedComponent.metadata = metadata;
+    formattedComponent.metadata = metadata;
 
-    console.log(renderedComponent);
     return new FileInput({
-      path: `${component.name}.yaml`,
-      content: yaml.dump(renderedComponent),
+      path: component.path || `${component.name}.yaml`,
+      content: yaml.dump(formattedComponent),
     });
   }
 
-  renderAttributes(attributes) {
+  formatAttributes(attributes) {
     return attributes.reduce((acc, attribute) => {
-      console.log(`${attribute.name} ${attribute.type}`);
-      acc[attribute.name] = attribute.type !== 'Object' ?
-        attribute.value : this.renderAttributes(attribute.value)
+      if (attribute.type == 'Object') {
+        acc[attribute.name] = this.formatAttributes(attribute.value);
+      } else if (attribute.type == 'Array') {
+        acc[attribute.name] = Object.values(this.formatAttributes(attribute.value));
+      } else {
+        acc[attribute.name] = attribute.value;
+      }
       return acc;
-    }, []);
+    }, {});
   }
 }
 
