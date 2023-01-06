@@ -13,8 +13,12 @@ const podSpecDef = podDef.definedAttributes
   .find(({ name }) => name === 'spec');
 const podContainersDef = podSpecDef.definedAttributes
   .find(({ name }) => name === 'containers');
-const podPortsDef = podContainersDef.definedAttributes
+const podContainerDef = podContainersDef.definedAttributes
+  .find(({ name }) => name === '???');
+const podPortsDef = podContainerDef.definedAttributes
   .find(({ name }) => name === 'ports');
+const podPortDef = podPortsDef.definedAttributes
+  .find(({ name }) => name === '???');
 
 const pod = new Component({
   id: 'random',
@@ -54,24 +58,24 @@ const pod = new Component({
             new ComponentAttribute({
               name: '0',
               type: 'Object',
-              // definition: podContainersDef.definedAttributes.find(({ name }) => name === '0'),
+              definition: podContainerDef,
               value: [
                 new ComponentAttribute({
                   name: 'name',
                   type: 'String',
-                  definition: podContainersDef.definedAttributes.find(({ name }) => name === 'name'),
+                  definition: podContainerDef.definedAttributes.find(({ name }) => name === 'name'),
                   value: 'nginx',
                 }),
                 new ComponentAttribute({
                   name: 'name',
                   type: 'String',
-                  definition: podContainersDef.definedAttributes.find(({ name }) => name === 'name'),
+                  definition: podContainerDef.definedAttributes.find(({ name }) => name === 'name'),
                   value: 'nginx',
                 }),
                 new ComponentAttribute({
                   name: 'images',
                   type: 'String',
-                  definition: podContainersDef.definedAttributes.find(({ name }) => name === 'images'),
+                  definition: podContainerDef.definedAttributes.find(({ name }) => name === 'images'),
                   value: 'nginx:1.14.2',
                 }),
                 new ComponentAttribute({
@@ -80,10 +84,17 @@ const pod = new Component({
                   definition: podPortsDef,
                   value: [
                     new ComponentAttribute({
-                      name: 'containerPort',
-                      type: 'Number',
-                      definition: podPortsDef.definedAttributes.find(({ name }) => name === 'containerPort'),
-                      value: 80,
+                      name: '0',
+                      type: 'Object',
+                      definition: podPortDef,
+                      value: [
+                        new ComponentAttribute({
+                          name: 'containerPort',
+                          type: 'Number',
+                          definition: podPortDef.definedAttributes.find(({ name }) => name === 'containerPort'),
+                          value: 80,
+                        }),
+                      ],
                     }),
                   ],
                 }),
@@ -115,18 +126,18 @@ const deployment = new Component({
     new ComponentAttribute({
       name: 'metadata',
       type: 'Object',
-      // definition: deploymentMetadataDef,
+      definition: deploymentMetadataDef,
       value: [
         new ComponentAttribute({
           name: 'name',
           type: 'String',
-          // definition: deploymentMetadataDef.definedAttributes.find(({ name }) => name === 'name'),
+          definition: deploymentMetadataDef.definedAttributes.find(({ name }) => name === 'name'),
           value: 'nginx-deployment',
         }),
         new ComponentAttribute({
           name: 'labels',
           type: 'Object',
-          // definition: deploymentMetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
+          definition: deploymentMetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
           value: [
             new ComponentAttribute({
               name: 'app',
@@ -140,23 +151,23 @@ const deployment = new Component({
     new ComponentAttribute({
       name: 'spec',
       type: 'Object',
-      // definition: deploymentSpecDef,
+      definition: deploymentSpecDef,
       value: [
         new ComponentAttribute({
           name: 'replicas',
           type: 'Number',
-          // definition: deploymentSpecDef.definedAttributes.find(({ name }) => name === 'replicas'),
+          definition: deploymentSpecDef.definedAttributes.find(({ name }) => name === 'replicas'),
           value: 3,
         }),
         new ComponentAttribute({
           name: 'selector',
           type: 'Object',
-          // definition: deploymentSelectorDef,
+          definition: deploymentSelectorDef,
           value: [
             new ComponentAttribute({
               name: 'matchLabels',
               type: 'Object',
-              // definition: deploymentSelectorDef.definedAttributes.find(({ name }) => name === 'matchLabels'),
+              definition: deploymentSelectorDef.definedAttributes.find(({ name }) => name === 'matchLabels'),
               value: [
                 new ComponentAttribute({
                   name: 'app',

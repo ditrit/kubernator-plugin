@@ -57,20 +57,23 @@ class KubernetesListener {
       id: name, // TODO: confirm id == name ?
       name,
       definition,
-      attributes: this.createAttributesFromTreeNode(rootNode),
+      attributes: this.createAttributesFromTreeNode(rootNode, definition),
       path: this.fileInformation.path,
     });
   }
 
-  createAttributesFromTreeNode(parentNode) {
+  createAttributesFromTreeNode(parentNode, parentDefinition) {
     return Object.keys(parentNode.value).map(childKey => {
       const childNode = parentNode.value[childKey];
+      const definition = parentDefinition?.definedAttributes
+          .find(({ name }) => name === childKey);
       return new ComponentAttribute({
         name: childKey,
         type: this.lidyToLetoType(childNode.type),
-        definition: null, // TODO: set definition
+        definition,
         value: (childNode.type == 'map' || childNode.type == 'list') ?
-          this.createAttributesFromTreeNode(childNode) : childNode.value,
+          this.createAttributesFromTreeNode(childNode, definition) :
+          childNode.value,
       });
     });
   }
