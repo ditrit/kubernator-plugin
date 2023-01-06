@@ -14,23 +14,33 @@ class KubernetesRenderer extends DefaultRender {
    * @returns {FileInput[]} Array of generated files from components and links.
    */
   render() {
-    return this.pluginData.components.map(this.renderComponent, this);
+    console.log('R', this.pluginData.components);
+    return this.pluginData.components.map((component) =>
+      new FileInput({
+        path: component.path || `${component.name}.yaml`,
+        content: yaml.dump(this.formatComponent(component)),
+      })
+    );
   }
 
-  renderComponent(component) {
-    const formattedComponent = {
-      apiVersion: component.definition.apiVersion,
-      kind: component.definition.type,
-      ...this.formatAttributes(component.attributes),
-    };
-    const metadata = formattedComponent.metadata || {};
-    metadata.name = component.name;
-    formattedComponent.metadata = metadata;
+  formatComponent(component, isSubComponent=false) {
+    let formatted = this.formatAttributes(component.attributes);
+    if (!isSubComponent) {
+      formatted = { // insert apiVersion and kind to the beginning of the formatted object
+        apiVersion: component.definition.apiVersion,
+        kind: component.definition.type,
+        ...formatted
+      };
+    }
+    this.insertSubComponentAttributes(formatted, component);
 
-    return new FileInput({
-      path: component.path || `${component.name}.yaml`,
-      content: yaml.dump(formattedComponent),
-    });
+    const metadata = formatted.metadata || {};
+    formatted.metadata = { // insert name to the beginning of the metadata object
+      name: component.name,
+      ...metadata,
+    };
+
+    return formatted;
   }
 
   formatAttributes(attributes) {
@@ -44,6 +54,15 @@ class KubernetesRenderer extends DefaultRender {
       }
       return acc;
     }, {});
+  }
+
+  insertSubComponentAttributes(formatted, component) {
+    if (component.children.length > 0
+        && component.definition.type == 'Deployment') {
+      const spec = formatted.spec || {};
+      spec.template = this.formatComponent(component.children[0], true);
+      formatted.spec = spec;
+    }
   }
 }
 

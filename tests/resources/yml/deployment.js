@@ -115,7 +115,7 @@ const deployment = new Component({
   name: 'nginx-deployment',
   definition: deploymentDef,
   path: './deployment.yml',
-  // children: [pod],
+  children: [pod],
   attributes: [
     new ComponentAttribute({
       name: 'metadata',
@@ -171,7 +171,4 @@ const deployment = new Component({
   ],
 });
 
-export default [
-  pod,
-  deployment
-];
+export default deployment;

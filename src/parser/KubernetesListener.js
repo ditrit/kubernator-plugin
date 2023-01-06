@@ -27,38 +27,60 @@ class KubernetesListener {
      * Parsed component.
      */
     this.component = null;
+    /**
+     * Parsed subcomponent.
+     * Special case to create the Pod template of the Deployment as a separate subcomponent.
+     */
+    this.subComponent = null;
   }
 
   /**
    * Function called when attribute `root` is parsed.
-   * Parse the root component.
+   * Create a component from the parsed root element.
    *
-   * @param {string} value - Kind value.
+   * @param {MapNode} rootNode - The Lidy `root` node.
    */
-  exit_root(parsedRule) {
-    const kind = parsedRule.value.kind.value;
-    const apiVersion = parsedRule.value.apiVersion.value;
+  exit_root(rootNode) {
+    const apiVersion = rootNode.value.apiVersion.value;
+    const kind = rootNode.value.kind.value;
 
-    // kind and apiVersion are read-only in the model view because they
+    // apiVersion and kind are read-only in the model view because they
     // determine the component's type (definition), which is static in the UI.
     // So, we don't want to create attributes for them.
-    delete parsedRule.value.kind;
-    delete parsedRule.value.apiVersion;
+    delete rootNode.value.apiVersion;
+    delete rootNode.value.kind;
 
-    this.component = this.createComponentFromTree(parsedRule, kind, apiVersion);
+    this.component = this.createComponentFromTree(rootNode, apiVersion, kind);
+    if (this.subComponent) this.component.children = [this.subComponent];
   }
 
-  createComponentFromTree(rootNode, kind, apiVersion) {
-    const name = rootNode.value.metadata?.value.name?.value || 'random'; // TODO: confirm if we need to generate a random name here
-    delete rootNode.value.metadata?.value.name; // we don't want to create an attribute for the name, because the component already has a name
+  /**
+   * Function called when attribute `podTemplate` is parsed.
+   * Special case to create the Pod template of the Deployment as a separate subcomponent.
+   *
+   * @param {MapNode} deploymentSpecNode - The Lidy `deploymentSpec` node.
+   */
+  exit_deploymentSpec(deploymentSpecNode) {
+    if (deploymentSpecNode.value.template) {
+      this.subComponent = this.createComponentFromTree(
+        deploymentSpecNode.value.template,
+        'core/v1', 'Pod'
+      );
+      delete deploymentSpecNode.value.template; // prevent exit_root from visiting the template node again
+    }
+  }
+
+  createComponentFromTree(node, apiVersion, kind) {
+    const name = node.value.metadata?.value.name?.value || 'random'; // TODO: confirm if we need to generate a random name here
+    delete node.value.metadata?.value.name; // we don't want to create an attribute for the name, because the component already has a name
     const definition = this.definitions.find((definition) =>
-      definition.type === kind && definition.apiVersion === apiVersion
+      definition.apiVersion === apiVersion && definition.type === kind
     );
     return new Component({
       id: name, // TODO: confirm id == name ?
       name,
       definition,
-      attributes: this.createAttributesFromTreeNode(rootNode, definition),
+      attributes: this.createAttributesFromTreeNode(node, definition),
       path: this.fileInformation.path,
     });
   }
@@ -66,8 +88,9 @@ class KubernetesListener {
   createAttributesFromTreeNode(parentNode, parentDefinition) {
     return Object.keys(parentNode.value).map(childKey => {
       const childNode = parentNode.value[childKey];
-      const definition = parentDefinition?.definedAttributes
-        .find(({ name }) => name === childKey);
+      const definition = parentDefinition?.definedAttributes.find(
+        ({ name }) => name === (parentNode.type !== 'list' ? childKey: null)
+      ); // note: elements inside a list don't have a name, because it has to match the definition
       return new ComponentAttribute({
         name: childKey,
         type: this.lidyToLetoType(childNode.type),
@@ -100,7 +123,7 @@ class KubernetesListener {
   /**
    * Function called when attribute `uint16` is parsed.
    *
-   * @param {string} value - Kind value.
+   * @param {Number} value - the `uint16` value to check.
    */
   exit_uint16({ value }) {
     if (value < 0 || value >= 2**16) {
@@ -110,22 +133,3 @@ class KubernetesListener {
 }
 
 export default KubernetesListener;
-
-    // /**
-    //  * Subcomponent (special case for compound specs, see src/lidy/k8s.yml).
-    //  */
-    // this.subComponent = null;
-
-  // /**
-  //  * Function called when attribute `podTemplate` is parsed.
-  //  * Special case to parse the Pod subcomponent of the Deployment as a separate component.
-  //  *
-  //  * @param {string} value - Kind value.
-  //  */
-  // exit_aaa(parsedRule) {
-  //   this.component = this.createComponent(
-  //     parsedRule,
-  //     paresedRule.value.kind.value,
-  //     paresedRule.value.apiVersion.value
-  //   );
-  // }
