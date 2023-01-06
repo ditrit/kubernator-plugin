@@ -14,7 +14,7 @@ class KubernetesRenderer extends DefaultRender {
    * @returns {FileInput[]} Array of generated files from components and links.
    */
   render() {
-    return this.pluginData.components.map(this.renderComponent);
+    return this.pluginData.components.map(this.renderComponent, this);
   }
 
   renderComponent(component) {

@@ -14,11 +14,11 @@ const podSpecDef = podDef.definedAttributes
 const podContainersDef = podSpecDef.definedAttributes
   .find(({ name }) => name === 'containers');
 const podContainerDef = podContainersDef.definedAttributes
-  .find(({ name }) => name === '???');
+  .find(({ name }) => name === null);
 const podPortsDef = podContainerDef.definedAttributes
   .find(({ name }) => name === 'ports');
 const podPortDef = podPortsDef.definedAttributes
-  .find(({ name }) => name === '???');
+  .find(({ name }) => name === null);
 
 const pod = new Component({
   id: 'random',
@@ -67,15 +67,9 @@ const pod = new Component({
                   value: 'nginx',
                 }),
                 new ComponentAttribute({
-                  name: 'name',
+                  name: 'image',
                   type: 'String',
-                  definition: podContainerDef.definedAttributes.find(({ name }) => name === 'name'),
-                  value: 'nginx',
-                }),
-                new ComponentAttribute({
-                  name: 'images',
-                  type: 'String',
-                  definition: podContainerDef.definedAttributes.find(({ name }) => name === 'images'),
+                  definition: podContainerDef.definedAttributes.find(({ name }) => name === 'image'),
                   value: 'nginx:1.14.2',
                 }),
                 new ComponentAttribute({
@@ -129,12 +123,6 @@ const deployment = new Component({
       definition: deploymentMetadataDef,
       value: [
         new ComponentAttribute({
-          name: 'name',
-          type: 'String',
-          definition: deploymentMetadataDef.definedAttributes.find(({ name }) => name === 'name'),
-          value: 'nginx-deployment',
-        }),
-        new ComponentAttribute({
           name: 'labels',
           type: 'Object',
           definition: deploymentMetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
@@ -184,6 +172,6 @@ const deployment = new Component({
 });
 
 export default [
-  // pod,
+  pod,
   deployment
 ];

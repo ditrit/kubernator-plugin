@@ -15,7 +15,14 @@
           },
           {
             "name": "strategy",
-            "type": "String"
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "type",
+                "type": "String",
+                "rules": { "values": ["RollingUpdate", "Recreate"] }
+              }
+            ]
           },
           {
             "name": "selector",

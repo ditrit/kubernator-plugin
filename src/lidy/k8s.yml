@@ -51,12 +51,10 @@ deploymentSpec:
   _mapFacultative:
     replicas: int
     selector: selector
-    # template: podTemplate
-
-podTemplate:
-  _mapFacultative:
-    metadata: metadata
-    spec: podSpec
+    template:
+      _mapFacultative:
+        metadata: metadata
+        spec: podSpec
 
 podSpec:
   _mapFacultative:
