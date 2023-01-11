@@ -24,7 +24,7 @@ const pod = new Component({
   id: 'random',
   name: 'random',
   definition: podDef,
-  path: './deployment.yml',
+  path: null,
   attributes: [
     new ComponentAttribute({
       name: 'metadata',

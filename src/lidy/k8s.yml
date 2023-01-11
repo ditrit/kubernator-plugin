@@ -6,7 +6,14 @@ root:
     kind: string
   _mapFacultative:
     metadata: metadata
-    spec: deploymentSpec
+    spec:
+      _oneOf:
+        - deploymentSpec
+        - podSpec
+        - serviceSpec
+        - ingressSpec
+        - configMapSpec
+        - secretSpec
 
 # spec:
 #   _oneOf:
@@ -68,14 +75,18 @@ podSpec:
               _mapFacultative:
                 containerPort: uint16
 
-# serviceSpec:
-#   todo: string
+serviceSpec:
+  _mapFacultative:
+    todo: string
 
-# ingressSpec:
-#   todo: string
+ingressSpec:
+  _mapFacultative:
+    todo: string
 
-# configMapSpec:
-#   todo: string
+configMapSpec:
+  _mapFacultative:
+    todo: string
 
-# secretSpec:
-#   todo: string
+secretSpec:
+  _mapFacultative:
+    todo: string

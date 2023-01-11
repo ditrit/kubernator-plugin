@@ -34,9 +34,7 @@ class KubernetesMetadata extends DefaultMetadata {
       )
     );
     this.setChildrenTypes(componentDefs);
-    this.pluginData.definitions = {
-      components: componentDefs,
-    };
+    this.pluginData.definitions.components = componentDefs;
   }
 
   /**
@@ -72,7 +70,7 @@ class KubernetesMetadata extends DefaultMetadata {
   }
 
   /**
-   * Set the childrenTypes of all containers from children's parentType..
+   * Set the childrenTypes of all containers from children's parentType.
    *
    * @param {ComponentDefinition[]} componentDefinitions - Array of component definitions.
    */

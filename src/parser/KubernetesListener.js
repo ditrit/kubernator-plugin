@@ -29,7 +29,7 @@ class KubernetesListener {
     this.component = null;
     /**
      * Parsed subcomponent.
-     * Special case to create the Pod template of the Deployment as a separate subcomponent.
+     * Special case to create the Pod template of the Deployment as a child component.
      */
     this.subComponent = null;
   }
@@ -41,6 +41,7 @@ class KubernetesListener {
    * @param {MapNode} rootNode - The Lidy `root` node.
    */
   exit_root(rootNode) {
+    // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
     const apiVersion = rootNode.value.apiVersion.value;
     const kind = rootNode.value.kind.value;
 
@@ -51,12 +52,14 @@ class KubernetesListener {
     delete rootNode.value.kind;
 
     this.component = this.createComponentFromTree(rootNode, apiVersion, kind);
+    this.component.path = this.fileInformation.path;
     if (this.subComponent) this.component.children = [this.subComponent];
   }
 
   /**
    * Function called when attribute `podTemplate` is parsed.
-   * Special case to create the Pod template of the Deployment as a separate subcomponent.
+   * Special case to create the template Pod template of the Deployment as a child component.
+   * This function is called before exit_root for Deployment resources.
    *
    * @param {MapNode} deploymentSpecNode - The Lidy `deploymentSpec` node.
    */
@@ -81,7 +84,6 @@ class KubernetesListener {
       name,
       definition,
       attributes: this.createAttributesFromTreeNode(node, definition),
-      path: this.fileInformation.path,
     });
   }
 

@@ -34,7 +34,7 @@ class KubernetesParser extends DefaultParser {
       const alreadyImported = [];
       const root = [];
 
-      lidyParse({
+      prog = lidyParse({
         src_data: input.content,
         listener,
         path: input.path,
@@ -47,11 +47,11 @@ class KubernetesParser extends DefaultParser {
         },
       });
 
-      // console.log(errors);
-      // console.log(warnings);
-      // console.log(imports);
-      // console.log(alreadyImported);
-      // console.log(root);
+      console.log(errors);
+      console.log(warnings);
+      console.log(imports);
+      console.log(alreadyImported);
+      console.log(root);
 
       this.pluginData.components.push(listener.component);
     });

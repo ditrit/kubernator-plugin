@@ -3,7 +3,7 @@
     "type": "Pod",
     "model": "DefaultModel",
     "icon": "resources/unlabeled/pod",
-    "parentTypes": ["Deployment"],
+    "parentTypes": ["Deployment", "StatefulSet", "Job"],
     "attributes": [
       {
         "name": "spec",
@@ -81,6 +81,11 @@
             "type": "String"
           }
         ]
+      },
+      {
+        "name": "pod",
+        "type": "Link",
+        "linkRef": "Pod"
       }
     ]
   },

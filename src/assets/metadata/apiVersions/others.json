@@ -1,0 +1,37 @@
+[
+  {
+    "type": "CronJob",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/cronjob",
+    "isContainer": true,
+    "attributes": []
+  },
+  {
+    "type": "HorizontalPodAutoscaler",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/hpa",
+    "attributes": []
+  },
+  {
+    "type": "Job",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/job",
+    "isContainer": true,
+    "parentTypes": ["CronJob"],
+    "attributes": []
+  },
+  {
+    "type": "PersistentVolumeClaim",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/pvc",
+    "attributes": []
+  },
+  {
+    "type": "StatefulSet",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/sts",
+    "isContainer": true,
+    "attributes": []
+  }
+]
+
