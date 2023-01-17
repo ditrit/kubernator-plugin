@@ -77,15 +77,43 @@
         "type": "Object",
         "attributes": [
           {
-            "name": "test",
-            "type": "String"
+            "name": "type",
+            "type": "String",
+            "rules": {
+              "values": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+            }
+          },
+          {
+            "name": "selector",
+            "type": "Object"
+          },
+          {
+            "name": "ports",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "name",
+                "type": "String"
+              },
+              {
+                "name": "protocol",
+                "type": "String",
+                "rules": {
+                  "values": ["TCP", "UDP", "SCTP"]
+                }
+              },
+              {
+                "name": "port",
+                "type": "Number",
+                "required": true
+              },
+              {
+                "name": "targetPort",
+                "type": "String"
+              }
+            ]
           }
         ]
-      },
-      {
-        "name": "pod",
-        "type": "Link",
-        "linkRef": "Pod"
       }
     ]
   },
@@ -95,14 +123,16 @@
     "icon": "resources/unlabeled/cm",
     "attributes": [
       {
-        "name": "spec",
-        "type": "Object",
-        "attributes": [
-          {
-            "name": "test",
-            "type": "String"
-          }
-        ]
+        "name": "data",
+        "type": "Object"
+      },
+      {
+        "name": "binaryData",
+        "type": "Object"
+      },
+      {
+        "name": "immutable",
+        "type": "Boolean"
       }
     ]
   },
@@ -112,12 +142,119 @@
     "icon": "resources/unlabeled/secret",
     "attributes": [
       {
+        "name": "type",
+        "type": "String",
+        "rules": {
+          "values": ["Opaque", "kubernetes.io/service-account-token", "kubernetes.io/dockercfg", "kubernetes.io/dockerconfigjson", "kubernetes.io/basic-auth", "kubernetes.io/ssh-auth", "kubernetes.io/tls", "bootstrap.kubernetes.io/token"]
+        }
+      },
+      {
+        "name": "stringData",
+        "type": "Object"
+      },
+      {
+        "name": "data",
+        "type": "Object"
+      },
+      {
+        "name": "immutable",
+        "type": "Boolean"
+      }
+    ]
+  },
+  {
+    "type": "PersistentVolumeClaim",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/pvc",
+    "attributes": [
+      {
         "name": "spec",
         "type": "Object",
         "attributes": [
           {
-            "name": "test",
+            "name": "storageClassName",
             "type": "String"
+          },
+          {
+            "name": "accessModes",
+            "type": "Array",
+            "rules": {
+              "values": ["ReadWriteOnce", "ReadWriteMany", "ReadWriteOncePod", "ReadOnlyMany"]
+            }
+          },
+          {
+            "name": "volumeMode",
+            "type": "String",
+            "rules": {
+              "values": ["Filesystem", "Block"]
+            }
+          },
+          {
+            "name": "ressources",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "limits",
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "storage",
+                    "type": "String"
+                  }
+                ]
+              },
+              {
+                "name": "requests",
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "storage",
+                    "type": "String"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "volumeName",
+            "type": "String"
+          },
+          {
+            "name": "selector",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "matchLabels",
+                "type": "Object"
+              },
+              {
+                "name": "matchExpressions",
+                "type": "Array",
+                "attributes": [
+                  {
+                    "name": null,
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "key",
+                        "type": "String"
+                      },
+                      {
+                        "name": "operator",
+                        "type": "String",
+                        "rules": {
+                          "values": ["In", "NotIn", "Exists", "DoesNotExist"]
+                        }
+                      },
+                      {
+                        "name": "values",
+                        "type": "Array"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

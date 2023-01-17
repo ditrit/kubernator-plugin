@@ -5,7 +5,7 @@ import others from './others.json';
 
 export default {
   'apps/v1': appsV1,
-  'core/v1': coreV1,
+  'v1': coreV1,
   'networking.k8s.io/v1': networkingV1,
   'others': others,
 }

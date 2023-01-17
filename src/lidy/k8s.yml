@@ -14,6 +14,7 @@ root:
         - ingressSpec
         - configMapSpec
         - secretSpec
+        - persistentVolumeClaimSpec
 
 # spec:
 #   _oneOf:
@@ -47,17 +48,26 @@ metadata:
     annotations:
       _mapOf: { string: string }
 
-selector:
+labelSelector:
   _mapFacultative:
     matchLabels:
       _mapOf: { string: string }
+    matchExpressions:
+      _map:
+        key: string
+        operator:
+          _in: ["In", "NotIn", "Exists", "DoesNotExist"]
+      _mapFacultative:
+        values:
+          _listOf: string
+
 
 ########## SPECS (used for type/structure checks only) #########################
 
 deploymentSpec:
   _mapFacultative:
     replicas: int
-    selector: selector
+    selector: labelSelector
     template:
       _mapFacultative:
         metadata: metadata
@@ -77,7 +87,42 @@ podSpec:
 
 serviceSpec:
   _mapFacultative:
-    todo: string
+    type:
+      _in: ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+    selector:
+      _mapOf: { string: string }
+    ports:
+      _mapFacultative:
+        name: string
+        protocol:
+          _in: ["TCP", "UDP", "SCTP"]
+        targetPort: string # improvement: if the target port is a string, check that the port exists in the pod
+      _map:
+        port: uint16
+    clusterIP: string
+    externalName: string
+    sessionAffinity: string
+    sessionAffinityConfig:
+      _mapFacultative:
+        clientIP:
+          _mapFacultative:
+            timeoutSeconds: int
+    clusterIPs:
+      _listOf: string
+    allocateLoadBalancerNodePorts: boolean
+    externalIPs:
+      _listOf: string
+    externalTrafficPolicy: string
+    healthCheckNodePort: uint16
+    internalTrafficPolicy: string
+    ipFamilies:
+      _listOf: string
+    ipFamilyPolicy: string
+    loadBalancerClass: string
+    loadBalancerSourceRanges:
+      _listOf: string
+    publishNotReadyAddresses: boolean
+    loadBalancerIP: string
 
 ingressSpec:
   _mapFacultative:
@@ -85,8 +130,36 @@ ingressSpec:
 
 configMapSpec:
   _mapFacultative:
-    todo: string
+    data:
+      _mapOf: { string: string }
+    binaryData:
+      _mapOf: { string: string }
+    immutable: boolean
 
 secretSpec:
   _mapFacultative:
-    todo: string
+    type:
+      _in: ["Opaque", "kubernetes.io/service-account-token", "kubernetes.io/dockercfg", "kubernetes.io/dockerconfigjson", "kubernetes.io/basic-auth", "kubernetes.io/ssh-auth", "kubernetes.io/tls", "bootstrap.kubernetes.io/token"]
+    stringData:
+      _mapOf: { string: string }
+    data:
+      _mapOf: { string: string }
+    immutable: boolean
+
+persistentVolumeClaimSpec:
+  _mapFacultative:
+    storageClassName: string
+    accessModes:
+      _listOf:
+        _in: ["ReadWriteOnce", "ReadWriteMany", "ReadWriteOncePod", "ReadOnlyMany"]
+    volumeMode:
+      _in: ["Filesystem", "Block"]
+    resources:
+      _mapFacultative:
+        limits:
+          _mapOf: { string: string }
+        requests:
+          _mapOf: { string: string }
+    volumeName: string
+    selector: labelSelector
+

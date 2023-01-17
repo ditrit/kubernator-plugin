@@ -21,12 +21,6 @@
     "attributes": []
   },
   {
-    "type": "PersistentVolumeClaim",
-    "model": "DefaultModel",
-    "icon": "resources/unlabeled/pvc",
-    "attributes": []
-  },
-  {
     "type": "StatefulSet",
     "model": "DefaultContainer",
     "icon": "resources/unlabeled/sts",

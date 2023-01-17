@@ -34,7 +34,7 @@ class KubernetesParser extends DefaultParser {
       const alreadyImported = [];
       const root = [];
 
-      prog = lidyParse({
+      lidyParse({
         src_data: input.content,
         listener,
         path: input.path,
