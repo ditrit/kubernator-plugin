@@ -25,20 +25,20 @@ class KubernetesRenderer extends DefaultRender {
 
   formatComponent(component, isSubComponent=false) {
     let formatted = this.formatAttributes(component.attributes);
-    if (!isSubComponent) {
-      formatted = { // insert apiVersion and kind to the beginning of the formatted object
-        apiVersion: component.definition.apiVersion,
-        kind: component.definition.type,
-        ...formatted
-      };
+    formatted = this.insertFront(
+      formatted, 'metadata', this.insertFront(
+        formatted.metadata || {}, 'name', component.name,
+      ),
+    );
+    if (!isSubComponent) { // FIXME: some subcomponents can have a kind and apiVersion
+      formatted = this.insertFront(
+        formatted, 'kind', component.definition.type
+      );
+      formatted = this.insertFront(
+        formatted, 'apiVersion', component.definition.apiVersion
+      );
     }
     this.insertSubComponentAttributes(formatted, component);
-
-    const metadata = formatted.metadata || {};
-    formatted.metadata = { // insert name to the beginning of the metadata object
-      name: component.name,
-      ...metadata,
-    };
 
     return formatted;
   }
@@ -62,6 +62,14 @@ class KubernetesRenderer extends DefaultRender {
       const spec = formatted.spec || {};
       spec.template = this.formatComponent(component.children[0], true);
       formatted.spec = spec;
+    }
+  }
+
+  insertFront(object, key, value) {
+    delete object[key];
+    return {
+      [key]: value,
+      ...object,
     }
   }
 }
