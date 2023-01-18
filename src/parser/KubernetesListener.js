@@ -53,7 +53,10 @@ class KubernetesListener {
 
     this.component = this.createComponentFromTree(rootNode, apiVersion, kind);
     this.component.path = this.fileInformation.path;
-    if (this.subComponent) this.component.children = [this.subComponent];
+    if (this.subComponent) {
+      this.component.children = [this.subComponent];
+      this.subComponent.parent = this.component;
+    }
   }
 
   /**
@@ -70,6 +73,16 @@ class KubernetesListener {
       );
       delete deploymentSpecNode.value.template; // prevent exit_root from visiting the template node again
     }
+  }
+
+  exit_container(node) {
+    console.log('CONTAINER');
+  }
+  exit_volume(node) {
+    console.log('VOLUME');
+  }
+  exit_volumeMount(node) {
+    console.log('VOLUMEMOUNT');
   }
 
   createComponentFromTree(node, apiVersion, kind) {

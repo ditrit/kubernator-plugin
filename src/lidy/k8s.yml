@@ -8,13 +8,16 @@ root:
     metadata: metadata
     spec:
       _oneOf:
-        - deploymentSpec
         - podSpec
         - serviceSpec
         - ingressSpec
         - configMapSpec
         - secretSpec
         - persistentVolumeClaimSpec
+        - deploymentSpec
+        - statefulSetSpec
+        - jobSpec
+        - cronJobSpec
 
 # spec:
 #   _oneOf:
@@ -47,6 +50,36 @@ metadata:
       _mapOf: { string: string }
     annotations:
       _mapOf: { string: string }
+    finalizers:
+      _mapOf: { string: string }
+    ownerReferences:
+      _listOf:
+        _mapFacultative:
+          apiVersion: string
+          blockOwnerDeletion: boolean
+          controller: boolean
+          kind: string
+          name: string
+          uid: string
+    managedFields:
+      _listOf:
+        _mapFacultative:
+          apiVersion: string
+          fieldsType: string
+          fieldsV1:
+            _mapOf: { string: string }
+          manager: string
+          operation: string
+          subresource: string
+          time: string
+    generateName: string
+    uid: string
+    resourceVersion: string
+    generation: int
+    selfLink: string
+    creationTimestamp: string
+    deletionGracePeriodSeconds: int
+    deletionTimestamp: string
 
 labelSelector:
   _mapFacultative:
@@ -64,39 +97,32 @@ labelSelector:
 
 ########## SPECS (used for type/structure checks only) #########################
 
-deploymentSpec:
-  _mapFacultative:
-    replicas: int
-    strategy:
-      _mapFacultative:
-        type:
-          _in: ["RollingUpdate", "Recreate"]
-        rollingUpdate:
-          _mapFacultative:
-            maxSurge: string
-            maxUnavailable: string
-    revisionHistoryLimit: int
-    minReadySeconds: int
-    progressDeadlineSeconds: int
-    paused: boolean
-  _map:
-    selector: labelSelector
-    template:
-      _mapFacultative:
-        metadata: metadata
-        spec: podSpec
-
 podSpec:
   _mapFacultative:
-    containers:
+    containers: { _listOf: container }
+    volumes: { _listOf: volume }
+  _mapOf:
+    any: any # TODO
+
+container:
+  _mapFacultative:
+    name: string
+    image: string
+    ports:
       _listOf:
         _mapFacultative:
           name: string
-          image: string
-          ports:
-            _listOf:
-              _mapFacultative:
-                containerPort: uint16
+          protocol: string
+          hostIP: string
+          hostPort: uint16
+          containerPort: uint16
+    volumeMounts: { _listOf: volumeMount }
+  _mapOf:
+    any: any # TODO
+
+volume: any # TODO
+
+volumeMount: any # TODO
 
 serviceSpec:
   _mapFacultative:
@@ -210,3 +236,28 @@ persistentVolumeClaimSpec:
     volumeName: string
     selector: labelSelector
 
+deploymentSpec:
+  _mapFacultative:
+    replicas: int
+    strategy:
+      _mapFacultative:
+        type:
+          _in: ["RollingUpdate", "Recreate"]
+        rollingUpdate:
+          _mapFacultative:
+            maxSurge: string
+            maxUnavailable: string
+    revisionHistoryLimit: int
+    minReadySeconds: int
+    progressDeadlineSeconds: int
+    paused: boolean
+  _map:
+    selector: labelSelector
+    template:
+      _mapFacultative:
+        metadata: metadata
+        spec: podSpec
+
+statefulSetSpec: any # TODO
+jobSpec: any # TODO
+cronJobSpec: any # TODO

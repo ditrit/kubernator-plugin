@@ -27,6 +27,118 @@
     "isContainer": true,
     "parentTypes": ["CronJob"],
     "attributes": []
+  },
+  {
+    "type": "Container",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/container",
+    "isContainer": true,
+    "parentTypes": ["Pod"],
+    "attributes": []
+  },
+  {
+    "type": "InitContainer",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/container",
+    "isContainer": true,
+    "parentTypes": ["Pod"],
+    "attributes": []
+  },
+  {
+    "type": "ConfigMapMount",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/vol",
+    "parentTypes": ["Container", "InitContainer"],
+    "attributes": [
+      {
+        "name": "mountPath",
+        "type": "String",
+        "required": true
+      },
+      {
+        "name": "subPath",
+        "type": "String"
+      },
+      {
+        "name": "subPathExpr",
+        "type": "String"
+      },
+      {
+        "name": "mountPropagation",
+        "type": "String",
+        "rules": {
+          "values": ["None", "HostToContainer", "Bidirectional"]
+        }
+      },
+      {
+        "name": "readOnly",
+        "type": "Boolean"
+      }
+    ]
+  },
+  {
+    "type": "SecretMount",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/vol",
+    "parentTypes": ["Container", "InitContainer"],
+    "attributes": [
+      {
+        "name": "mountPath",
+        "type": "String",
+        "required": true
+      },
+      {
+        "name": "subPath",
+        "type": "String"
+      },
+      {
+        "name": "subPathExpr",
+        "type": "String"
+      },
+      {
+        "name": "mountPropagation",
+        "type": "String",
+        "rules": {
+          "values": ["None", "HostToContainer", "Bidirectional"]
+        }
+      },
+      {
+        "name": "readOnly",
+        "type": "Boolean"
+      }
+    ]
+  },
+  {
+    "type": "PersistentVolumeClaimMount",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/vol",
+    "parentTypes": ["Container", "InitContainer"],
+    "attributes": [
+      {
+        "name": "mountPath",
+        "type": "String",
+        "required": true
+      },
+      {
+        "name": "subPath",
+        "type": "String"
+      },
+      {
+        "name": "subPathExpr",
+        "type": "String"
+      },
+      {
+        "name": "mountPropagation",
+        "type": "String",
+        "rules": {
+          "values": ["None", "HostToContainer", "Bidirectional"]
+        }
+      },
+      {
+        "name": "readOnly",
+        "type": "Boolean"
+      }
+    ]
   }
 ]
 

@@ -1,9 +1,10 @@
 [
   {
     "type": "Pod",
-    "model": "DefaultModel",
+    "model": "DefaultContainer",
     "icon": "resources/unlabeled/pod",
     "parentTypes": ["Deployment", "StatefulSet", "Job"],
+    "isContainer": true,
     "attributes": [
       {
         "name": "spec",
