@@ -66,8 +66,7 @@ class KubernetesListener {
   exit_deploymentSpec(deploymentSpecNode) {
     if (deploymentSpecNode.value.template) {
       this.subComponent = this.createComponentFromTree(
-        deploymentSpecNode.value.template,
-        'core/v1', 'Pod'
+        deploymentSpecNode.value.template, 'v1', 'Pod'
       );
       delete deploymentSpecNode.value.template; // prevent exit_root from visiting the template node again
     }
