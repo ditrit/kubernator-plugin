@@ -1,15 +1,23 @@
 [
   {
-    "type": "CronJob",
+    "type": "HorizontalPodAutoscaler",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/hpa",
+    "attributes": []
+  },
+  {
+    "type": "StatefulSet",
     "model": "DefaultContainer",
-    "icon": "resources/unlabeled/cronjob",
+    "icon": "resources/unlabeled/sts",
+    "parentTypes": ["StatefulSet"],
     "isContainer": true,
     "attributes": []
   },
   {
-    "type": "HorizontalPodAutoscaler",
-    "model": "DefaultModel",
-    "icon": "resources/unlabeled/hpa",
+    "type": "CronJob",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/cronjob",
+    "isContainer": true,
     "attributes": []
   },
   {
@@ -18,13 +26,6 @@
     "icon": "resources/unlabeled/job",
     "isContainer": true,
     "parentTypes": ["CronJob"],
-    "attributes": []
-  },
-  {
-    "type": "StatefulSet",
-    "model": "DefaultContainer",
-    "icon": "resources/unlabeled/sts",
-    "isContainer": true,
     "attributes": []
   }
 ]

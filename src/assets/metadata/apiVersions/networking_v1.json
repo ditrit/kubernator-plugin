@@ -9,8 +9,107 @@
         "type": "Object",
         "attributes": [
           {
-            "name": "test",
+            "name": "ingressClassName",
             "type": "String"
+          },
+          {
+            "name": "rules",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "host",
+                    "type": "String"
+                  },
+                  {
+                    "name": "http",
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "paths",
+                        "type": "Aray",
+                        "required": true,
+                        "attributes": [
+                          {
+                            "name": null,
+                            "type": "Object",
+                            "attributes": [
+                              {
+                                "name": "pathType",
+                                "type": "String",
+                                "required": true,
+                                "rules": {
+                                  "values": ["Exact", "Prefix", "ImplementationSpecific"]
+                                }
+                              },
+                              {
+                                "name": "path",
+                                "type": "String"
+                              },
+                              {
+                                "name": "backend",
+                                "type": "Object",
+                                "required": true,
+                                "attributes": [
+                                  {
+                                    "name": "service",
+                                    "type": "Object",
+                                    "attributes": [
+                                      {
+                                        "name": "name",
+                                        "type": "String",
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "port",
+                                        "type": "Object",
+                                        "attributes": [
+                                          {
+                                            "name": "name",
+                                            "type": "String"
+                                          },
+                                          {
+                                            "name": "number",
+                                            "type": "Number"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "tls",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "hosts",
+                    "type": "Array"
+                  },
+                  {
+                    "name": "secretName",
+                    "type": "String"
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

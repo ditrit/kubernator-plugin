@@ -67,6 +67,19 @@ labelSelector:
 deploymentSpec:
   _mapFacultative:
     replicas: int
+    strategy:
+      _mapFacultative:
+        type:
+          _in: ["RollingUpdate", "Recreate"]
+        rollingUpdate:
+          _mapFacultative:
+            maxSurge: string
+            maxUnavailable: string
+    revisionHistoryLimit: int
+    minReadySeconds: int
+    progressDeadlineSeconds: int
+    paused: boolean
+  _map:
     selector: labelSelector
     template:
       _mapFacultative:
@@ -126,7 +139,41 @@ serviceSpec:
 
 ingressSpec:
   _mapFacultative:
-    todo: string
+    ingressClassName: string
+    rules:
+      _mapFacultative:
+        host: string
+        http:
+          _map:
+            paths:
+              _listOf:
+                _mapFacultative:
+                  path: string
+                _map:
+                  pathType:
+                    _in: ["Exact", "Prefix", "ImplementationSpecific"]
+                  backend:
+                    _mapFacultative:
+                      service:
+                        _map:
+                          name: string
+                        _mapFacultative:
+                          port:
+                            _mapFacultative:
+                              name: string
+                              number: uint16
+                      resource:
+                        _mapFacultative:
+                          apiGroup: string
+                        _map:
+                          kind: string
+                          name: string
+    tls:
+      _listOf:
+        _mapFacultative:
+          hosts:
+            _listOf: string
+          secretName: string
 
 configMapSpec:
   _mapFacultative:

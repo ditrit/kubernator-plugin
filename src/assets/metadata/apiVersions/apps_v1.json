@@ -20,46 +20,40 @@
               {
                 "name": "type",
                 "type": "String",
-                "rules": { "values": ["RollingUpdate", "Recreate"] }
+                "rules": {
+                  "values": ["RollingUpdate", "Recreate"]
+                }
+              },
+              {
+                "name": "rollingUpdate",
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "maxSurge",
+                    "type": "String"
+                  },
+                  {
+                    "name": "maxUnavailable",
+                    "type": "String"
+                  }
+                ]
               }
             ]
           },
           {
             "name": "selector",
             "type": "Object",
+            "required": true,
             "attributes": [
               {
                 "name": "matchLabels",
                 "type": "Object"
-              },
-              {
-                "name": "matchExpressions",
-                "type": "Array",
-                "attributes": [
-                  {
-                    "name": null,
-                    "type": "Object",
-                    "attributes": [
-                      {
-                        "name": "key",
-                        "type": "String"
-                      },
-                      {
-                        "name": "operator",
-                        "type": "String",
-                        "rules": {
-                          "values": ["In", "NotIn", "Exists", "DoesNotExist"]
-                        }
-                      },
-                      {
-                        "name": "values",
-                        "type": "Array"
-                      }
-                    ]
-                  }
-                ]
               }
             ]
+          },
+          {
+            "name": "revisionHistoryLimit",
+            "type": "Number"
           }
         ]
       }
