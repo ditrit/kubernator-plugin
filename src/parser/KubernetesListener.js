@@ -76,32 +76,25 @@ class KubernetesListener {
 
   exit_podSpec(podSpecNode) {
     this.childrenComponentsByType['Pod'] = [];
-    if (podSpecNode.value.initContainers) {
-      this.childrenComponentsByType['Pod'].push(...podSpecNode.value.initContainers.value.map(
-        (initContainerNode) => this.createComponentFromTree(
-          initContainerNode, 'others', 'InitContainer'
-        )
-      ));
-      delete podSpecNode.value.initContainers; // prevent exit_root from visiting this node again
-    }
-    if (podSpecNode.value.containers) {
-      this.childrenComponentsByType['Pod'].push(...podSpecNode.value.containers.value.map(
-        (containerNode) => this.createComponentFromTree(
-          containerNode, 'others', 'Container'
-        )
-      ));
-      delete podSpecNode.value.containers; // prevent exit_root from visiting this node again
-    }
+    const k8sContainerTypes = [
+      {kind: 'Container', attributeName: 'containers'},
+      {kind: 'InitContainer', attributeName: 'initContainers'},
+    ];
+    k8sContainerTypes.forEach((k8sContainerType) => {
+      const k8sContainersNode = podSpecNode.value[k8sContainerType.attributeName];
+      if (k8sContainersNode) {
+        const k8sContainerComponents = k8sContainersNode.value.map(
+          (containerNode) => this.createComponentFromTree(
+            containerNode, 'others', 'Container'
+          ));
+        this.childrenComponentsByType['Pod'].push(...k8sContainerComponents);
+        delete podSpecNode.value[k8sContainerType.attributeName]; // prevent exit_root from visiting this node again
+      }
+    });
   }
 
   exit_container(containerNode) {
     console.log('CONTAINER');
-  }
-  exit_volume(node) {
-    console.log('VOLUME');
-  }
-  exit_volumeMount(node) {
-    console.log('VOLUMEMOUNT');
   }
 
   createComponentFromTree(node, apiVersion, kind) {

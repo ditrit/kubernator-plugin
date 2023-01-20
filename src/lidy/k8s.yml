@@ -84,7 +84,7 @@ pod:
 podSpec:
   _mapFacultative:
     containers: { _listOf: container }
-    volumes: { _listOf: volume }
+    volumes: any # TODO
   _mapOf:
     any: any # TODO
 
@@ -100,13 +100,9 @@ container:
           hostIP: string
           hostPort: uint16
           containerPort: uint16
-    volumeMounts: { _listOf: volumeMount }
+    volumeMounts: any # TODO
   _mapOf:
     any: any # TODO
-
-volume: any # TODO
-
-volumeMount: any # TODO
 
 service:
   _map:
