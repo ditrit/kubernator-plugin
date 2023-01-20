@@ -86,7 +86,8 @@ class KubernetesListener {
         const k8sContainerComponents = k8sContainersNode.value.map(
           (containerNode) => this.createComponentFromTree(
             containerNode, 'others', 'Container'
-          ));
+          )
+        );
         this.childrenComponentsByType['Pod'].push(...k8sContainerComponents);
         delete podSpecNode.value[k8sContainerType.attributeName]; // prevent exit_root from visiting this node again
       }
