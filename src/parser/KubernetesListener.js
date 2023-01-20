@@ -31,7 +31,7 @@ class KubernetesListener {
      * Parsed subcomponent.
      * Special case to create the Pod template of the Deployment as a child component.
      */
-    this.subComponent = null;
+    this.childrenComponentsByType = {};
   }
 
   /**
@@ -41,7 +41,7 @@ class KubernetesListener {
    * @param {MapNode} rootNode - The Lidy `root` node.
    */
   exit_root(rootNode) {
-    // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    console.log('ROOT');
     const apiVersion = rootNode.value.apiVersion.value;
     const kind = rootNode.value.kind.value;
 
@@ -53,10 +53,7 @@ class KubernetesListener {
 
     this.component = this.createComponentFromTree(rootNode, apiVersion, kind);
     this.component.path = this.fileInformation.path;
-    if (this.subComponent) {
-      this.component.children = [this.subComponent];
-      this.subComponent.parent = this.component;
-    }
+    this.component.children = this.childrenComponentsByType[this.component.definition.type] || [];
   }
 
   /**
@@ -68,14 +65,36 @@ class KubernetesListener {
    */
   exit_deploymentSpec(deploymentSpecNode) {
     if (deploymentSpecNode.value.template) {
-      this.subComponent = this.createComponentFromTree(
+      const podComponent = this.createComponentFromTree(
         deploymentSpecNode.value.template, 'v1', 'Pod'
       );
-      delete deploymentSpecNode.value.template; // prevent exit_root from visiting the template node again
+      this.childrenComponentsByType['Deployment'] = [podComponent];
+      podComponent.children = this.childrenComponentsByType["Pod"] || [];
+      delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
     }
   }
 
-  exit_container(node) {
+  exit_podSpec(podSpecNode) {
+    this.childrenComponentsByType['Pod'] = [];
+    if (podSpecNode.value.initContainers) {
+      this.childrenComponentsByType['Pod'].push(...podSpecNode.value.initContainers.value.map(
+        (initContainerNode) => this.createComponentFromTree(
+          initContainerNode, 'others', 'InitContainer'
+        )
+      ));
+      delete podSpecNode.value.initContainers; // prevent exit_root from visiting this node again
+    }
+    if (podSpecNode.value.containers) {
+      this.childrenComponentsByType['Pod'].push(...podSpecNode.value.containers.value.map(
+        (containerNode) => this.createComponentFromTree(
+          containerNode, 'others', 'Container'
+        )
+      ));
+      delete podSpecNode.value.containers; // prevent exit_root from visiting this node again
+    }
+  }
+
+  exit_container(containerNode) {
     console.log('CONTAINER');
   }
   exit_volume(node) {
@@ -86,8 +105,9 @@ class KubernetesListener {
   }
 
   createComponentFromTree(node, apiVersion, kind) {
-    const name = node.value.metadata?.value.name?.value || 'random'; // TODO: confirm if we need to generate a random name here
+    const name = node.value.metadata?.value.name?.value || node.value.name?.value || 'random'; // TODO: confirm if we need to generate a random name here
     delete node.value.metadata?.value.name; // we don't want to create an attribute for the name, because the component already has a name
+    delete node.value.name; // TODO: improve this
     const definition = this.definitions.find((definition) =>
       definition.apiVersion === apiVersion && definition.type === kind
     );
@@ -109,7 +129,7 @@ class KubernetesListener {
         name: childKey,
         type: this.lidyToLetoType(childNode.type),
         definition,
-        value: (childNode.type == 'map' || childNode.type == 'list') ?
+        value: (childNode.type === 'map' || childNode.type === 'list') ?
           this.createAttributesFromTreeNode(childNode, definition) :
           childNode.value,
       });

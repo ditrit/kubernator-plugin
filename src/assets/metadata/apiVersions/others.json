@@ -51,28 +51,56 @@
     "parentTypes": ["Container", "InitContainer"],
     "attributes": [
       {
+        "name": "configMap",
+        "type": "Object",
+        "required": true,
+        "attributes": [
+          {
+            "name": "name",
+            "type": "Link",
+            "linkRef": "ConfigMap",
+            "required": true
+          },
+          {
+            "name": "defaultMode",
+            "type": "Number"
+          },
+          {
+            "name": "items",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "key",
+                    "type": "String",
+                    "required": true
+                  },
+                  {
+                    "name": "path",
+                    "type": "String",
+                    "required": true
+                  },
+                  {
+                    "name": "mode",
+                    "type": "Number"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "optional",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
         "name": "mountPath",
         "type": "String",
         "required": true
-      },
-      {
-        "name": "subPath",
-        "type": "String"
-      },
-      {
-        "name": "subPathExpr",
-        "type": "String"
-      },
-      {
-        "name": "mountPropagation",
-        "type": "String",
-        "rules": {
-          "values": ["None", "HostToContainer", "Bidirectional"]
-        }
-      },
-      {
-        "name": "readOnly",
-        "type": "Boolean"
       }
     ]
   },
@@ -83,28 +111,56 @@
     "parentTypes": ["Container", "InitContainer"],
     "attributes": [
       {
+        "name": "secret",
+        "type": "Object",
+        "required": true,
+        "attributes": [
+          {
+            "name": "secretName",
+            "type": "Link",
+            "linkRef": "Secret",
+            "required": true
+          },
+          {
+            "name": "defaultMode",
+            "type": "Number"
+          },
+          {
+            "name": "items",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "key",
+                    "type": "String",
+                    "required": true
+                  },
+                  {
+                    "name": "path",
+                    "type": "String",
+                    "required": true
+                  },
+                  {
+                    "name": "mode",
+                    "type": "Number"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "optional",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
         "name": "mountPath",
         "type": "String",
         "required": true
-      },
-      {
-        "name": "subPath",
-        "type": "String"
-      },
-      {
-        "name": "subPathExpr",
-        "type": "String"
-      },
-      {
-        "name": "mountPropagation",
-        "type": "String",
-        "rules": {
-          "values": ["None", "HostToContainer", "Bidirectional"]
-        }
-      },
-      {
-        "name": "readOnly",
-        "type": "Boolean"
       }
     ]
   },
@@ -114,6 +170,19 @@
     "icon": "resources/unlabeled/vol",
     "parentTypes": ["Container", "InitContainer"],
     "attributes": [
+      {
+        "name": "persistentVolumeClaim",
+        "type": "Object",
+        "required": true,
+        "attributes": [
+          {
+            "name": "claimName",
+            "type": "Link",
+            "linkRef": "PersistentVolumeClaim",
+            "required": true
+          }
+        ]
+      },
       {
         "name": "mountPath",
         "type": "String",

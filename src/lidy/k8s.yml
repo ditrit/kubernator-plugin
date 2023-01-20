@@ -1,40 +1,17 @@
 main: root
 
 root:
-  _map:
-    apiVersion: string
-    kind: string
-  _mapFacultative:
-    metadata: metadata
-    spec:
-      _oneOf:
-        - podSpec
-        - serviceSpec
-        - ingressSpec
-        - configMapSpec
-        - secretSpec
-        - persistentVolumeClaimSpec
-        - deploymentSpec
-        - statefulSetSpec
-        - jobSpec
-        - cronJobSpec
-
-# spec:
-#   _oneOf:
-#     - simpleSpec
-#     - compoundSpec
-
-# simpleSpec:
-#   _oneOf:
-#     - podSpec
-#     - serviceSpec
-#     - ingressSpec
-#     - configMapSpec
-#     - secretSpec
-
-# compoundSpec: # special cases: spec containing multiple components
-#   _oneOf:
-#     - deploymentSpec # Deployments and their Pod template are treated as separate components
+  _oneOf:
+    - pod
+    - service
+    - ingress
+    - configMap
+    - secret
+    - persistentVolumeClaim
+    - deployment
+    - statefulSet
+    - job
+    - cronJob
 
 ########## CALLBACKS ###########################################################
 
@@ -97,6 +74,13 @@ labelSelector:
 
 ########## SPECS (used for type/structure checks only) #########################
 
+pod:
+  _map:
+    apiVersion: string
+    kind: { _in: ["Pod"] }
+  _mapFacultative:
+    metadata: metadata
+    spec: podSpec
 podSpec:
   _mapFacultative:
     containers: { _listOf: container }
@@ -124,118 +108,155 @@ volume: any # TODO
 
 volumeMount: any # TODO
 
-serviceSpec:
+service:
+  _map:
+    apiVersion: string
+    kind: { _in: ["Service"] }
   _mapFacultative:
-    type:
-      _in: ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
-    selector:
-      _mapOf: { string: string }
-    ports:
+    metadata: metadata
+    spec:
       _mapFacultative:
-        name: string
-        protocol:
-          _in: ["TCP", "UDP", "SCTP"]
-        targetPort: string # improvement: if the target port is a string, check that the port exists in the pod
-      _map:
-        port: uint16
-    clusterIP: string
-    externalName: string
-    sessionAffinity: string
-    sessionAffinityConfig:
-      _mapFacultative:
-        clientIP:
+        type:
+          _in: ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+        selector:
+          _mapOf: { string: string }
+        ports:
           _mapFacultative:
-            timeoutSeconds: int
-    clusterIPs:
-      _listOf: string
-    allocateLoadBalancerNodePorts: boolean
-    externalIPs:
-      _listOf: string
-    externalTrafficPolicy: string
-    healthCheckNodePort: uint16
-    internalTrafficPolicy: string
-    ipFamilies:
-      _listOf: string
-    ipFamilyPolicy: string
-    loadBalancerClass: string
-    loadBalancerSourceRanges:
-      _listOf: string
-    publishNotReadyAddresses: boolean
-    loadBalancerIP: string
-
-ingressSpec:
-  _mapFacultative:
-    ingressClassName: string
-    rules:
-      _mapFacultative:
-        host: string
-        http:
+            name: string
+            protocol:
+              _in: ["TCP", "UDP", "SCTP"]
+            targetPort: string # improvement: if the target port is a string, check that the port exists in the pod
           _map:
-            paths:
-              _listOf:
-                _mapFacultative:
-                  path: string
-                _map:
-                  pathType:
-                    _in: ["Exact", "Prefix", "ImplementationSpecific"]
-                  backend:
-                    _mapFacultative:
-                      service:
-                        _map:
-                          name: string
-                        _mapFacultative:
-                          port:
-                            _mapFacultative:
-                              name: string
-                              number: uint16
-                      resource:
-                        _mapFacultative:
-                          apiGroup: string
-                        _map:
-                          kind: string
-                          name: string
-    tls:
-      _listOf:
-        _mapFacultative:
-          hosts:
-            _listOf: string
-          secretName: string
+            port: uint16
+        clusterIP: string
+        externalName: string
+        sessionAffinity: string
+        sessionAffinityConfig:
+          _mapFacultative:
+            clientIP:
+              _mapFacultative:
+                timeoutSeconds: int
+        clusterIPs:
+          _listOf: string
+        allocateLoadBalancerNodePorts: boolean
+        externalIPs:
+          _listOf: string
+        externalTrafficPolicy: string
+        healthCheckNodePort: uint16
+        internalTrafficPolicy: string
+        ipFamilies:
+          _listOf: string
+        ipFamilyPolicy: string
+        loadBalancerClass: string
+        loadBalancerSourceRanges:
+          _listOf: string
+        publishNotReadyAddresses: boolean
+        loadBalancerIP: string
 
-configMapSpec:
+ingress:
+  _map:
+    apiVersion: string
+    kind: { _in: ["Ingress"] }
   _mapFacultative:
-    data:
-      _mapOf: { string: string }
-    binaryData:
-      _mapOf: { string: string }
-    immutable: boolean
-
-secretSpec:
-  _mapFacultative:
-    type:
-      _in: ["Opaque", "kubernetes.io/service-account-token", "kubernetes.io/dockercfg", "kubernetes.io/dockerconfigjson", "kubernetes.io/basic-auth", "kubernetes.io/ssh-auth", "kubernetes.io/tls", "bootstrap.kubernetes.io/token"]
-    stringData:
-      _mapOf: { string: string }
-    data:
-      _mapOf: { string: string }
-    immutable: boolean
-
-persistentVolumeClaimSpec:
-  _mapFacultative:
-    storageClassName: string
-    accessModes:
-      _listOf:
-        _in: ["ReadWriteOnce", "ReadWriteMany", "ReadWriteOncePod", "ReadOnlyMany"]
-    volumeMode:
-      _in: ["Filesystem", "Block"]
-    resources:
+    metadata: metadata
+    spec:
       _mapFacultative:
-        limits:
-          _mapOf: { string: string }
-        requests:
-          _mapOf: { string: string }
-    volumeName: string
-    selector: labelSelector
+        ingressClassName: string
+        rules:
+          _mapFacultative:
+            host: string
+            http:
+              _map:
+                paths:
+                  _listOf:
+                    _mapFacultative:
+                      path: string
+                    _map:
+                      pathType:
+                        _in: ["Exact", "Prefix", "ImplementationSpecific"]
+                      backend:
+                        _mapFacultative:
+                          service:
+                            _map:
+                              name: string
+                            _mapFacultative:
+                              port:
+                                _mapFacultative:
+                                  name: string
+                                  number: uint16
+                          resource:
+                            _mapFacultative:
+                              apiGroup: string
+                            _map:
+                              kind: string
+                              name: string
+        tls:
+          _listOf:
+            _mapFacultative:
+              hosts:
+                _listOf: string
+              secretName: string
 
+configMap:
+  _map:
+    apiVersion: string
+    kind: { _in: ["ConfigMap"] }
+  _mapFacultative:
+    metadata: metadata
+    spec:
+      _mapFacultative:
+        data:
+          _mapOf: { string: string }
+        binaryData:
+          _mapOf: { string: string }
+        immutable: boolean
+
+secret:
+  _map:
+    apiVersion: string
+    kind: { _in: ["Secret"] }
+  _mapFacultative:
+    metadata: metadata
+    spec:
+      _mapFacultative:
+        type:
+          _in: ["Opaque", "kubernetes.io/service-account-token", "kubernetes.io/dockercfg", "kubernetes.io/dockerconfigjson", "kubernetes.io/basic-auth", "kubernetes.io/ssh-auth", "kubernetes.io/tls", "bootstrap.kubernetes.io/token"]
+        stringData:
+          _mapOf: { string: string }
+        data:
+          _mapOf: { string: string }
+        immutable: boolean
+
+persistentVolumeClaim:
+  _map:
+    apiVersion: string
+    kind: { _in: ["PersistentVolumeClaim"] }
+  _mapFacultative:
+    metadata: metadata
+    spec:
+      _mapFacultative:
+        storageClassName: string
+        accessModes:
+          _listOf:
+            _in: ["ReadWriteOnce", "ReadWriteMany", "ReadWriteOncePod", "ReadOnlyMany"]
+        volumeMode:
+          _in: ["Filesystem", "Block"]
+        resources:
+          _mapFacultative:
+            limits:
+              _mapOf: { string: string }
+            requests:
+              _mapOf: { string: string }
+        volumeName: string
+        selector: labelSelector
+
+deployment:
+  _map:
+    apiVersion: string
+    kind: { _in: ["Deployment"] }
+  _mapFacultative:
+    metadata: metadata
+    spec: deploymentSpec
 deploymentSpec:
   _mapFacultative:
     replicas: int
@@ -258,6 +279,26 @@ deploymentSpec:
         metadata: metadata
         spec: podSpec
 
-statefulSetSpec: any # TODO
-jobSpec: any # TODO
-cronJobSpec: any # TODO
+statefulSet:
+  _map:
+    apiVersion: string
+    kind: { _in: ["StatefulSet"] }
+  _mapFacultative:
+    metadata: metadata
+    spec: any # TODO
+
+job:
+  _map:
+    apiVersion: string
+    kind: { _in: ["Job"] }
+  _mapFacultative:
+    metadata: metadata
+    spec: any # TODO
+
+cronJob:
+  _map:
+    apiVersion: string
+    kind: { _in: ["CronJob"] }
+  _mapFacultative:
+    metadata: metadata
+    spec: any # TODO
