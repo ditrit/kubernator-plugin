@@ -15,12 +15,22 @@ class KubernetesRenderer extends DefaultRender {
    */
   render() {
     console.log('R', this.pluginData.components);
-    return this.pluginData.components.map((component) =>
+    return this.getRootComponents().map((component) =>
       new FileInput({
         path: component.path || `${component.name}.yaml`,
         content: yaml.dump(this.formatComponent(component, true, 'metadata')),
       })
     );
+  }
+
+  getRootComponents() {
+    const rootComponents = [...this.pluginData.components];
+    this.pluginData.components.forEach((component) => {
+      this.pluginData.getChildren(component.id).forEach((childComponent) => {
+        delete rootComponents[rootComponents.indexOf(childComponent)];
+      });
+    });
+    return rootComponents;
   }
 
   formatComponent(component, hasKindAndApiVersion, nameFormat) {
@@ -36,7 +46,7 @@ class KubernetesRenderer extends DefaultRender {
       );
     }
     this.insertDefaultValues(formatted, component);
-    this.insertChildrenComponentAttributes(formatted, component);
+    this.insertChildComponentsAttributes(formatted, component);
 
     return formatted;
   }
@@ -49,6 +59,8 @@ class KubernetesRenderer extends DefaultRender {
         acc[attribute.name] = Object.values(this.formatAttributes(attribute.value));
       } else if (attribute.type === 'Link') {
         acc[attribute.name] = attribute.value[0]; // Link attributes are arrays, but we don't want the rendered value to be an array
+      } else if (attribute.definition?.type == 'Reference') {
+        // Drop attribute in rendered file
       } else {
         acc[attribute.name] = attribute.value;
       }
@@ -86,6 +98,7 @@ class KubernetesRenderer extends DefaultRender {
     if (component.definition.type === 'Deployment') {
       formatted.spec ||= {};
       formatted.spec.selector ||= {};
+      formatted.spec.template ||= {};
     } else if (component.definition.type === 'ConfigMapMount') {
       formatted.configMap ||= {};
     } else if (component.definition.type === 'SecretMount') {
@@ -95,24 +108,25 @@ class KubernetesRenderer extends DefaultRender {
     }
   }
 
-  insertChildrenComponentAttributes(formatted, component) {
-    if (!component.children.length) {
+  insertChildComponentsAttributes(formatted, component) {
+    const childComponents = this.pluginData.getChildren(component.id);
+    if (!childComponents.length) {
       return;
     }
     switch (component.definition.type) {
       case 'Deployment':
-        const podComponent = component.children[0];
+        const podComponent = childComponents[0];
         // FIXME: what if there are multiple Pod children?
         // For now, we can ignore them, but later we will need a way
         // to limit the number of children at metadata level
         formatted.spec.template = this.formatComponent(podComponent, false, 'metadata');
         break;
       case 'Pod':
-        this.insertPodChildrenComponentAttributes(formatted, component);
+        this.insertPodChildComponentsAttributes(formatted, component, childComponents);
         break;
       case 'Container':
       case 'InitContainer':
-        const volumeComponents = component.children;
+        const volumeComponents = childComponents;
         formatted.volumeMounts = volumeComponents.map((volumeComponent) => {
           const formattedVolumeMount = this.formatComponent(
             volumeComponent, false, 'simple'
@@ -129,7 +143,7 @@ class KubernetesRenderer extends DefaultRender {
     }
   }
 
-  insertPodChildrenComponentAttributes(formatted, component) {
+  insertPodChildComponentsAttributes(formatted, component, childComponents) {
     const podSpec = formatted.spec || {};
     const volumes = [];
     const k8sContainerTypes = [
@@ -137,7 +151,7 @@ class KubernetesRenderer extends DefaultRender {
       {kind: 'Container', attributeName: 'containers'},
     ];
     k8sContainerTypes.forEach((k8sContainerType) => {
-      const k8sContainerComponents = component.children.filter(
+      const k8sContainerComponents = childComponents.filter(
         (component) => component.definition.type === k8sContainerType.kind
       );
       if (k8sContainerComponents.length) {
@@ -146,7 +160,8 @@ class KubernetesRenderer extends DefaultRender {
             const formattedContainer = this.formatComponent(
               k8sContainerComponent, false, 'simple'
             );
-            const volumeComponents = k8sContainerComponent.children;
+            const volumeComponents =
+              this.pluginData.getChildren(k8sContainerComponent.id);
             volumes.push(...volumeComponents.map(
               (volumeComponent) => {
                 const formattedVolume =

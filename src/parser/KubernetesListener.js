@@ -24,14 +24,14 @@ class KubernetesListener {
      */
     this.definitions = definitions;
     /**
-     * Parsed component.
+     * Parsed components.
      */
-    this.component = null;
+    this.components = [];
     /**
      * Parsed subcomponent.
      * Special case to create the Pod template of the Deployment as a child component.
      */
-    this.childrenComponentsByType = {};
+    this.childComponentsByType = {};
   }
 
   /**
@@ -51,9 +51,12 @@ class KubernetesListener {
     delete rootNode.value.apiVersion;
     delete rootNode.value.kind;
 
-    this.component = this.createComponentFromTree(rootNode, apiVersion, kind);
-    this.component.path = this.fileInformation.path;
-    this.component.children = this.childrenComponentsByType[this.component.definition.type] || [];
+    const rootComponent = this.createComponentFromTree(rootNode, apiVersion, kind);
+    rootComponent.path = this.fileInformation.path;
+    this.setParentComponent(
+      this.childComponentsByType[rootComponent.definition.type] || [],
+      rootComponent
+    );
   }
 
   /**
@@ -68,14 +71,25 @@ class KubernetesListener {
       const podComponent = this.createComponentFromTree(
         deploymentSpecNode.value.template, 'v1', 'Pod'
       );
-      this.childrenComponentsByType['Deployment'] = [podComponent];
-      podComponent.children = this.childrenComponentsByType["Pod"] || [];
+      this.setParentComponent(this.childComponentsByType["Pod"], podComponent);
+      this.childComponentsByType['Deployment'] = [podComponent];
+      delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
+    }
+  }
+  
+  exit_statefulSetSpec(deploymentSpecNode) {
+    if (deploymentSpecNode.value.template) {
+      const podComponent = this.createComponentFromTree(
+        deploymentSpecNode.value.template, 'v1', 'Pod'
+      );
+      this.setParentComponent(this.childComponentsByType["Pod"], podComponent);
+      this.childComponentsByType['Deployment'] = [podComponent];
       delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
     }
   }
 
   exit_podSpec(podSpecNode) {
-    this.childrenComponentsByType['Pod'] = [];
+    this.childComponentsByType['Pod'] = [];
     const k8sContainerTypes = [
       {kind: 'InitContainer', attributeName: 'initContainers'},
       {kind: 'Container', attributeName: 'containers'},
@@ -86,16 +100,17 @@ class KubernetesListener {
           (containerNode) => {
             const volumeMountComponents =
               this.createVolumeMountComponentsFromTree(containerNode, podSpecNode);
-            const containerComponent = this.createComponentFromTree(
+            const k8sContainerComponent = this.createComponentFromTree(
               containerNode, 'others', k8sContainerType.kind
             );
-            containerComponent.children = volumeMountComponents;
-            return containerComponent;
+            this.setParentComponent(volumeMountComponents, k8sContainerComponent);
+            return k8sContainerComponent;
           }
         ) || [];
-      this.childrenComponentsByType['Pod'].push(...k8sContainerComponents);
+      this.childComponentsByType['Pod'].push(...k8sContainerComponents);
       delete podSpecNode.value[k8sContainerType.attributeName]; // prevent exit_deploymentSpec from visiting this node again
     });
+    delete podSpecNode.value.volumes; // prevent exit_deploymentSpec from visiting this node again
   }
 
   createVolumeMountComponentsFromTree(containerNode, podSpecNode) {
@@ -103,7 +118,6 @@ class KubernetesListener {
     const volumeComponents = [];
     containerNode.value.volumeMounts?.value.forEach((volumeMountNode) => {
       const volumeName = volumeMountNode.value.name.value;
-      console.log(volumeNodes);
       const volumeNode = volumeNodes.find(
         (volumeNode) => volumeNode.value.name.value === volumeName
       );
@@ -150,12 +164,14 @@ class KubernetesListener {
     const definition = this.definitions.find((definition) =>
       definition.apiVersion === apiVersion && definition.type === kind
     );
-    return new Component({
+    const component = new Component({
       id: name, // TODO: confirm id == name ?
       name,
       definition,
       attributes: this.createAttributesFromTreeNode(node, definition),
     });
+    this.components.push(component);
+    return component;
   }
 
   createAttributesFromTreeNode(parentNode, parentDefinition) {
@@ -177,6 +193,12 @@ class KubernetesListener {
         attribute.value = [attribute.value]; // DefaultDrawer expects Link attributes to be arrays
       }
       return attribute;
+    });
+  }
+
+  setParentComponent(childComponents, parentComponent) {
+    childComponents.forEach((childComponent) => {
+      childComponent.setReferenceAttribute(parentComponent);
     });
   }
 

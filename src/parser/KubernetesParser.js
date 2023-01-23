@@ -53,7 +53,7 @@ class KubernetesParser extends DefaultParser {
       console.log(alreadyImported);
       console.log(root);
 
-      this.pluginData.components.push(listener.component);
+      this.pluginData.components.push(...listener.components);
     });
     console.log('P', this.pluginData.components);
   }
