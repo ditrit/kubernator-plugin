@@ -58,5 +58,18 @@
         ]
       }
     ]
+  },
+  {
+    "type": "StatefulSet",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/sts",
+    "isContainer": true,
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "attributes": []
+      }
+    ]
   }
 ]

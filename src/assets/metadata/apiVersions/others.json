@@ -1,39 +1,5 @@
 [
   {
-    "type": "HorizontalPodAutoscaler",
-    "model": "DefaultModel",
-    "icon": "resources/unlabeled/hpa",
-    "attributes": []
-  },
-  {
-    "type": "StatefulSet",
-    "model": "DefaultContainer",
-    "icon": "resources/unlabeled/sts",
-    "isContainer": true,
-    "attributes": []
-  },
-  {
-    "type": "CronJob",
-    "model": "DefaultContainer",
-    "icon": "resources/unlabeled/cronjob",
-    "isContainer": true,
-    "attributes": []
-  },
-  {
-    "type": "Job",
-    "model": "DefaultContainer",
-    "icon": "resources/unlabeled/job",
-    "isContainer": true,
-    "parentTypes": ["CronJob"],
-    "attributes": [
-      {
-        "name": "parent",
-        "type": "Reference",
-        "containerRef": "CronJob"
-      }
-    ]
-  },
-  {
     "type": "Container",
     "model": "DefaultContainer",
     "icon": "resources/unlabeled/container",

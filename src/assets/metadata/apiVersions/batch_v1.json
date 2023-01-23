@@ -1,0 +1,34 @@
+[
+  {
+    "type": "CronJob",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/cronjob",
+    "isContainer": true,
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "attributes": []
+      }
+    ]
+  },
+  {
+    "type": "Job",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/job",
+    "isContainer": true,
+    "parentTypes": ["CronJob"],
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "attributes": []
+      },
+      {
+        "name": "parent",
+        "type": "Reference",
+        "containerRef": "CronJob"
+      }
+    ]
+  }
+]
