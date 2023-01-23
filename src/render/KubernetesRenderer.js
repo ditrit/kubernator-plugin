@@ -95,7 +95,7 @@ class KubernetesRenderer extends DefaultRender {
   }
 
   insertDefaultValues(formatted, component) {
-    if (component.definition.type === 'Deployment') {
+    if (["Deployment", "StatefulSet", "Job"].includes(component.definition.type)) {
       formatted.spec ||= {};
       formatted.spec.selector ||= {};
       formatted.spec.template ||= {};
@@ -105,6 +105,9 @@ class KubernetesRenderer extends DefaultRender {
       formatted.secret ||= {};
     } else if (component.definition.type === 'PersistentVolumeClaimMount') {
       formatted.persistentVolumeClaim ||= {};
+    } else if (component.definition.type === 'CronJob') {
+      formatted.spec ||= {};
+      formatted.spec.jobTemplate ||= {};
     }
   }
 
@@ -115,6 +118,8 @@ class KubernetesRenderer extends DefaultRender {
     }
     switch (component.definition.type) {
       case 'Deployment':
+      case 'StatefulSet':
+      case 'Job':
         const podComponent = childComponents[0];
         // FIXME: what if there are multiple Pod children?
         // For now, we can ignore them, but later we will need a way
@@ -139,6 +144,11 @@ class KubernetesRenderer extends DefaultRender {
           })
           return formattedVolumeMount;
         });
+        break;
+      case 'CronJob':
+        const jobComponent = childComponents[0];
+        // FIXME: what if there are multiple Job children? => same as for Pods in Deployments
+        formatted.spec.jobTemplate = this.formatComponent(jobComponent, false, 'metadata');
         break;
     }
   }

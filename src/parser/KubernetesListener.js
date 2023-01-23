@@ -41,7 +41,6 @@ class KubernetesListener {
    * @param {MapNode} rootNode - The Lidy `root` node.
    */
   exit_root(rootNode) {
-    console.log('ROOT');
     const apiVersion = rootNode.value.apiVersion.value;
     const kind = rootNode.value.kind.value;
 
@@ -53,10 +52,9 @@ class KubernetesListener {
 
     const rootComponent = this.createComponentFromTree(rootNode, apiVersion, kind);
     rootComponent.path = this.fileInformation.path;
-    this.setParentComponent(
-      this.childComponentsByType[rootComponent.definition.type],
-      rootComponent
-    );
+    rootComponent.definition.childrenTypes.forEach((childType) => {
+      this.setParentComponent(rootComponent, this.childComponentsByType[childType]);
+    });
   }
 
   /**
@@ -71,25 +69,16 @@ class KubernetesListener {
       const podComponent = this.createComponentFromTree(
         deploymentSpecNode.value.template, 'v1', 'Pod'
       );
-      this.setParentComponent(this.childComponentsByType["Pod"], podComponent);
-      this.childComponentsByType['Deployment'] = [podComponent];
-      delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
-    }
-  }
-  
-  exit_statefulSetSpec(deploymentSpecNode) {
-    if (deploymentSpecNode.value.template) {
-      const podComponent = this.createComponentFromTree(
-        deploymentSpecNode.value.template, 'v1', 'Pod'
+      this.childComponentsByType['Pod'] = [podComponent];
+      this.setParentComponent(
+        podComponent,
+        this.childComponentsByType["InitContainer"]?.concat(this.childComponentsByType["Container"]),
       );
-      this.setParentComponent(this.childComponentsByType["Pod"], podComponent);
-      this.childComponentsByType['Deployment'] = [podComponent];
       delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
     }
   }
 
   exit_podSpec(podSpecNode) {
-    this.childComponentsByType['Pod'] = [];
     const k8sContainerTypes = [
       {kind: 'InitContainer', attributeName: 'initContainers'},
       {kind: 'Container', attributeName: 'containers'},
@@ -103,14 +92,14 @@ class KubernetesListener {
             const k8sContainerComponent = this.createComponentFromTree(
               containerNode, 'others', k8sContainerType.kind
             );
-            this.setParentComponent(volumeMountComponents, k8sContainerComponent);
+            this.setParentComponent(k8sContainerComponent, volumeMountComponents);
             return k8sContainerComponent;
           }
         ) || [];
-      this.childComponentsByType['Pod'].push(...k8sContainerComponents);
-      delete podSpecNode.value[k8sContainerType.attributeName]; // prevent exit_deploymentSpec from visiting this node again
+      this.childComponentsByType[k8sContainerType.kind] = k8sContainerComponents;
+      delete podSpecNode.value[k8sContainerType.attributeName]; // prevent exit_{deployment,statefulSet,job}Spec from visiting this node again
     });
-    delete podSpecNode.value.volumes; // prevent exit_deploymentSpec from visiting this node again
+    delete podSpecNode.value.volumes; // prevent exit_{deployment,statefulSet,job}Spec from visiting this node again
   }
 
   createVolumeMountComponentsFromTree(containerNode, podSpecNode) {
@@ -157,6 +146,25 @@ class KubernetesListener {
     return volumeComponents;
   }
 
+  exit_statefulSetSpec(statefulSetSpecNode) {
+    this.exit_deploymentSpec(statefulSetSpecNode);
+  }
+
+  exit_cronJobSpec(cronJobSpecNode) {
+    if (cronJobSpecNode.value.jobTemplate) {
+      const jobComponent = this.createComponentFromTree(
+        cronJobSpecNode.value.jobTemplate, 'batch/v1', 'Job'
+      );
+      this.childComponentsByType['Job'] = [jobComponent];
+      this.setParentComponent(jobComponent, this.childComponentsByType["Pod"]);
+      delete cronJobSpecNode.value.jobTemplate; // prevent exit_root from visiting this node again
+    }
+  }
+
+  exit_jobSpec(jobSpecNode) {
+    this.exit_deploymentSpec(jobSpecNode);
+  }
+
   createComponentFromTree(node, apiVersion, kind) {
     const name = node.value.metadata?.value.name?.value || node.value.name?.value || 'random'; // TODO: confirm if we need to generate a random name here
     delete node.value.metadata?.value.name; // we don't want to create an attribute for the name, because the component already has a name
@@ -196,7 +204,7 @@ class KubernetesListener {
     });
   }
 
-  setParentComponent(childComponents, parentComponent) {
+  setParentComponent(parentComponent, childComponents) {
     childComponents?.forEach((childComponent) => {
       childComponent.setReferenceAttribute(parentComponent);
     });
