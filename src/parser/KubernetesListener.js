@@ -54,7 +54,7 @@ class KubernetesListener {
     const rootComponent = this.createComponentFromTree(rootNode, apiVersion, kind);
     rootComponent.path = this.fileInformation.path;
     this.setParentComponent(
-      this.childComponentsByType[rootComponent.definition.type] || [],
+      this.childComponentsByType[rootComponent.definition.type],
       rootComponent
     );
   }
@@ -197,7 +197,7 @@ class KubernetesListener {
   }
 
   setParentComponent(childComponents, parentComponent) {
-    childComponents.forEach((childComponent) => {
+    childComponents?.forEach((childComponent) => {
       childComponent.setReferenceAttribute(parentComponent);
     });
   }
