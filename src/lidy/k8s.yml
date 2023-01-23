@@ -281,7 +281,16 @@ statefulSet:
     kind: { _in: ["StatefulSet"] }
   _mapFacultative:
     metadata: metadata
-    spec: any # TODO
+    spec: statefulSetSpec
+statefulSetSpec:
+  _map:
+    selector: labelSelector
+    template:
+      _mapFacultative:
+        metadata: metadata
+        spec: podSpec
+  _mapOf:
+    any: any # TODO
 
 job:
   _map:
@@ -289,7 +298,17 @@ job:
     kind: { _in: ["Job"] }
   _mapFacultative:
     metadata: metadata
-    spec: any # TODO
+    spec: jobSpec
+jobSpec:
+  _mapFacultative:
+    selector: labelSelector
+  _map:
+    template:
+      _mapFacultative:
+        metadata: metadata
+        spec: podSpec
+  _mapOf:
+    any: any # TODO
 
 cronJob:
   _map:
@@ -297,4 +316,12 @@ cronJob:
     kind: { _in: ["CronJob"] }
   _mapFacultative:
     metadata: metadata
-    spec: any # TODO
+    spec: cronJobSpec
+cronJobSpec:
+  _map:
+    jobTemplate:
+      _mapFacultative:
+        metadata: metadata
+        spec: jobSpec
+  _mapOf:
+    any: any # TODO
