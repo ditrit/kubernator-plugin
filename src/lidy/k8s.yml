@@ -83,7 +83,7 @@ pod:
     spec: podSpec
 podSpec:
   _mapFacultative:
-    containers: { _listOf: container }
+    containers: { _listOf: container } # TODO: set required
     volumes: any # TODO
   _mapOf:
     any: any # TODO

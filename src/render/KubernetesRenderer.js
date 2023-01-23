@@ -47,6 +47,8 @@ class KubernetesRenderer extends DefaultRender {
         acc[attribute.name] = this.formatAttributes(attribute.value);
       } else if (attribute.type === 'Array') {
         acc[attribute.name] = Object.values(this.formatAttributes(attribute.value));
+      } else if (attribute.type === 'Link') {
+        acc[attribute.name] = attribute.value[0]; // Link attributes are arrays, but we don't want the rendered value to be an array
       } else {
         acc[attribute.name] = attribute.value;
       }
@@ -82,9 +84,14 @@ class KubernetesRenderer extends DefaultRender {
 
   insertDefaultValues(formatted, component) {
     if (component.definition.type === 'Deployment') {
-      const deploymentSpec = formatted.spec || {};
-      deploymentSpec.selector ||= {};
-      formatted.spec = deploymentSpec;
+      formatted.spec ||= {};
+      formatted.spec.selector ||= {};
+    } else if (component.definition.type === 'ConfigMapMount') {
+      formatted.configMap ||= {};
+    } else if (component.definition.type === 'SecretMount') {
+      formatted.secret ||= {};
+    } else if (component.definition.type === 'PersistentVolumeClaimMount') {
+      formatted.persistentVolumeClaim ||= {};
     }
   }
 
@@ -98,9 +105,7 @@ class KubernetesRenderer extends DefaultRender {
         // FIXME: what if there are multiple Pod children?
         // For now, we can ignore them, but later we will need a way
         // to limit the number of children at metadata level
-        const deploymentSpec = formatted.spec || {};
-        deploymentSpec.template = this.formatComponent(podComponent, false, 'metadata');
-        formatted.spec = deploymentSpec;
+        formatted.spec.template = this.formatComponent(podComponent, false, 'metadata');
         break;
       case 'Pod':
         this.insertPodChildrenComponentAttributes(formatted, component);
@@ -108,9 +113,18 @@ class KubernetesRenderer extends DefaultRender {
       case 'Container':
       case 'InitContainer':
         const volumeComponents = component.children;
-        formatted.volumeMounts = volumeComponents.map(
-          (volumeComponent) => this.formatComponent(volumeComponent, false, 'simple')
-        );
+        formatted.volumeMounts = volumeComponents.map((volumeComponent) => {
+          const formattedVolumeMount = this.formatComponent(
+            volumeComponent, false, 'simple'
+          );
+          // Split volumes and volumeMounts attributes : volumeMounts should contain name, other non-object attributes (mountPath, propagation, ...)
+          Object.keys(formattedVolumeMount).forEach((key) => {
+            if (typeof formattedVolumeMount[key] === 'object') {
+              delete formattedVolumeMount[key];
+            }
+          })
+          return formattedVolumeMount;
+        });
         break;
     }
   }
@@ -119,8 +133,8 @@ class KubernetesRenderer extends DefaultRender {
     const podSpec = formatted.spec || {};
     const volumes = [];
     const k8sContainerTypes = [
-      {kind: 'Container', attributeName: 'containers'},
       {kind: 'InitContainer', attributeName: 'initContainers'},
+      {kind: 'Container', attributeName: 'containers'},
     ];
     k8sContainerTypes.forEach((k8sContainerType) => {
       const k8sContainerComponents = component.children.filter(
@@ -129,20 +143,32 @@ class KubernetesRenderer extends DefaultRender {
       if (k8sContainerComponents.length) {
         podSpec[k8sContainerType.attributeName] = k8sContainerComponents.map(
           (k8sContainerComponent) => {
-            const formattedContainer = this.formatComponent(k8sContainerComponent, false, 'simple');
+            const formattedContainer = this.formatComponent(
+              k8sContainerComponent, false, 'simple'
+            );
             const volumeComponents = k8sContainerComponent.children;
             volumes.push(...volumeComponents.map(
-              (volumeComponent) => this.formatComponent(volumeComponent, false, 'simple')
+              (volumeComponent) => {
+                const formattedVolume =
+                  this.formatComponent(volumeComponent, false, 'simple');
+                // Split volumes and volumeMounts attributes : volumes should only contain name and an object (configMap, secret, ...)
+                Object.keys(formattedVolume).forEach((key) => {
+                  if (typeof formattedVolume[key] !== 'object' && key !== 'name') {
+                    delete formattedVolume[key];
+                  }
+                })
+                return formattedVolume;
+              }
             ));
             return formattedContainer;
           }
         );
       }
     });
-    formatted.spec = podSpec;
     if (volumes.length) {
       podSpec.volumes = volumes;
     }
+    formatted.spec = podSpec;
   }
 }
 

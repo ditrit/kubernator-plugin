@@ -77,25 +77,70 @@ class KubernetesListener {
   exit_podSpec(podSpecNode) {
     this.childrenComponentsByType['Pod'] = [];
     const k8sContainerTypes = [
-      {kind: 'Container', attributeName: 'containers'},
       {kind: 'InitContainer', attributeName: 'initContainers'},
+      {kind: 'Container', attributeName: 'containers'},
     ];
     k8sContainerTypes.forEach((k8sContainerType) => {
-      const k8sContainersNode = podSpecNode.value[k8sContainerType.attributeName];
-      if (k8sContainersNode) {
-        const k8sContainerComponents = k8sContainersNode.value.map(
-          (containerNode) => this.createComponentFromTree(
-            containerNode, 'others', 'Container'
-          )
-        );
-        this.childrenComponentsByType['Pod'].push(...k8sContainerComponents);
-        delete podSpecNode.value[k8sContainerType.attributeName]; // prevent exit_root from visiting this node again
-      }
+      const k8sContainerComponents =
+        podSpecNode.value[k8sContainerType.attributeName]?.value.map(
+          (containerNode) => {
+            const volumeMountComponents =
+              this.createVolumeMountComponentsFromTree(containerNode, podSpecNode);
+            const containerComponent = this.createComponentFromTree(
+              containerNode, 'others', k8sContainerType.kind
+            );
+            containerComponent.children = volumeMountComponents;
+            return containerComponent;
+          }
+        ) || [];
+      this.childrenComponentsByType['Pod'].push(...k8sContainerComponents);
+      delete podSpecNode.value[k8sContainerType.attributeName]; // prevent exit_deploymentSpec from visiting this node again
     });
   }
 
-  exit_container(containerNode) {
-    console.log('CONTAINER');
+  createVolumeMountComponentsFromTree(containerNode, podSpecNode) {
+    const volumeNodes = podSpecNode.value.volumes?.value || [];
+    const volumeComponents = [];
+    containerNode.value.volumeMounts?.value.forEach((volumeMountNode) => {
+      const volumeName = volumeMountNode.value.name.value;
+      console.log(volumeNodes);
+      const volumeNode = volumeNodes.find(
+        (volumeNode) => volumeNode.value.name.value === volumeName
+      );
+      if (!volumeNode) {
+        // TODO: throw error
+        return;
+      }
+      const volumeSpecKeys = Object.keys(volumeNode.value).filter(
+        (key) => volumeNode.value[key].type === 'map'
+      );
+      if (volumeSpecKeys.length !== 1) {
+        // TODO: throw error
+        return;
+      }
+      const volumeSpecKey = volumeSpecKeys[0];
+      const volumeKind = {
+        configMap: 'ConfigMapMount',
+        secret: 'SecretMount',
+        persistentVolumeClaim: 'PersistentVolumeClaimMount',
+      }[volumeSpecKey];
+      if (!volumeKind) {
+        // TODO: throw error
+        return;
+      }
+      const volumeComponent = this.createComponentFromTree(
+        volumeMountNode, 'others', volumeKind
+      );
+      volumeComponent.attributes.push(
+        ...this.createAttributesFromTreeNode(
+          volumeNode,
+          volumeComponent.definition
+        ).filter((attribute) => attribute.name !== 'name'),
+      );
+      volumeComponents.push(volumeComponent);
+    });
+    delete containerNode.value.volumeMounts; // prevent exit_podSpec from visiting this node again
+    return volumeComponents;
   }
 
   createComponentFromTree(node, apiVersion, kind) {
@@ -119,7 +164,7 @@ class KubernetesListener {
       const definition = parentDefinition?.definedAttributes.find(
         ({ name }) => name === (parentNode.type !== 'list' ? childKey: null)
       ); // note: elements inside a list don't have a name, because it has to match the definition
-      return new ComponentAttribute({
+      const attribute = new ComponentAttribute({
         name: childKey,
         type: this.lidyToLetoType(childNode.type),
         definition,
@@ -127,6 +172,11 @@ class KubernetesListener {
           this.createAttributesFromTreeNode(childNode, definition) :
           childNode.value,
       });
+      if (definition && definition.type === 'Link') {
+        attribute.type = 'Link';
+        attribute.value = [attribute.value]; // DefaultDrawer expects Link attributes to be arrays
+      }
+      return attribute;
     });
   }
 
