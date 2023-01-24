@@ -101,7 +101,8 @@
           },
           {
             "name": "selector",
-            "type": "Object"
+            "type": "Link",
+            "linkRef": "Pod"
           },
           {
             "name": "ports",

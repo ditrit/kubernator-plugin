@@ -82,8 +82,9 @@ pod:
     metadata: metadata
     spec: podSpec
 podSpec:
+  _map:
+    containers: { _listOf: container }
   _mapFacultative:
-    containers: { _listOf: container } # TODO: set required
     volumes: any # TODO
   _mapOf:
     any: any # TODO

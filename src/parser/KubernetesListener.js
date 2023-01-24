@@ -65,9 +65,10 @@ class KubernetesListener {
    * @param {MapNode} deploymentSpecNode - The Lidy `deploymentSpec` node.
    */
   exit_deploymentSpec(deploymentSpecNode) {
-    if (deploymentSpecNode.value.template) {
+    const templateNode = deploymentSpecNode.value.template;
+    if (templateNode && Object.keys(templateNode.value).length) {
       const podComponent = this.createComponentFromTree(
-        deploymentSpecNode.value.template, 'v1', 'Pod'
+        templateNode, 'v1', 'Pod'
       );
       this.childComponentsByType['Pod'] = [podComponent];
       this.setParentComponent(
@@ -75,6 +76,7 @@ class KubernetesListener {
         this.childComponentsByType["InitContainer"]?.concat(this.childComponentsByType["Container"]),
       );
       delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
+      delete deploymentSpecNode.selector; // we automatically copy the Pod's labels into the Deployment's selector, so we don't need to parse it
     }
   }
 
@@ -136,8 +138,7 @@ class KubernetesListener {
       );
       volumeComponent.attributes.push(
         ...this.createAttributesFromTreeNode(
-          volumeNode,
-          volumeComponent.definition
+          volumeNode, volumeComponent.definition
         ).filter((attribute) => attribute.name !== 'name'),
       );
       volumeComponents.push(volumeComponent);
@@ -151,9 +152,10 @@ class KubernetesListener {
   }
 
   exit_cronJobSpec(cronJobSpecNode) {
-    if (cronJobSpecNode.value.jobTemplate) {
+    const jobTemplateNode = cronJobSpecNode.value.jobTemplate;
+    if (jobTemplateNode && Object.keys(jobTemplateNode.value).length) {
       const jobComponent = this.createComponentFromTree(
-        cronJobSpecNode.value.jobTemplate, 'batch/v1', 'Job'
+        jobTemplateNode, 'batch/v1', 'Job'
       );
       this.childComponentsByType['Job'] = [jobComponent];
       this.setParentComponent(jobComponent, this.childComponentsByType["Pod"]);
@@ -197,8 +199,12 @@ class KubernetesListener {
           childNode.value,
       });
       if (definition && definition.type === 'Link') {
+        if (attribute.name !== 'selector') {
+          // DefaultDrawer expects Link attributes to be arrays.
+          // Selectors are handled in KubernetesParser.
+          attribute.value = [attribute.value]; 
+        }
         attribute.type = 'Link';
-        attribute.value = [attribute.value]; // DefaultDrawer expects Link attributes to be arrays
       }
       return attribute;
     });

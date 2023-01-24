@@ -9,7 +9,33 @@
       },
       {
         "name": "labels",
-        "type": "Object"
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "app.kubernetes.io/name",
+            "type": "String"
+          },
+          {
+            "name": "app.kubernetes.io/instance",
+            "type": "String"
+          },
+          {
+            "name": "app.kubernetes.io/version",
+            "type": "String"
+          },
+          {
+            "name": "app.kubernetes.io/component",
+            "type": "String"
+          },
+          {
+            "name": "app.kubernetes.io/part-of",
+            "type": "String"
+          },
+          {
+            "name": "app.kubernetes.io/managed-by",
+            "type": "String"
+          }
+        ]
       },
       {
         "name": "annotations",
