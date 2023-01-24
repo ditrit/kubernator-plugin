@@ -33,7 +33,7 @@
   "dependencies": {
     "js-yaml": "^4.1.0",
     "leto-modelizer-plugin-core": "github:ditrit/leto-modelizer-plugin-core#0.11.0",
-    "lidy-js": "git+https://github.com/ditrit/lidy-js.git#main"
+    "lidy-js": "github:ditrit/lidy-js.git#main"
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",
