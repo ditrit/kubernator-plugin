@@ -200,13 +200,11 @@ configMap:
     kind: { _in: ["ConfigMap"] }
   _mapFacultative:
     metadata: metadata
-    spec:
-      _mapFacultative:
-        data:
-          _mapOf: { string: string }
-        binaryData:
-          _mapOf: { string: string }
-        immutable: boolean
+    data:
+      _mapOf: { string: string }
+    binaryData:
+      _mapOf: { string: string }
+    immutable: boolean
 
 secret:
   _map:
@@ -214,15 +212,13 @@ secret:
     kind: { _in: ["Secret"] }
   _mapFacultative:
     metadata: metadata
-    spec:
-      _mapFacultative:
-        type:
-          _in: ["Opaque", "kubernetes.io/service-account-token", "kubernetes.io/dockercfg", "kubernetes.io/dockerconfigjson", "kubernetes.io/basic-auth", "kubernetes.io/ssh-auth", "kubernetes.io/tls", "bootstrap.kubernetes.io/token"]
-        stringData:
-          _mapOf: { string: string }
-        data:
-          _mapOf: { string: string }
-        immutable: boolean
+    type:
+      _in: ["Opaque", "kubernetes.io/service-account-token", "kubernetes.io/dockercfg", "kubernetes.io/dockerconfigjson", "kubernetes.io/basic-auth", "kubernetes.io/ssh-auth", "kubernetes.io/tls", "bootstrap.kubernetes.io/token"]
+    stringData:
+      _mapOf: { string: string }
+    data:
+      _mapOf: { string: string }
+    immutable: boolean
 
 persistentVolumeClaim:
   _map:
