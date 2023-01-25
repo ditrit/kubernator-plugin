@@ -80,9 +80,9 @@ class KubernetesParser extends DefaultParser {
       this.pluginData.getComponentsByType(targetComponentType).filter(
         ({attributes}) => {
           const targetLabelsAttribute = attributes.find(
-            (attribute) => attribute.name === 'metadata'
+            ({name}) => name === 'metadata'
           )?.value?.find(
-            (attribute) => attribute.name === 'labels'
+            ({name}) => name === 'labels'
           );
           if (!targetLabelsAttribute) {
             return false;
@@ -100,8 +100,8 @@ class KubernetesParser extends DefaultParser {
   }
 
   convertObjectAttributeToJsObject(objectAttribute) {
-    return objectAttribute.value.reduce((acc, subAttribute) => {
-      acc[subAttribute.name] = subAttribute.value;
+    return objectAttribute.value.reduce((acc, {name, value}) => {
+      acc[name] = value;
       return acc;
     }, {});
   }

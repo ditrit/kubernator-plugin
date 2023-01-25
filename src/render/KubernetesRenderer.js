@@ -86,9 +86,9 @@ class KubernetesRenderer extends DefaultRender {
       throw new Error(`Target component not found '${targetComponentId}'.`);
     }
     const targetLabelsAttribute = targetComponent.attributes.find(
-      (attribute) => attribute.name === 'metadata'
+      ({name}) => name === 'metadata'
     )?.value?.find(
-      (attribute) => attribute.name === 'labels'
+      ({name}) => name === 'labels'
     )?.value;
     if (!targetLabelsAttribute?.length) {
       return {'app.kubernetes.io/name': targetComponent.name};

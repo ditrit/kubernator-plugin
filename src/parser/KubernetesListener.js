@@ -137,7 +137,7 @@ class KubernetesListener {
       volumeComponent.attributes.push(
         ...this.createAttributesFromTreeNode(
           volumeNode, volumeComponent.definition
-        ).filter((attribute) => attribute.name !== 'name'),
+        ).filter(({name}) => name !== 'name'),
       );
       volumeComponents.push(volumeComponent);
     });
