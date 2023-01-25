@@ -194,6 +194,10 @@ class KubernetesRenderer extends DefaultRender {
       case "PersistentVolumeClaimMount":
       formatted.persistentVolumeClaim ||= {};
         break;
+      case "Service":
+        formatted.spec ||= {};
+        formatted.spec.ports ||= [];
+        break;
       case "CronJob":
         formatted.spec ||= {};
         formatted.spec.jobTemplate ||= {};
