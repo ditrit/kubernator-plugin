@@ -74,8 +74,8 @@ class KubernetesListener {
         this.childComponentsByType["InitContainer"]?.concat(this.childComponentsByType["Container"]),
       );
       delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
-      delete deploymentSpecNode.value.selector; // this selector is automatically generated from the Pod template labels, so we don't need to parse it
     }
+    delete deploymentSpecNode.value.selector; // this selector is automatically generated from the Pod template labels, so we don't need to parse it
   }
 
   exit_podSpec(podSpecNode) {

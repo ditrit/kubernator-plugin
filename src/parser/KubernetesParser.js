@@ -59,7 +59,7 @@ class KubernetesParser extends DefaultParser {
     console.log('P', this.pluginData.components);
   }
 
-  convertSelectorAttributesToLinks(component) {
+  convertSelectorAttributesToLinks() {
     this.pluginData.components.forEach((component) => {
       const selectorAttribute = component.getAttributeByName('selector');
       if (selectorAttribute) {
