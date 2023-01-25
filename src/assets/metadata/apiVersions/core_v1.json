@@ -8,10 +8,10 @@
     "attributes": [
       {
         "name": "spec",
-        "type": "Object",
+        "type": "Array",
         "attributes": [
           {
-            "name": "containers",
+            "name": "topologySpreadConstraints",
             "type": "Array",
             "attributes": [
               {
@@ -19,40 +19,56 @@
                 "type": "Object",
                 "attributes": [
                   {
-                    "name": "name",
-                    "type": "String"
+                    "name": "maxSkew",
+                    "type": "Number",
+                    "required": true
                   },
                   {
-                    "name": "image",
-                    "type": "String"
+                    "name": "minDomains",
+                    "type": "Number"
                   },
                   {
-                    "name": "ports",
-                    "type": "Array",
+                    "name": "topologyKey",
+                    "type": "String",
+                    "required": true
+                  },
+                  {
+                    "name": "whenUnsatisfiable",
+                    "type": "String",
+                    "required": true,
+                    "rules": {
+                      "values": ["DoNotSchedule", "ScheduleAnyway"]
+                    }
+                  },
+                  {
+                    "name": "labelSelector",
+                    "type": "Object",
                     "attributes": [
                       {
-                        "name": null,
-                        "type": "Object",
+                        "name": "matchLabels",
+                        "type": "Object"
+                      },
+                      {
+                        "name": "matchExpressions",
+                        "type": "Array",
                         "attributes": [
                           {
-                            "name": "ports",
-                            "type": "Array",
+                            "name": null,
+                            "type": "Object",
                             "attributes": [
                               {
-                                "name": "???",
-                                "type": "Object",
-                                "attributes": [
-                                  {
-                                    "name": "ports",
-                                    "type": "Array",
-                                    "attributes": [
-                                      {
-                                        "name": "containerPort",
-                                        "type": "String"
-                                      }
-                                    ]
-                                  }
-                                ]
+                                "name": "key",
+                                "type": "String",
+                                "required": true
+                              },
+                              {
+                                "name": "operator",
+                                "type": "String",
+                                "required": true
+                              },
+                              {
+                                "name": "values",
+                                "type": "Array"
                               }
                             ]
                           }
@@ -211,7 +227,7 @@
             "type": "Object",
             "attributes": [
               {
-                "name": "limits",
+                "name": "requests",
                 "type": "Object",
                 "attributes": [
                   {
@@ -221,7 +237,7 @@
                 ]
               },
               {
-                "name": "requests",
+                "name": "limits",
                 "type": "Object",
                 "attributes": [
                   {

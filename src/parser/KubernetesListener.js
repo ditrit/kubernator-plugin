@@ -29,7 +29,6 @@ class KubernetesListener {
     this.components = [];
     /**
      * Parsed subcomponent.
-     * Special case to create the Pod template of the Deployment as a child component.
      */
     this.childComponentsByType = {};
   }
@@ -59,7 +58,6 @@ class KubernetesListener {
 
   /**
    * Function called when attribute `podTemplate` is parsed.
-   * Special case to create the template Pod template of the Deployment as a child component.
    * This function is called before exit_root for Deployment resources.
    *
    * @param {MapNode} deploymentSpecNode - The Lidy `deploymentSpec` node.
@@ -76,7 +74,7 @@ class KubernetesListener {
         this.childComponentsByType["InitContainer"]?.concat(this.childComponentsByType["Container"]),
       );
       delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
-      delete deploymentSpecNode.selector; // we automatically copy the Pod's labels into the Deployment's selector, so we don't need to parse it
+      delete deploymentSpecNode.value.selector; // this selector is automatically generated from the Pod template labels, so we don't need to parse it
     }
   }
 
@@ -199,12 +197,11 @@ class KubernetesListener {
           childNode.value,
       });
       if (definition && definition.type === 'Link') {
-        if (attribute.name !== 'selector') {
-          // DefaultDrawer expects Link attributes to be arrays.
-          // Selectors are handled in KubernetesParser.
-          attribute.value = [attribute.value]; 
-        }
         attribute.type = 'Link';
+        if (attribute.name !== 'selector') {
+          // Selectors are handled in KubernetesParser.
+          attribute.value = [attribute.value]; // DefaultDrawer expects Link attributes to be arrays.
+        }
       }
       return attribute;
     });

@@ -7,6 +7,400 @@
     "parentTypes": ["Pod"],
     "attributes": [
       {
+        "name": "image",
+        "type": "String"
+      },
+      {
+        "name": "imagePullPolicy",
+        "type": "String",
+        "rules": {
+          "values": ["Always", "IfNotPresent", "Never"]
+        }
+      },
+      {
+        "name": "workingDir",
+        "type": "String"
+      },
+      {
+        "name": "command",
+        "type": "Array"
+      },
+      {
+        "name": "args",
+        "type": "Array"
+      },
+      {
+        "name": "env",
+        "type": "Array",
+        "attributes": [
+          {
+            "name": null,
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "name",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "value",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "envFrom",
+        "type": "Array",
+        "attributes": [
+          {
+            "name": null,
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "configMapRef",
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "name",
+                    "type": "String"
+                  },
+                  {
+                    "name": "optional",
+                    "type": "Boolean"
+                  }
+                ]
+              },
+              {
+                "name": "secretRef",
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "name",
+                    "type": "String"
+                  },
+                  {
+                    "name": "optional",
+                    "type": "Boolean"
+                  }
+                ]
+              },
+              {
+                "name": "prefix",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ports",
+        "type": "Array",
+        "attributes": [
+          {
+            "name": null,
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "name",
+                "type": "String"
+              },
+              {
+                "name": "containerPort",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "protocol",
+                "type": "String",
+                "rules": {
+                  "values": ["TCP", "IDP", "SCTP"]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ressources",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "requests",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "memory",
+                "type": "String"
+              },
+              {
+                "name": "cpu",
+                "type": "String"
+              },
+              {
+                "name": "ephemeral-storage",
+                "type": "String"
+              }
+            ]
+          },
+          {
+            "name": "limits",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "memory",
+                "type": "String"
+              },
+              {
+                "name": "cpu",
+                "type": "String"
+              },
+              {
+                "name": "ephemeral-storage",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "readinessProbe",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "initialDelaySeconds",
+            "type": "Number"
+          },
+          {
+            "name": "periodSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "timeoutSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "successThreshold",
+            "type": "Number"
+          },
+          {
+            "name": "failureThreshold",
+            "type": "Number"
+          },
+          {
+            "name": "terminationGracePeriodSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "httpGet",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "host",
+                "type": "String"
+              },
+              {
+                "name": "port",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "scheme",
+                "type": "String",
+                "rules": {
+                  "values": ["HTTP", "HTTPS"]
+                }
+              },
+              {
+                "name": "path",
+                "type": "String"
+              },
+              {
+                "name": "httpHeaders",
+                "type": "Array",
+                "attributes": [
+                  {
+                    "name": null,
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "name",
+                        "type": "String",
+                        "required": true
+                      },
+                      {
+                        "name": "value",
+                        "type": "String",
+                        "required": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "exec",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "command",
+                "type": "Array"
+              }
+            ]
+          },
+          {
+            "name": "tcpSocket",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "host",
+                "type": "String"
+              },
+              {
+                "name": "port",
+                "type": "String",
+                "required": true
+              }
+            ]
+          },
+          {
+            "name": "grpc",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "port",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "service",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "livenessProbe",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "initialDelaySeconds",
+            "type": "Number"
+          },
+          {
+            "name": "periodSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "timeoutSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "successThreshold",
+            "type": "Number"
+          },
+          {
+            "name": "failureThreshold",
+            "type": "Number"
+          },
+          {
+            "name": "terminationGracePeriodSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "httpGet",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "host",
+                "type": "String"
+              },
+              {
+                "name": "port",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "scheme",
+                "type": "String",
+                "rules": {
+                  "values": ["HTTP", "HTTPS"]
+                }
+              },
+              {
+                "name": "path",
+                "type": "String"
+              },
+              {
+                "name": "httpHeaders",
+                "type": "Array",
+                "attributes": [
+                  {
+                    "name": null,
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "name",
+                        "type": "String",
+                        "required": true
+                      },
+                      {
+                        "name": "value",
+                        "type": "String",
+                        "required": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "exec",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "command",
+                "type": "Array"
+              }
+            ]
+          },
+          {
+            "name": "tcpSocket",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "host",
+                "type": "String"
+              },
+              {
+                "name": "port",
+                "type": "String",
+                "required": true
+              }
+            ]
+          },
+          {
+            "name": "grpc",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "port",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "service",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "name": "parent",
         "type": "Reference",
         "containerRef": "Pod"
@@ -18,14 +412,7 @@
     "model": "DefaultContainer",
     "icon": "resources/unlabeled/container",
     "isContainer": true,
-    "parentTypes": ["Pod"],
-    "attributes": [
-      {
-        "name": "parent",
-        "type": "Reference",
-        "containerRef": "Pod"
-      }
-    ]
+    "parentTypes": ["Pod"]
   },
   {
     "type": "ConfigMapMount",

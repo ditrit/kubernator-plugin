@@ -66,6 +66,9 @@ class KubernetesRenderer extends DefaultRender {
   }
 
   formatSelectorLinkAttribute(attribute, component) {
+    if (!attribute.value?.length) {
+      return {};
+    }
     switch (component.definition.type) {
       case 'Service':
         return this.__formatSelectorLinkAttribute(attribute);
@@ -87,7 +90,7 @@ class KubernetesRenderer extends DefaultRender {
     )?.value?.find(
       (attribute) => attribute.name === 'labels'
     )?.value;
-    if (!targetLabelsAttribute || !targetLabelsAttribute.length) {
+    if (!targetLabelsAttribute?.length) {
       return {'app.kubernetes.io/name': targetComponent.name};
     }
     return this.formatAttributes(targetLabelsAttribute, targetComponent);

@@ -55,7 +55,55 @@ class KubernetesParser extends DefaultParser {
 
       this.pluginData.components.push(...listener.components);
     });
+    this.convertSelectorAttributesToLinks();
     console.log('P', this.pluginData.components);
+  }
+
+  convertSelectorAttributesToLinks(component) {
+    this.pluginData.components.forEach((component) => {
+      const selectorAttribute = component.getAttributeByName('selector');
+      if (selectorAttribute) {
+        switch (component.definition.type) {
+          case 'Service':
+            this.__convertSelectorToLinkAttribute(selectorAttribute, 'Pod');
+            break;
+          default:
+            throw new Error(`Unknown selector in component '${component.id}'.`);
+        }
+      }
+    });
+  }
+
+  __convertSelectorToLinkAttribute(matchLabelsAttribute, targetComponentType) {
+    // TODO: support "matchExpressions" selectors
+    matchLabelsAttribute.value =
+      this.pluginData.getComponentsByType(targetComponentType).filter(
+        ({attributes}) => {
+          const targetLabelsAttribute = attributes.find(
+            (attribute) => attribute.name === 'metadata'
+          )?.value?.find(
+            (attribute) => attribute.name === 'labels'
+          );
+          if (!targetLabelsAttribute) {
+            return false;
+          }
+          const selectorLabels =
+            this.convertObjectAttributeToJsObject(matchLabelsAttribute);
+          const targetLabels =
+            this.convertObjectAttributeToJsObject(targetLabelsAttribute);
+          const selectorLabelsKeys = Object.keys(selectorLabels);
+          return selectorLabelsKeys.length && selectorLabelsKeys.every(
+            (key) => selectorLabels[key] === targetLabels[key]
+          );
+        }
+      ).map(({id}) => id);
+  }
+
+  convertObjectAttributeToJsObject(objectAttribute) {
+    return objectAttribute.value.reduce((acc, subAttribute) => {
+      acc[subAttribute.name] = subAttribute.value;
+      return acc;
+    }, {});
   }
 }
 
