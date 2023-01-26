@@ -118,13 +118,14 @@ service:
         selector:
           _mapOf: { string: string }
         ports:
-          _mapFacultative:
-            name: string
-            protocol:
-              _in: ["TCP", "UDP", "SCTP"]
-            targetPort: string # improvement: if the target port is a string, check that the port exists in the pod
-          _map:
-            port: uint16
+          _listOf:
+            _mapFacultative:
+              name: string
+              protocol:
+                _in: ["TCP", "UDP", "SCTP"]
+              targetPort: string # improvement: if the target port is a string, check that the port exists in the pod
+            _map:
+              port: uint16
         clusterIP: string
         externalName: string
         sessionAffinity: string
