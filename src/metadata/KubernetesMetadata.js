@@ -33,8 +33,6 @@ class KubernetesMetadata extends DefaultMetadata {
         (component) => this.getComponentDefinition(apiVersion, component)
       )
     );
-    componentDefs.find(({type}) => type === 'InitContainer').definedAttributes =
-      componentDefs.find(({type}) => type === 'Container').definedAttributes;
     this.setChildrenTypes(componentDefs);
     this.pluginData.definitions.components = componentDefs;
   }

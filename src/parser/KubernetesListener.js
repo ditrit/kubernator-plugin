@@ -71,7 +71,7 @@ class KubernetesListener {
       this.childComponentsByType['Pod'] = [podComponent];
       this.setParentComponent(
         podComponent,
-        this.childComponentsByType["InitContainer"]?.concat(this.childComponentsByType["Container"]),
+        this.childComponentsByType['Container'],
       );
       delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
     }
@@ -79,25 +79,31 @@ class KubernetesListener {
   }
 
   exit_podSpec(podSpecNode) {
-    const k8sContainerTypes = [
-      {kind: 'InitContainer', attributeName: 'initContainers'},
-      {kind: 'Container', attributeName: 'containers'},
-    ];
-    k8sContainerTypes.forEach((k8sContainerType) => {
+    this.childComponentsByType['Container'] = [];
+    ['initContainers', 'containers'].forEach((k8sContainerAttributeName) => {
       const k8sContainerComponents =
-        podSpecNode.value[k8sContainerType.attributeName]?.value.map(
+        podSpecNode.value[k8sContainerAttributeName]?.value.map(
           (containerNode) => {
             const volumeMountComponents =
               this.createVolumeMountComponentsFromTree(containerNode, podSpecNode);
             const k8sContainerComponent = this.createComponentFromTree(
-              containerNode, 'others', k8sContainerType.kind
+              containerNode, 'others', 'Container'
             );
+            const isInitContainerAttribute = new ComponentAttribute({
+              name: 'isInitContainer',
+              type: 'Boolean',
+              definition: k8sContainerComponent.definition.definedAttributes.find(
+                ({name}) => name === 'isInitContainer'
+              )
+            });
+            isInitContainerAttribute.value = k8sContainerAttributeName === 'initContainers'; // not set in constructor, because the value 'false' is replaced by null in the constructor (bug)
+            k8sContainerComponent.attributes.push(isInitContainerAttribute);
             this.setParentComponent(k8sContainerComponent, volumeMountComponents);
             return k8sContainerComponent;
           }
         ) || [];
-      this.childComponentsByType[k8sContainerType.kind] = k8sContainerComponents;
-      delete podSpecNode.value[k8sContainerType.attributeName]; // prevent exit_{deployment,statefulSet,job}Spec from visiting this node again
+      this.childComponentsByType['Container'].push(...k8sContainerComponents);
+      delete podSpecNode.value[k8sContainerAttributeName]; // prevent exit_{deployment,statefulSet,job}Spec from visiting this node again
     });
     delete podSpecNode.value.volumes; // prevent exit_{deployment,statefulSet,job}Spec from visiting this node again
   }

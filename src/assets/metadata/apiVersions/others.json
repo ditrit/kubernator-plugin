@@ -7,6 +7,11 @@
     "parentTypes": ["Pod"],
     "attributes": [
       {
+        "name": "isInitContainer",
+        "type": "Boolean",
+        "required": true
+      },
+      {
         "name": "image",
         "type": "String"
       },
@@ -406,13 +411,6 @@
         "containerRef": "Pod"
       }
     ]
-  },
-  {
-    "type": "InitContainer",
-    "model": "DefaultContainer",
-    "icon": "resources/unlabeled/container",
-    "isContainer": true,
-    "parentTypes": ["Pod"]
   },
   {
     "type": "ConfigMapMount",

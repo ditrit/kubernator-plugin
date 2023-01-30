@@ -140,7 +140,6 @@ class KubernetesRenderer extends DefaultRender {
         this.insertPodChildComponentsAttributes(formatted, childComponents);
         break;
       case 'Container':
-      case 'InitContainer':
         const volumeComponents = childComponents;
         formatted.volumeMounts = volumeComponents.map((volumeComponent) => {
           const formattedVolumeMount = this.formatComponent(
@@ -208,21 +207,22 @@ class KubernetesRenderer extends DefaultRender {
   insertPodChildComponentsAttributes(formatted, childComponents) {
     formatted.spec ||= {};
     const volumes = [];
-    const k8sContainerTypes = [
-      {kind: 'InitContainer', attributeName: 'initContainers'},
-      {kind: 'Container', attributeName: 'containers'},
-    ];
-    k8sContainerTypes.forEach((k8sContainerType) => {
+    ['initContainers', 'containers'].forEach((k8sContainerAttributeName) => {
       const k8sContainerComponents = childComponents.filter(
-        (k8sContainerComponent) =>
-          k8sContainerComponent.definition.type === k8sContainerType.kind
+        (k8sContainerComponent) => {
+          const isInitContainer =
+            k8sContainerComponent.getAttributeByName('isInitContainer').value;
+          return k8sContainerComponent.definition.type === 'Container'
+            && isInitContainer === (k8sContainerAttributeName === 'initContainers')
+        }
       );
       if (k8sContainerComponents.length) {
-        formatted.spec[k8sContainerType.attributeName] = k8sContainerComponents.map(
+        formatted.spec[k8sContainerAttributeName] = k8sContainerComponents.map(
           (k8sContainerComponent) => {
             const formattedContainer = this.formatComponent(
               k8sContainerComponent, false, false
             );
+            delete formattedContainer.isInitContainer;
             const volumeComponents =
               this.pluginData.getChildren(k8sContainerComponent.id);
             volumes.push(...volumeComponents.map(
