@@ -13,13 +13,13 @@ class KubernetesRenderer extends DefaultRender {
    *
    * @returns {FileInput[]} Array of generated files from components and links.
    */
-  render() {
+  renderFiles() {
     console.log('R', this.pluginData.components);
     return this.pluginData.components.filter(
       (component) => !component.getContainerId()
     ).map((component) =>
       new FileInput({
-        path: component.path || `${component.name}.yaml`,
+        path: component.path,
         content: yaml.dump(this.formatComponent(component, true, true)),
       })
     );
@@ -91,7 +91,7 @@ class KubernetesRenderer extends DefaultRender {
       ({name}) => name === 'labels'
     )?.value;
     if (!targetLabelsAttribute?.length) {
-      return {'app.kubernetes.io/name': targetComponent.name};
+      return {'app.kubernetes.io/name': targetComponent.id};
     }
     return this.formatAttributes(targetLabelsAttribute, targetComponent);
   }
@@ -102,12 +102,12 @@ class KubernetesRenderer extends DefaultRender {
       // Nested Pods and Jobs also have their name in the metadata object.
       formatted = this.insertFront(
         formatted, 'metadata', this.insertFront(
-          formatted.metadata || {}, 'name', component.name,
+          formatted.metadata || {}, 'name', component.id,
         )
       );
     } else {
       // For some nested components (Container, VolumeMounts, ...) the name is stored directly in its main object.
-      formatted = this.insertFront(formatted, 'name', component.name);
+      formatted = this.insertFront(formatted, 'name', component.id);
     }
     return formatted;
   }
@@ -167,7 +167,7 @@ class KubernetesRenderer extends DefaultRender {
     if (hasMetadata) {
       // Set at least one label to be able to use Link selectors.
       formatted.metadata.labels ||= {
-        'app.kubernetes.io/name': component.name
+        'app.kubernetes.io/name': component.id
       };
     }
     switch (component.definition.type) {

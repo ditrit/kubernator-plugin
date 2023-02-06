@@ -11,12 +11,19 @@ class KubernetesData extends DefaultData {
   /**
    * Create new component.
    *
-   * @param {string} id - Component id.
    * @param {ComponentDefinition} definition - Component definition.
+   * @param {string} [folder=''] - Folder path.
+   * @param {string} [fileName] - File name.
+   * @returns {string} Component id.
    */
-  addComponent(id, definition) {
-    const name = this.__generateUniqueComponentName(definition.type);
-    const component = new Component({id: name, name, definition});
+  addComponent(definition, folder = '', fileName = this.defaultFileName || '') {
+    const id = this.generateComponentId(definition);
+    const component = new Component({
+      id,
+      definition,
+      path: `${folder}${id}.yaml`,
+    });
+
     switch (definition.type) {
       case 'Container':
         component.attributes = [
@@ -25,16 +32,8 @@ class KubernetesData extends DefaultData {
         break;
     }
     this.components.push(component);
-  }
 
-  __generateUniqueComponentName(componentType) {
-    const componentNames = this.components.map(({name}) => name);
-    for (let i = 0; i <= componentNames.length; i++) {
-      const componentName = `${componentType}${i+1}`;
-      if (!componentNames.includes(componentName)) {
-        return componentName;
-      }
-    }
+    return id;
   }
 
   __createAttribute(name, value, parentDefinition) {

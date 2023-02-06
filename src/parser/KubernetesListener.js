@@ -172,15 +172,17 @@ class KubernetesListener {
   }
 
   createComponentFromTree(node, apiVersion, kind) {
-    const name = node.value.metadata?.value.name?.value || node.value.name?.value || 'random'; // TODO: confirm if we need to generate a random name here
-    delete node.value.metadata?.value.name; // we don't want to create an attribute for the name, because the component already has a name
-    delete node.value.name; // TODO: improve this
     const definition = this.definitions.find((definition) =>
       definition.apiVersion === apiVersion && definition.type === kind
     );
+    const id = node.value.metadata?.value.name?.value || node.value.name?.value
+      || this.pluginData.generateComponentId(definition);
+
+    delete node.value.metadata?.value.name; // we don't want to create an attribute for the name, because the component already has a name
+    delete node.value.name; // TODO: improve this
+
     const component = new Component({
-      id: name, // TODO: confirm id == name ?
-      name,
+      id,
       definition,
       attributes: this.createAttributesFromTreeNode(node, definition),
     });
