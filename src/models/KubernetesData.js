@@ -42,10 +42,10 @@ class KubernetesData extends DefaultData {
     );
     const attribute = new ComponentAttribute({
       name,
+      value,
       type: definition.type,
       definition,
     });
-    attribute.value = value; // not set in constructor, because the value 'false' is replaced by null in the constructor (bug)
     return attribute;
   }
 }
