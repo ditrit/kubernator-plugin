@@ -25,36 +25,39 @@ class KubernetesParser extends DefaultParser {
     this.pluginData.components = [];
     this.pluginData.parseErrors = [];
 
-    inputs.forEach((input) => {
-      const listener = new KubernetesListener(input, this.pluginData.definitions.components);
+    inputs
+      .filter(({ content }) => content !== null)
+      .forEach((input) => {
+        const listener = new KubernetesListener(input, this.pluginData.definitions.components);
 
-      const errors = [];
-      const warnings = [];
-      const imports = [];
-      const alreadyImported = [];
-      const root = [];
+        const errors = [];
+        const warnings = [];
+        const imports = [];
+        const alreadyImported = [];
+        const root = [];
 
-      lidyParse({
-        src_data: input.content,
-        listener,
-        path: input.path,
-        prog: {
-          errors: errors,
-          warnings: warnings,
-          imports: imports,
-          alreadyImported: alreadyImported,
-          root: root,
-        },
+        lidyParse({
+          src_data: input.content,
+          listener,
+          path: input.path,
+          prog: {
+            errors: errors,
+            warnings: warnings,
+            imports: imports,
+            alreadyImported: alreadyImported,
+            root: root,
+          },
+        });
+
+        console.log(errors);
+        console.log(warnings);
+        console.log(imports);
+        console.log(alreadyImported);
+        console.log(root);
+
+        this.pluginData.components.push(...listener.components);
       });
 
-      console.log(errors);
-      console.log(warnings);
-      console.log(imports);
-      console.log(alreadyImported);
-      console.log(root);
-
-      this.pluginData.components.push(...listener.components);
-    });
     this.convertSelectorAttributesToLinks();
     console.log('P', this.pluginData.components);
   }
