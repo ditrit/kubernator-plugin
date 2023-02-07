@@ -8,8 +8,7 @@
     "attributes": [
       {
         "name": "isInitContainer",
-        "type": "Boolean",
-        "required": true
+        "type": "Boolean"
       },
       {
         "name": "image",
