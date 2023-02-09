@@ -46,12 +46,17 @@ class KubernetesMetadata extends DefaultMetadata {
    */
   getComponentDefinition(apiVersion, component) {
     const attributes = component.attributes || [];
+    let definedAttributes = attributes.map(this.getAttributeDefinition, this);
+    if (apiVersion !== 'others') {
+      definedAttributes = [
+        ...this.commonAttributes,
+        ...definedAttributes,
+      ]
+    }
     return new KubernetesComponentDefinition({
       apiVersion,
       ...component,
-      definedAttributes: this.commonAttributes.concat(
-        attributes.map(this.getAttributeDefinition, this)
-      )
+      definedAttributes,
     });
   }
 
@@ -63,10 +68,13 @@ class KubernetesMetadata extends DefaultMetadata {
    */
   getAttributeDefinition(attribute) {
     const subAttributes = attribute.attributes || [];
-    return new ComponentAttributeDefinition({
+    const attributeDef = new ComponentAttributeDefinition({
       ...attribute,
+      displayName: attribute.displayName || this.formatDisplayName(attribute.name),
       definedAttributes: subAttributes.map(this.getAttributeDefinition, this),
     });
+    attributeDef.expanded = attribute.expanded || false;
+    return attributeDef;
   }
 
   /**
@@ -87,6 +95,19 @@ class KubernetesMetadata extends DefaultMetadata {
       .forEach((def) => {
         def.childrenTypes = children[def.type];
       });
+  }
+
+  formatDisplayName(name) {
+    if (!name || name.includes('.')) {
+      return name;
+    }
+    switch (name) {
+      case "spec":
+        return "Specification"
+      default:
+        const s = name.replace(/([A-Z])/g, ' $1');
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }
   }
 }
 

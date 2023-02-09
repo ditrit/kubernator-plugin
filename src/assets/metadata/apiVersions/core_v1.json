@@ -5,14 +5,32 @@
     "icon": "resources/unlabeled/pod",
     "parentTypes": ["Deployment", "StatefulSet", "Job"],
     "isContainer": true,
+    "childrenPerLine": 3,
     "attributes": [
       {
+        "name": "parentDeployment",
+        "type": "Reference",
+        "containerRef": "Deployment"
+      },
+      {
+        "name": "parentStatefulSet",
+        "type": "Reference",
+        "containerRef": "StatefulSet"
+      },
+      {
+        "name": "parentJob",
+        "type": "Reference",
+        "containerRef": "Job"
+      },
+      {
         "name": "spec",
-        "type": "Array",
+        "type": "Object",
+        "expanded": true,
         "attributes": [
           {
             "name": "topologySpreadConstraints",
             "type": "Array",
+            "description": "TopologySpreadConstraints describes how a group of pods ought to spread across topology domains.<br/>Scheduler will schedule pods in a way which abides by the constraints.<br/>All topologySpreadConstraints are ANDed.",
             "attributes": [
               {
                 "name": null,
@@ -46,7 +64,8 @@
                     "attributes": [
                       {
                         "name": "matchLabels",
-                        "type": "Object"
+                        "type": "Object",
+                        "expanded": true
                       },
                       {
                         "name": "matchExpressions",
@@ -81,21 +100,6 @@
             ]
           }
         ]
-      },
-      {
-        "name": "parentDeployment",
-        "type": "Reference",
-        "containerRef": "Deployment"
-      },
-      {
-        "name": "parentStatefulSet",
-        "type": "Reference",
-        "containerRef": "StatefulSet"
-      },
-      {
-        "name": "parentJob",
-        "type": "Reference",
-        "containerRef": "Job"
       }
     ]
   },
@@ -107,10 +111,13 @@
       {
         "name": "spec",
         "type": "Object",
+        "expanded": true,
         "attributes": [
           {
             "name": "type",
             "type": "String",
+            "description": "type determines how the Service is exposed.<br/>Defaults to ClusterIP.<br/>Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer.<br/>\"ClusterIP\" allocates a cluster-internal IP address for load-balancing to endpoints.<br/>Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object or EndpointSlice objects.<br/>If clusterIP is \"None\", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP.<br/>\"NodePort\" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP.<br/>\"LoadBalancer\" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP.<br/>\"ExternalName\" aliases this service to the specified externalName.<br/>Several other fields do not apply to ExternalName services.",
+            "url": "https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types",
             "rules": {
               "values": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
             }
@@ -122,27 +129,33 @@
           },
           {
             "name": "ports",
-            "type": "Object",
+            "type": "Array",
             "attributes": [
               {
-                "name": "name",
-                "type": "String"
-              },
-              {
-                "name": "protocol",
-                "type": "String",
-                "rules": {
-                  "values": ["TCP", "UDP", "SCTP"]
-                }
-              },
-              {
-                "name": "port",
-                "type": "Number",
-                "required": true
-              },
-              {
-                "name": "targetPort",
-                "type": "String"
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "name",
+                    "type": "String"
+                  },
+                  {
+                    "name": "protocol",
+                    "type": "String",
+                    "rules": {
+                      "values": ["TCP", "UDP", "SCTP"]
+                    }
+                  },
+                  {
+                    "name": "port",
+                    "type": "Number",
+                    "required": true
+                  },
+                  {
+                    "name": "targetPort",
+                    "type": "String"
+                  }
+                ]
               }
             ]
           }
@@ -157,7 +170,8 @@
     "attributes": [
       {
         "name": "data",
-        "type": "Object"
+        "type": "Object",
+        "expanded": true
       },
       {
         "name": "binaryData",
@@ -183,7 +197,8 @@
       },
       {
         "name": "stringData",
-        "type": "Object"
+        "type": "Object",
+        "expanded": true
       },
       {
         "name": "data",
@@ -203,6 +218,7 @@
       {
         "name": "spec",
         "type": "Object",
+        "expanded": true,
         "attributes": [
           {
             "name": "storageClassName",
@@ -210,10 +226,7 @@
           },
           {
             "name": "accessModes",
-            "type": "Array",
-            "rules": {
-              "values": ["ReadWriteOnce", "ReadWriteMany", "ReadWriteOncePod", "ReadOnlyMany"]
-            }
+            "type": "Array"
           },
           {
             "name": "volumeMode",
@@ -229,6 +242,7 @@
               {
                 "name": "requests",
                 "type": "Object",
+                "expanded": true,
                 "attributes": [
                   {
                     "name": "storage",
@@ -239,6 +253,7 @@
               {
                 "name": "limits",
                 "type": "Object",
+                "expanded": true,
                 "attributes": [
                   {
                     "name": "storage",
@@ -258,7 +273,8 @@
             "attributes": [
               {
                 "name": "matchLabels",
-                "type": "Object"
+                "type": "Object",
+                "expanded": true
               }
             ]
           }

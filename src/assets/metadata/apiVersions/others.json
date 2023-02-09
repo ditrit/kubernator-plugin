@@ -7,6 +7,12 @@
     "parentTypes": ["Pod"],
     "attributes": [
       {
+        "name": "parent",
+        "type": "Reference",
+        "containerRef": "Pod",
+        "required": true
+      },
+      {
         "name": "isInitContainer",
         "type": "Boolean"
       },
@@ -27,11 +33,15 @@
       },
       {
         "name": "command",
-        "type": "Array"
+        "type": "Array",
+        "description": "Entrypoint array.<br/>Not executed within a shell.<br/>The container image's ENTRYPOINT is used if this is not provided.<br/>Variable references $(VAR_NAME) are expanded using the container's environment.<br/>If a variable cannot be resolved, the reference in the input string will be unchanged.<br/>Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".<br/>Escaped references will never be expanded, regardless of whether the variable exists or not.<br/>Cannot be updated.",
+        "url": "https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell"
       },
       {
         "name": "args",
-        "type": "Array"
+        "type": "Array",
+        "description": "Arguments to the entrypoint.<br/>The container image's CMD is used if this is not provided.<br/>Variable references $(VAR_NAME) are expanded using the container's environment.<br/>If a variable cannot be resolved, the reference in the input string will be unchanged.<br/>Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".<br/>Escaped references will never be expanded, regardless of whether the variable exists or not.<br/>Cannot be updated.",
+        "url": "https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell"
       },
       {
         "name": "env",
@@ -133,6 +143,7 @@
           {
             "name": "requests",
             "type": "Object",
+            "expanded": true,
             "attributes": [
               {
                 "name": "memory",
@@ -151,6 +162,7 @@
           {
             "name": "limits",
             "type": "Object",
+            "expanded": true,
             "attributes": [
               {
                 "name": "memory",
@@ -207,7 +219,7 @@
               {
                 "name": "port",
                 "type": "String",
-                "required": true
+                "required": false
               },
               {
                 "name": "scheme",
@@ -265,7 +277,7 @@
               {
                 "name": "port",
                 "type": "String",
-                "required": true
+                "required": false
               }
             ]
           },
@@ -276,7 +288,7 @@
               {
                 "name": "port",
                 "type": "String",
-                "required": true
+                "required": false
               },
               {
                 "name": "service",
@@ -325,7 +337,7 @@
               {
                 "name": "port",
                 "type": "String",
-                "required": true
+                "required": false
               },
               {
                 "name": "scheme",
@@ -383,7 +395,7 @@
               {
                 "name": "port",
                 "type": "String",
-                "required": true
+                "required": false
               }
             ]
           },
@@ -394,7 +406,7 @@
               {
                 "name": "port",
                 "type": "String",
-                "required": true
+                "required": false
               },
               {
                 "name": "service",
@@ -403,11 +415,6 @@
             ]
           }
         ]
-      },
-      {
-        "name": "parent",
-        "type": "Reference",
-        "containerRef": "Pod"
       }
     ]
   },
@@ -415,12 +422,19 @@
     "type": "ConfigMapMount",
     "model": "DefaultModel",
     "icon": "resources/unlabeled/vol",
-    "parentTypes": ["Container", "InitContainer"],
+    "parentTypes": ["Container"],
     "attributes": [
+      {
+        "name": "parent",
+        "type": "Reference",
+        "containerRef": "Container",
+        "required": true
+      },
       {
         "name": "configMap",
         "type": "Object",
         "required": true,
+        "expanded": true,
         "attributes": [
           {
             "name": "name",
@@ -468,16 +482,6 @@
         "name": "mountPath",
         "type": "String",
         "required": true
-      },
-      {
-        "name": "parentContainer",
-        "type": "Reference",
-        "containerRef": "Container"
-      },
-      {
-        "name": "parentInitContainer",
-        "type": "Reference",
-        "containerRef": "InitContainer"
       }
     ]
   },
@@ -485,12 +489,19 @@
     "type": "SecretMount",
     "model": "DefaultModel",
     "icon": "resources/unlabeled/vol",
-    "parentTypes": ["Container", "InitContainer"],
+    "parentTypes": ["Container"],
     "attributes": [
+      {
+        "name": "parent",
+        "type": "Reference",
+        "containerRef": "Container",
+        "required": true
+      },
       {
         "name": "secret",
         "type": "Object",
         "required": true,
+        "expanded": true,
         "attributes": [
           {
             "name": "secretName",
@@ -538,16 +549,6 @@
         "name": "mountPath",
         "type": "String",
         "required": true
-      },
-      {
-        "name": "parentContainer",
-        "type": "Reference",
-        "containerRef": "Container"
-      },
-      {
-        "name": "parentInitContainer",
-        "type": "Reference",
-        "containerRef": "InitContainer"
       }
     ]
   },
@@ -555,12 +556,19 @@
     "type": "PersistentVolumeClaimMount",
     "model": "DefaultModel",
     "icon": "resources/unlabeled/vol",
-    "parentTypes": ["Container", "InitContainer"],
+    "parentTypes": ["Container"],
     "attributes": [
+      {
+        "name": "parent",
+        "type": "Reference",
+        "containerRef": "Container",
+        "required": true
+      },
       {
         "name": "persistentVolumeClaim",
         "type": "Object",
         "required": true,
+        "expanded": true,
         "attributes": [
           {
             "name": "claimName",
@@ -593,16 +601,6 @@
       {
         "name": "readOnly",
         "type": "Boolean"
-      },
-      {
-        "name": "parentContainer",
-        "type": "Reference",
-        "containerRef": "Container"
-      },
-      {
-        "name": "parentInitContainer",
-        "type": "Reference",
-        "containerRef": "InitContainer"
       }
     ]
   }

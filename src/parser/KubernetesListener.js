@@ -73,8 +73,8 @@ class KubernetesListener {
         podComponent,
         this.childComponentsByType['Container'],
       );
-      delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
     }
+    delete deploymentSpecNode.value.template; // prevent exit_root from visiting this node again
     delete deploymentSpecNode.value.selector; // this selector is automatically generated from the Pod template labels, so we don't need to parse it
   }
 
@@ -163,8 +163,8 @@ class KubernetesListener {
       );
       this.childComponentsByType['Job'] = [jobComponent];
       this.setParentComponent(jobComponent, this.childComponentsByType["Pod"]);
-      delete cronJobSpecNode.value.jobTemplate; // prevent exit_root from visiting this node again
     }
+    delete cronJobSpecNode.value.jobTemplate; // prevent exit_root from visiting this node again
   }
 
   exit_jobSpec(jobSpecNode) {
@@ -208,7 +208,7 @@ class KubernetesListener {
         attribute.type = 'Link';
         if (attribute.name !== 'selector') {
           // Selectors are handled in KubernetesParser.
-          attribute.value = [attribute.value]; // DefaultDrawer expects Link attributes to be arrays.
+          attribute.value = attribute.value ? [attribute.value] : []; // DefaultDrawer expects Link attributes to be arrays.
         }
       }
       return attribute;

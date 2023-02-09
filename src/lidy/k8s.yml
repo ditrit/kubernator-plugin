@@ -12,7 +12,10 @@ root:
     - statefulSet
     - job
     - cronJob
-    - container
+    - standaloneContainer
+    - standaloneConfigMapMount
+    - standaloneSecretMount
+    - standalonePersistentVolumeClaimMount
 
 ########## CALLBACKS ###########################################################
 
@@ -73,7 +76,7 @@ labelSelector:
           _listOf: string
 
 
-########## SPECS (used for type/structure checks only) #########################
+########## SPECS ###############################################################
 
 pod:
   _map:
@@ -86,7 +89,13 @@ podSpec:
   _map:
     containers: { _listOf: container }
   _mapFacultative:
-    volumes: any # TODO
+    volumes:
+      _listOf:
+        _oneOf:
+          - configMapVolume
+          - secretVolume
+          - persistentVolumeClaimVolume
+          - any # TODO
   _mapOf:
     any: any # TODO
 
@@ -102,9 +111,20 @@ container:
           hostIP: string
           hostPort: uint16
           containerPort: uint16
-    volumeMounts: any # TODO
+    volumeMounts:
+      _listOf: volumeMount
   _mapOf:
-    any: any # TODO
+    any
+volumeMount:
+  _map:
+    name: string
+    mountPath: string
+  _mapFacultative:
+    subPath: string
+    subPathExpr: string
+    mountPropagation:
+      _in: ["None", "HostToContainer", "Bidirectional"]
+    readOnly: boolean
 
 service:
   _map:
@@ -161,40 +181,43 @@ ingress:
     spec:
       _mapFacultative:
         ingressClassName: string
+        defaultBackend: ingressBackend
         rules:
-          _mapFacultative:
-            host: string
-            http:
-              _map:
-                paths:
-                  _listOf:
-                    _mapFacultative:
-                      path: string
-                    _map:
-                      pathType:
-                        _in: ["Exact", "Prefix", "ImplementationSpecific"]
-                      backend:
-                        _mapFacultative:
-                          service:
-                            _map:
-                              name: string
-                            _mapFacultative:
-                              port:
-                                _mapFacultative:
-                                  name: string
-                                  number: uint16
-                          resource:
-                            _mapFacultative:
-                              apiGroup: string
-                            _map:
-                              kind: string
-                              name: string
+          _listOf:
+            _mapFacultative:
+              host: string
+              http:
+                _map:
+                  paths:
+                    _listOf:
+                      _mapFacultative:
+                        path: string
+                      _map:
+                        pathType:
+                          _in: ["Exact", "Prefix", "ImplementationSpecific"]
+                        backend: ingressBackend
         tls:
           _listOf:
             _mapFacultative:
               hosts:
                 _listOf: string
               secretName: string
+ingressBackend:
+  _mapFacultative:
+    service:
+      _map:
+        name: string
+      _mapFacultative:
+        port:
+          _mapFacultative:
+            name: string
+            number: uint16
+    resource:
+      _mapFacultative:
+        apiGroup: string
+      _map:
+        kind: string
+        name: string
 
 configMap:
   _map:
@@ -207,6 +230,23 @@ configMap:
     binaryData:
       _mapOf: { string: string }
     immutable: boolean
+
+configMapVolume:
+  _map:
+    name: string
+  _mapFacultative:
+    configMap:
+      _mapFacultative:
+        name: string
+        defaultMode: number
+        items:
+          _listOf:
+            _map:
+              key: string
+              path: string
+            _mapFacultative:
+              mode: number
+        optional: boolean
 
 secret:
   _map:
@@ -221,6 +261,23 @@ secret:
     data:
       _mapOf: { string: string }
     immutable: boolean
+
+secretVolume:
+  _map:
+    name: string
+  _mapFacultative:
+    secret:
+      _mapFacultative:
+        secretName: string
+        defaultMode: number
+        items:
+          _listOf:
+            _map:
+              key: string
+              path: string
+            _mapFacultative:
+              mode: number
+        optional: boolean
 
 persistentVolumeClaim:
   _map:
@@ -244,6 +301,16 @@ persistentVolumeClaim:
               _mapOf: { string: string }
         volumeName: string
         selector: labelSelector
+
+persistentVolumeClaimVolume:
+  _map:
+    name: string
+  _mapFacultative:
+    persistentVolumeClaim:
+      _map:
+        claimName: string
+      _mapFacultative:
+        readOnly: boolean
 
 deployment:
   _map:
@@ -324,3 +391,36 @@ cronJobSpec:
         spec: jobSpec
   _mapOf:
     any: any # TODO
+
+standaloneContainer:
+  _merge:
+    - _map:
+        apiVersion: string
+        kind: { _in: ["Container"] }
+      _mapFacultative:
+          isInitContainer: boolean
+    - container
+
+standaloneConfigMapMount:
+  _merge:
+    - _map:
+        apiVersion: string
+        kind: { _in: ["ConfigMapMount"] }
+    - configMapVolume
+    - volumeMount
+
+standaloneSecretMount:
+  _merge:
+    - _map:
+        apiVersion: string
+        kind: { _in: ["SecretMount"] }
+    - secretVolume
+    - volumeMount
+
+standalonePersistentVolumeClaimMount:
+  _merge:
+    - _map:
+        apiVersion: string
+        kind: { _in: ["PersistentVolumeClaimMount"] }
+    - persistentVolumeClaimVolume
+    - volumeMount

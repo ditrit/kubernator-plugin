@@ -3,23 +3,29 @@
     "type": "Deployment",
     "model": "DefaultContainer",
     "icon": "resources/unlabeled/deploy",
+    "description": "A Deployment provides declarative updates for Pods and ReplicaSets.<br/><br/>You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate.<br/>You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.",
+    "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
     "isContainer": true,
     "attributes": [
       {
         "name": "spec",
         "type": "Object",
+        "expanded": true,
         "attributes": [
           {
             "name": "replicas",
-            "type": "Number"
+            "type": "Number",
+            "description": "Number of desired pods.<br/>This is a pointer to distinguish between explicit zero and not specified.<br/>Defaults to 1."
           },
           {
             "name": "strategy",
             "type": "Object",
+            "description": "The deployment strategy to use to replace existing pods with new ones.",
             "attributes": [
               {
                 "name": "type",
                 "type": "String",
+                "description": "Type of deployment.<br/>Can be \"Recreate\" or \"RollingUpdate\".<br/>Default is RollingUpdate.",
                 "rules": {
                   "values": ["RollingUpdate", "Recreate"]
                 }
@@ -27,14 +33,18 @@
               {
                 "name": "rollingUpdate",
                 "type": "Object",
+                "description": "Rolling update config params.<br/>Present only if DeploymentStrategyType = RollingUpdate.",
+                "expanded": true,
                 "attributes": [
                   {
                     "name": "maxSurge",
-                    "type": "String"
+                    "type": "String",
+                    "description": "The maximum number of pods that can be scheduled above the desired number of pods.<br/>Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).<br/>This can not be 0 if MaxUnavailable is 0.<br/>Absolute number is calculated from percentage by rounding up.<br/>Defaults to 25%.<br/>Example: when this is set to 30%, the new ReplicaSet can be scaled up immediately when the rolling update starts, such that the total number of old and new pods do not exceed 130% of desired pods.<br/>Once old pods have been killed, new ReplicaSet can be scaled up further, ensuring that total number of pods running at any time during the update is at most 130% of desired pods."
                   },
                   {
                     "name": "maxUnavailable",
-                    "type": "String"
+                    "type": "String",
+                    "description": "The maximum number of pods that can be unavailable during the update.<br/>Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).<br/>Absolute number is calculated from percentage by rounding down.<br/>This can not be 0 if MaxSurge is 0.<br/>Defaults to 25%.<br/>Example: when this is set to 30%, the old ReplicaSet can be scaled down to 70% of desired pods immediately when the rolling update starts.<br/>Once new pods are ready, old ReplicaSet can be scaled down further, followed by scaling up the new ReplicaSet, ensuring that the total number of pods available at all times during the update is at least 70% of desired pods."
                   }
                 ]
               }
@@ -42,7 +52,8 @@
           },
           {
             "name": "revisionHistoryLimit",
-            "type": "Number"
+            "type": "Number",
+            "description": "The number of old ReplicaSets to retain to allow rollback.<br/>This is a pointer to distinguish between explicit zero and not specified.<br/>Defaults to 10."
           }
         ]
       }
@@ -52,11 +63,14 @@
     "type": "StatefulSet",
     "model": "DefaultContainer",
     "icon": "resources/unlabeled/sts",
+    "description": "StatefulSet is the workload API object used to manage stateful applications.<br/><br/>Manages the deployment and scaling of a set of Pods, and provides guarantees about the ordering and uniqueness of these Pods.<br/><br/>Like a Deployment, a StatefulSet manages Pods that are based on an identical container spec.<br/>Unlike a Deployment, a StatefulSet maintains a sticky identity for each of their Pods.<br/>These pods are created from the same spec, but are not interchangeable: each has a persistent identifier that it maintains across any rescheduling.<br/><br/>If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution.<br/>Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.",
+    "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
     "isContainer": true,
     "attributes": [
       {
         "name": "spec",
         "type": "Object",
+        "expanded": true,
         "attributes": []
       }
     ]

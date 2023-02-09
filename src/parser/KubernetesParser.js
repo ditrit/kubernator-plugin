@@ -70,6 +70,10 @@ class KubernetesParser extends DefaultParser {
           case 'Service':
             this.__convertSelectorToLinkAttribute(selectorAttribute, 'Pod');
             break;
+          case 'PersistentVolumeClaim':
+            // This plugin does not have a PersistentVolume resource,
+            // so the selector should not be converted into a link attribute.
+            break;
           default:
             throw new Error(`Unknown selector in component '${component.id}'.`);
         }

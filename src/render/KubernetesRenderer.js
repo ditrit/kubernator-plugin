@@ -20,16 +20,16 @@ class KubernetesRenderer extends DefaultRender {
     ).map((component) =>
       new FileInput({
         path: component.path,
-        content: yaml.dump(this.formatComponent(component, true, true)),
+        content: yaml.dump(this.formatComponent(component, false)),
       })
     );
   }
 
-  formatComponent(component, hasKindAndApiVersion, hasMetadata) {
+  formatComponent(component, isSubComponent) {
     let formatted = this.formatAttributes(component.attributes, component);
-    formatted = this.insertComponentName(formatted, component, hasMetadata);
+    formatted = this.insertComponentName(formatted, component);
 
-    if (hasKindAndApiVersion) {
+    if (!isSubComponent) {
       formatted = this.insertFront(
         formatted, 'kind', component.definition.type
       );
@@ -38,7 +38,7 @@ class KubernetesRenderer extends DefaultRender {
       );
     }
     this.insertChildComponentsAttributes(formatted, component);
-    this.insertDefaultValues(formatted, component, hasMetadata);
+    this.insertDefaultValues(formatted, component);
 
     return formatted;
   }
@@ -96,17 +96,14 @@ class KubernetesRenderer extends DefaultRender {
     return this.formatAttributes(targetLabelsAttribute, targetComponent);
   }
 
-  insertComponentName(formatted, component, hasMetadata) {
-    if (hasMetadata) {
-      // For all top level components, the name is stored in the metadata object.
-      // Nested Pods and Jobs also have their name in the metadata object.
+  insertComponentName(formatted, component) {
+    if (component.definition.apiVersion !== 'others') {
       formatted = this.insertFront(
         formatted, 'metadata', this.insertFront(
           formatted.metadata || {}, 'name', component.id,
         )
       );
     } else {
-      // For some nested components (Container, VolumeMounts, ...) the name is stored directly in its main object.
       formatted = this.insertFront(formatted, 'name', component.id);
     }
     return formatted;
@@ -134,7 +131,7 @@ class KubernetesRenderer extends DefaultRender {
         // For now, we can ignore them, but later we will need a way
         // to limit the number of children at metadata level
         formatted.spec ||= {};
-        formatted.spec.template = this.formatComponent(podComponent, false, true);
+        formatted.spec.template = this.formatComponent(podComponent, true);
         break;
       case 'Pod':
         this.insertPodChildComponentsAttributes(formatted, childComponents);
@@ -142,9 +139,7 @@ class KubernetesRenderer extends DefaultRender {
       case 'Container':
         const volumeComponents = childComponents;
         formatted.volumeMounts = volumeComponents.map((volumeComponent) => {
-          const formattedVolumeMount = this.formatComponent(
-            volumeComponent, false, false
-          );
+          const formattedVolumeMount = this.formatComponent(volumeComponent, true);
           // Split volumes and volumeMounts attributes : volumeMounts should contain name, other non-object attributes (mountPath, propagation, ...)
           Object.keys(formattedVolumeMount).forEach((key) => {
             if (typeof formattedVolumeMount[key] === 'object') {
@@ -158,13 +153,13 @@ class KubernetesRenderer extends DefaultRender {
         const jobComponent = childComponents[0];
         // FIXME: what if there are multiple Job children? => same as for Pods in Deployments
         formatted.spec ||= {};
-        formatted.spec.jobTemplate = this.formatComponent(jobComponent, false, true);
+        formatted.spec.jobTemplate = this.formatComponent(jobComponent, true);
         break;
     }
   }
 
-  insertDefaultValues(formatted, component, hasMetadata) {
-    if (hasMetadata) {
+  insertDefaultValues(formatted, component) {
+    if (component.definition.apiVersion !== 'others') {
       // Set at least one label to be able to use Link selectors.
       formatted.metadata.labels ||= {
         'app.kubernetes.io/name': component.id
@@ -175,10 +170,11 @@ class KubernetesRenderer extends DefaultRender {
       case "StatefulSet":
       case "Job":
         formatted.spec ||= {};
+        const template = formatted.spec.template || {};
+        delete formatted.spec.template; // delete to reorder
         formatted.spec.selector ||= {};
-        formatted.spec.selector.matchLabels =
-          {...formatted.spec.template?.metadata?.labels} || {};
-        formatted.spec.template ||= {};
+        formatted.spec.selector.matchLabels = {...template.metadata?.labels} || {};
+        formatted.spec.template ||= template;
         break;
       case "Pod":
         formatted.spec ||= {};
@@ -186,12 +182,16 @@ class KubernetesRenderer extends DefaultRender {
         break;
       case "ConfigMapMount":
         formatted.configMap ||= {};
+        formatted.mountPath ||= '';
         break;
       case "SecretMount":
         formatted.secret ||= {};
+        formatted.mountPath ||= '';
         break;
       case "PersistentVolumeClaimMount":
-      formatted.persistentVolumeClaim ||= {};
+        formatted.persistentVolumeClaim ||= {};
+        formatted.persistentVolumeClaim.claimName ||= '';
+        formatted.mountPath ||= '';
         break;
       case "Service":
         formatted.spec ||= {};
@@ -219,16 +219,14 @@ class KubernetesRenderer extends DefaultRender {
       if (k8sContainerComponents.length) {
         formatted.spec[k8sContainerAttributeName] = k8sContainerComponents.map(
           (k8sContainerComponent) => {
-            const formattedContainer = this.formatComponent(
-              k8sContainerComponent, false, false
-            );
+            const formattedContainer = this.formatComponent(k8sContainerComponent, true);
             delete formattedContainer.isInitContainer;
             const volumeComponents =
               this.pluginData.getChildren(k8sContainerComponent.id);
             volumes.push(...volumeComponents.map(
               (volumeComponent) => {
                 const formattedVolume =
-                  this.formatComponent(volumeComponent, false, false);
+                  this.formatComponent(volumeComponent, true);
                 // Split volumes and volumeMounts attributes : volumes should only contain name and an object (configMap, secret, ...)
                 Object.keys(formattedVolume).forEach((key) => {
                   if (typeof formattedVolume[key] !== 'object' && key !== 'name') {

@@ -29,7 +29,7 @@
     <g class="component-informations"
        stroke="none"
        fill="#224F7C"
-       font-family="Roboto"
+       font-family="Roboto">
         <text class="component-name"
               font-size="10"
               font-weight="bold"
