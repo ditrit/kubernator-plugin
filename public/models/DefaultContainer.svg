@@ -38,7 +38,7 @@
         <text class="component-type"
               text-anchor="middle"
               font-size="8"
-              x="50%" y="72">{{ definition.displayName | default(definition.type) }}</text>
+              x="50%" y="72">{{ definition.displayName or definition.type }}</text>
     </g>
 
     <svg class="component-container"
