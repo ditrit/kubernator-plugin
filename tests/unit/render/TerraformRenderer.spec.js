@@ -17,7 +17,7 @@ describe('Test TerraformRenderer', () => {
   });
 
   describe('Test methods', () => {
-    describe('Test method: render', () => {
+    describe('Test method: renderFiles', () => {
       it('Should render container', () => {
         const metadata = getTerraformMetadata(
           'aws',
@@ -31,7 +31,7 @@ describe('Test TerraformRenderer', () => {
         });
         parser.parse([input]);
 
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
 
       it('Should render container', () => {
@@ -47,10 +47,10 @@ describe('Test TerraformRenderer', () => {
         });
         parser.parse([input]);
 
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
 
-      describe('Should render multiple files', () => {
+      it('Should render multiple files', () => {
         const metadata = getTerraformMetadata(
           'aws',
           'tests/resources/tf/link.json',
@@ -69,7 +69,7 @@ describe('Test TerraformRenderer', () => {
         ];
         parser.parse(inputs);
 
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([
           new FileInput({
             path: './link_default_single.tf',
             content: fs.readFileSync('tests/resources/tf/link_default_single.tf', 'utf8'),
@@ -93,7 +93,7 @@ describe('Test TerraformRenderer', () => {
           content: fs.readFileSync('tests/resources/tf/container.tf', 'utf8'),
         });
         parser.parse([input]);
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
 
       it('Should render single default link', () => {
@@ -109,7 +109,7 @@ describe('Test TerraformRenderer', () => {
         });
         parser.parse([input]);
 
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
 
       it('Should render multiple default links', () => {
@@ -125,7 +125,7 @@ describe('Test TerraformRenderer', () => {
         });
         parser.parse([input]);
 
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
 
       it('Should render single reverse link', () => {
@@ -141,7 +141,7 @@ describe('Test TerraformRenderer', () => {
         });
         parser.parse([input]);
 
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
 
       it('Should render multiple reverse links', () => {
@@ -157,7 +157,7 @@ describe('Test TerraformRenderer', () => {
         });
         parser.parse([input]);
 
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
 
       it('Should render app', () => {
@@ -173,7 +173,7 @@ describe('Test TerraformRenderer', () => {
         });
         parser.parse([input]);
 
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
 
       it('Should render with new links', () => {
@@ -247,7 +247,7 @@ describe('Test TerraformRenderer', () => {
           }),
         ];
 
-        expect(new TerraformRender(pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(pluginData).renderFiles()).toEqual([input]);
       });
     });
 
@@ -273,7 +273,7 @@ describe('Test TerraformRenderer', () => {
               .find((definition) => definition.blockType === 'provider'),
           }),
         ];
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
 
       it('Should fix module rendering, https://github.com/ditrit/terrator-plugin/issues/25', () => {
@@ -281,11 +281,11 @@ describe('Test TerraformRenderer', () => {
           path: 'new_file.tf',
           content: fs.readFileSync('tests/resources/tf/bug25_moduleRendering.tf', 'utf8'),
         });
-
         const metadata = getTerraformMetadata(
           'aws',
           'src/assets/metadata/aws.json',
         );
+
         metadata.parse();
 
         metadata.pluginData.components = [
@@ -298,7 +298,120 @@ describe('Test TerraformRenderer', () => {
           }),
         ];
 
-        expect(new TerraformRender(metadata.pluginData).render()).toEqual([input]);
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
+      });
+
+      it('Should fix render of an object attribute, https://github.com/ditrit/terrator-plugin/issues/46', () => {
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/bug41_subObject.tf', 'utf8'),
+        });
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+
+        metadata.parse();
+
+        const parser = new TerraformParser(metadata.pluginData);
+
+        parser.parse([input]);
+
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
+      });
+      it('Should parse and differentiate attribute and dynamic blocks', () => {
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/complex_field.tf', 'utf8'),
+        });
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+
+        metadata.parse();
+
+        const parser = new TerraformParser(metadata.pluginData);
+
+        parser.parse([input]);
+
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
+      });
+
+      it('Should render an empty resource', () => {
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/empty_resource.tf', 'utf8'),
+        });
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+
+        metadata.parse();
+
+        const parser = new TerraformParser(metadata.pluginData);
+
+        parser.parse([input]);
+
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
+      });
+
+      it('Should render a resource with attributes and blocks', () => {
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/attributes_and_blocks.tf', 'utf8'),
+        });
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+
+        metadata.parse();
+
+        const parser = new TerraformParser(metadata.pluginData);
+
+        parser.parse([input]);
+
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
+      });
+
+      it('Should render a resource with 2 tags block', () => {
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/double_tags.tf', 'utf8'),
+        });
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+
+        metadata.parse();
+
+        const parser = new TerraformParser(metadata.pluginData);
+
+        parser.parse([input]);
+
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
+      });
+
+      it('Should render a resource with a reference attribute', () => {
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/double_tags.tf', 'utf8'),
+        });
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+
+        metadata.parse();
+
+        const parser = new TerraformParser(metadata.pluginData);
+
+        parser.parse([input]);
+
+        expect(new TerraformRender(metadata.pluginData).renderFiles()).toEqual([input]);
       });
     });
   });

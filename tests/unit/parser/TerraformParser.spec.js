@@ -1,17 +1,22 @@
 import fs from 'fs';
 import TerraformParser from 'src/parser/TerraformParser';
+import { getTerraformMetadata } from 'tests/resources/utils';
 import {
-  Component,
-  ComponentAttribute,
-  ComponentAttributeDefinition,
-  ComponentDefinition,
-  ComponentLink,
-  ComponentLinkDefinition,
   FileInformation,
   FileInput,
 } from 'leto-modelizer-plugin-core';
-import TerraformComponentDefinition from 'src/models/TerraformComponentDefinition';
-import { getTerraformMetadata } from 'tests/resources/utils';
+import app from 'tests/resources/js/app';
+import attributesAndBlocks from 'tests/resources/js/attributesAndBlocks';
+import complexField from 'tests/resources/js/complexField';
+import doubleTags from 'tests/resources/js/doubleTags';
+import emptyResource from 'tests/resources/js/emptyResource';
+import linkDefaultSingle from 'tests/resources/js/linkDefaultSingle';
+import linkDefaultMultiple from 'tests/resources/js/linkDefaultMultiple';
+import linkReverseSingle from 'tests/resources/js/linkReverseSingle';
+import linkReverseMultiple from 'tests/resources/js/linkReverseMultiple';
+import subObject from 'tests/resources/js/subObject';
+import objectAttributeDefinition from 'tests/resources/js/objectAttributeDefinition';
+import referenceAttribute from 'tests/resources/js/referenceAttribute';
 
 describe('Test TerraformParser', () => {
   describe('Test methods', () => {
@@ -57,159 +62,8 @@ describe('Test TerraformParser', () => {
             content: fs.readFileSync('tests/resources/tf/app.tf', 'utf8'),
           });
           parser.parse([input]);
-          expect(parser.pluginData.components).toEqual([
-            new Component({
-              id: 'aws',
-              name: 'aws',
-              path: './app.tf',
-              definition: new TerraformComponentDefinition({
-                type: 'aws',
-                provider: 'aws',
-                blockType: 'provider',
-                icon: 'aws',
-                model: 'DefaultModel',
-                definedAttributes: [new ComponentAttributeDefinition({
-                  name: 'region',
-                  type: 'String',
-                  required: true,
-                })],
-              }),
-              attributes: [
-                new ComponentAttribute({
-                  name: 'access_key',
-                  type: 'String',
-                  value: 'ABCD1234J54PXLDF4IC4WMVA',
-                }),
-                new ComponentAttribute({
-                  name: 'secret_key',
-                  type: 'String',
-                  value: '28prpojfngldfgPcgiv79Q/J+8o7ksdfsTjmmE2QQBRa',
-                }),
-                new ComponentAttribute({
-                  name: 'region',
-                  type: 'String',
-                  value: 'eu-west-3',
-                  definition: new ComponentAttributeDefinition({
-                    name: 'region',
-                    type: 'String',
-                    required: true,
-                  }),
-                }),
-              ],
-            }),
-            new Component({
-              name: 'server',
-              id: 'server',
-              path: './app.tf',
-              definition: new TerraformComponentDefinition({
-                blockType: 'module',
-                provider: 'aws',
-                icon: 'Aws_Servers',
-                type: 'server',
-                model: 'DefaultModel',
-              }),
-              attributes: [new ComponentAttribute({
-                name: 'source',
-                type: 'String',
-                value: '../modules/server',
-              })],
-            }),
-            new Component({
-              name: 'web',
-              id: 'web',
-              path: './app.tf',
-              definition: new TerraformComponentDefinition({
-                blockType: 'data',
-                provider: 'aws',
-                type: 'aws_ami',
-                icon: 'Aws_EC2_AMI',
-                model: 'DefaultModel',
-              }),
-              attributes: [
-                new ComponentAttribute({
-                  name: 'filter',
-                  type: 'Object',
-                  value: [
-                    new ComponentAttribute({
-                      name: 'name',
-                      type: 'String',
-                      value: 'state',
-                    }),
-                    new ComponentAttribute({
-                      name: 'values',
-                      type: 'Array',
-                      value: ['available'],
-                    }),
-                  ],
-                }),
-                new ComponentAttribute({
-                  name: 'most_recent',
-                  value: true,
-                  type: 'Boolean',
-                }),
-              ],
-            }),
-            new Component({
-              name: 'publicdns',
-              id: 'publicdns',
-              path: './app.tf',
-              definition: new TerraformComponentDefinition({
-                blockType: 'resource',
-                provider: 'aws',
-                type: 'aws_route53_zone',
-                icon: 'Aws_Route-53-Hosted-Zone',
-                model: 'DefaultContainer',
-                isContainer: true,
-                childrenTypes: ['aws_route53_record'],
-                definedAttributes: [new ComponentAttributeDefinition({
-                  name: 'name',
-                  type: 'String',
-                  required: true,
-                })],
-              }),
-              attributes: [
-                new ComponentAttribute({
-                  name: 'name',
-                  value: 'aws.domaine.fr',
-                  type: 'String',
-                  definition: new ComponentAttributeDefinition({
-                    name: 'name',
-                    type: 'String',
-                    required: true,
-                  }),
-                }),
-                new ComponentAttribute({
-                  name: 'image_id',
-                  value: null,
-                  type: 'String',
-                  definition: null,
-                }),
-                new ComponentAttribute({
-                  name: 'position',
-                  value: 1,
-                  type: 'Number',
-                  definition: null,
-                }),
-              ],
-            }),
-            new Component({
-              id: 'image_id',
-              name: 'image_id',
-              path: './app.tf',
-              definition: new TerraformComponentDefinition({
-                blockType: 'variable',
-                provider: 'aws',
-                type: 'image_id',
-                icon: 'variable',
-                model: 'DefaultModel',
-              }),
-              attributes: [new ComponentAttribute({
-                name: 'type',
-                type: 'String',
-                value: 'string',
-              })],
-            }),
-          ]);
+
+          expect(parser.pluginData.components).toEqual(app);
         });
       });
 
@@ -228,11 +82,9 @@ describe('Test TerraformParser', () => {
           });
           parser.parse([input]);
 
-          expect(parser.pluginData.components.length).toEqual(1);
+          expect(parser.pluginData.components.length).toEqual(2);
           expect(parser.pluginData.components[0].id).toEqual('parent');
-
-          expect(parser.pluginData.components[0].children.length).toEqual(1);
-          expect(parser.pluginData.components[0].children[0].id).toEqual('child');
+          expect(parser.pluginData.components[1].id).toEqual('child');
         });
       });
 
@@ -252,17 +104,7 @@ describe('Test TerraformParser', () => {
           });
           parser.parse([input]);
 
-          expect(parser.pluginData.getLinks())
-            .toEqual([new ComponentLink({
-              source: 'parent_default_single_1',
-              target: 'child_default_single_1',
-              definition: new ComponentLinkDefinition({
-                attributeRef: 'toChild',
-                sourceRef: 'parent',
-                targetRef: 'child',
-                type: 'Default',
-              }),
-            })]);
+          expect(parser.pluginData.getLinks()).toEqual(linkDefaultSingle);
         });
 
         it('Should parse multiple default links', () => {
@@ -272,28 +114,7 @@ describe('Test TerraformParser', () => {
           });
           parser.parse([input]);
 
-          expect(parser.pluginData.getLinks())
-            .toEqual([
-              new ComponentLink({
-                source: 'parent_default_multiple_1',
-                target: 'child_default_multiple_1',
-                definition: new ComponentLinkDefinition({
-                  attributeRef: 'toChild',
-                  sourceRef: 'parent',
-                  targetRef: 'child',
-                  type: 'Default',
-                }),
-              }),
-              new ComponentLink({
-                source: 'parent_default_multiple_1',
-                target: 'child_default_multiple_2',
-                definition: new ComponentLinkDefinition({
-                  attributeRef: 'toChild',
-                  sourceRef: 'parent',
-                  targetRef: 'child',
-                  type: 'Default',
-                }),
-              })]);
+          expect(parser.pluginData.getLinks()).toEqual(linkDefaultMultiple);
         });
 
         it('Should parse single reverse link', () => {
@@ -303,17 +124,7 @@ describe('Test TerraformParser', () => {
           });
           parser.parse([input]);
 
-          expect(parser.pluginData.getLinks())
-            .toEqual([new ComponentLink({
-              source: 'parent_reverse_single_1',
-              target: 'child_reverse_single_1',
-              definition: new ComponentLinkDefinition({
-                attributeRef: 'fromChild',
-                sourceRef: 'parent',
-                targetRef: 'child',
-                type: 'Reverse',
-              }),
-            })]);
+          expect(parser.pluginData.getLinks()).toEqual(linkReverseSingle);
         });
 
         it('Should parse multiple reverse links', () => {
@@ -323,29 +134,172 @@ describe('Test TerraformParser', () => {
           });
           parser.parse([input]);
 
-          expect(parser.pluginData.getLinks())
-            .toEqual([
-              new ComponentLink({
-                source: 'parent_reverse_multiple_1',
-                target: 'child_reverse_multiple_1',
-                definition: new ComponentLinkDefinition({
-                  attributeRef: 'fromChild',
-                  sourceRef: 'parent',
-                  targetRef: 'child',
-                  type: 'Reverse',
-                }),
-              }),
-              new ComponentLink({
-                source: 'parent_reverse_multiple_1',
-                target: 'child_reverse_multiple_2',
-                definition: new ComponentLinkDefinition({
-                  attributeRef: 'fromChild',
-                  sourceRef: 'parent',
-                  targetRef: 'child',
-                  type: 'Reverse',
-                }),
-              })]);
+          expect(parser.pluginData.getLinks()).toEqual(linkReverseMultiple);
         });
+      });
+
+      it('Should parsing object inside object, https://github.com/ditrit/terrator-plugin/issues/41', () => {
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+        metadata.parse();
+        metadata.pluginData.initLinkDefinitions();
+        const parser = new TerraformParser(metadata.pluginData);
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/bug41_subObject.tf', 'utf8'),
+        });
+
+        parser.parse([input]);
+
+        expect(metadata.pluginData.components).toEqual(subObject);
+      });
+
+      it('Should fix file content null, https://github.com/ditrit/terrator-plugin/issues/43', () => {
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+        metadata.parse();
+        metadata.pluginData.initLinkDefinitions();
+        const parser = new TerraformParser(metadata.pluginData);
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: null,
+        });
+
+        let exception = null;
+        try {
+          parser.parse([input]);
+        } catch (e) {
+          exception = e;
+        }
+
+        expect(exception).toBeNull();
+      });
+
+      it('Should fix missing attribute definition for an object, https://github.com/ditrit/terrator-plugin/issues/48', () => {
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+        metadata.parse();
+        metadata.pluginData.initLinkDefinitions();
+        const parser = new TerraformParser(metadata.pluginData);
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/bug48_objectAttributeDefinition.tf', 'utf8'),
+        });
+
+        parser.parse([input]);
+
+        expect(metadata.pluginData.components).toEqual(objectAttributeDefinition);
+      });
+      it('Should parse a resource containing attributes and blocks', () => {
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+        metadata.parse();
+        metadata.pluginData.initLinkDefinitions();
+        const parser = new TerraformParser(metadata.pluginData);
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/attributes_and_blocks.tf', 'utf8'),
+        });
+
+        parser.parse([input]);
+
+        expect(metadata.pluginData.components).toEqual(attributesAndBlocks);
+      });
+      it('Should parse a resource with 2 blocks with the same name but different types', () => {
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+        metadata.parse();
+        metadata.pluginData.initLinkDefinitions();
+        const parser = new TerraformParser(metadata.pluginData);
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/double_tags.tf', 'utf8'),
+        });
+        parser.parse([input]);
+        expect(parser.pluginData.components).toEqual(doubleTags);
+      });
+
+      it('Should parse the tag attribute as a key/value list', () => {
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+        metadata.parse();
+        metadata.pluginData.initLinkDefinitions();
+        const parser = new TerraformParser(metadata.pluginData);
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/complex_field.tf', 'utf8'),
+        });
+
+        parser.parse([input]);
+
+        expect(metadata.pluginData.components).toEqual(complexField);
+      });
+
+      it('Should parse an empty resource', () => {
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+        metadata.parse();
+        metadata.pluginData.initLinkDefinitions();
+        const parser = new TerraformParser(metadata.pluginData);
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/empty_resource.tf', 'utf8'),
+        });
+
+        parser.parse([input]);
+
+        expect(metadata.pluginData.components).toEqual(emptyResource);
+      });
+
+      it('Should throw an error when parsing a resource with an invalid body syntax', () => {
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+        metadata.parse();
+        metadata.pluginData.initLinkDefinitions();
+        const parser = new TerraformParser(metadata.pluginData);
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/wrong_body.tf', 'utf8'),
+        });
+
+        // Expect the parser to log an error to the console
+        const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        parser.parse([input]);
+        expect(spy).toHaveBeenCalled();
+      });
+
+      it('Should parse a resource with a reference to another resource', () => {
+        const metadata = getTerraformMetadata(
+          'aws',
+          'src/assets/metadata/aws.json',
+        );
+        metadata.parse();
+        metadata.pluginData.initLinkDefinitions();
+        const parser = new TerraformParser(metadata.pluginData);
+        const input = new FileInput({
+          path: 'new_file.tf',
+          content: fs.readFileSync('tests/resources/tf/reference_attribute.tf', 'utf8'),
+        });
+
+        parser.parse([input]);
+
+        expect(metadata.pluginData.components).toEqual(referenceAttribute);
       });
     });
   });
