@@ -20,14 +20,42 @@ class KubernetesParser extends DefaultParser {
    * Convert the content of files into Components.
    *
    * @param {FileInput[]} [inputs=[]] - Data you want to parse.
+   * @param {string} [parentEventId=null] - Parent event id.
    */
-  parse(inputs = []) {
+  parse(inputs = [], parentEventId = null) {
     this.pluginData.components = [];
     this.pluginData.parseErrors = [];
 
     inputs
-      .filter(({ content }) => content !== null)
+      .filter(({ content, path }) => {
+        if (content && content.trim() !== '') {
+          return true;
+        }
+        this.pluginData.emitEvent({
+          parent: parentEventId,
+          type: 'Parser',
+          action: 'read',
+          status: 'warning',
+          files: [path],
+          data: {
+            code: 'no_content',
+            global: false,
+          },
+        });
+        return false;
+      })
       .forEach((input) => {
+        const id = this.pluginData.emitEvent({
+          parent: parentEventId,
+          type: 'Parser',
+          action: 'read',
+          status: 'running',
+          files: [input.path],
+          data: {
+            global: false,
+          },
+        });
+
         const listener = new KubernetesListener(input, this.pluginData.definitions.components);
 
         const errors = [];
@@ -56,6 +84,7 @@ class KubernetesParser extends DefaultParser {
         console.log(root);
 
         this.pluginData.components.push(...listener.components);
+        this.pluginData.emitEvent({ id, status: 'success' });
       });
 
     this.convertSelectorAttributesToLinks();

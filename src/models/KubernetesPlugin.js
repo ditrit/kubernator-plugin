@@ -4,7 +4,7 @@ import KubernetesDrawer from '../draw/KubernetesDrawer';
 import KubernetesMetadata from '../metadata/KubernetesMetadata';
 import KubernetesParser from '../parser/KubernetesParser';
 import KubernetesRenderer from '../render/KubernetesRenderer';
-import { name, version } from '../../package.json';
+import packageInfo from '../../package.json';
 
 /**
  * Kubernetes plugin.
@@ -12,12 +12,18 @@ import { name, version } from '../../package.json';
 class KubernetesPlugin extends DefaultPlugin {
   /**
    * Default constructor.
+   *
+   * @param {object} [props={}] - Object that contains all properties to set.
+   * @param {object} [props.event] - Event manager.
+   * @param {Function} [props.event.next] - Function to emit event.
    */
-  constructor() {
+  constructor(props = {
+    event: null,
+  }) {
     const pluginData = new KubernetesData({
-      name,
-      version,
-    });
+      name: packageInfo.name,
+      version: packageInfo.version,
+    }, props.event);
 
     super({
       pluginData,

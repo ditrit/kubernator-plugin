@@ -4,8 +4,8 @@ import { DefaultDrawer } from 'leto-modelizer-plugin-core';
  * Class to draw Kubernetes components.
  */
 class KubernetesDrawer extends DefaultDrawer {
-  constructor(pluginData, resources, events, rootId, options) {
-    super(pluginData, resources, events, rootId, {
+  constructor(pluginData, resources, rootId, options) {
+    super(pluginData, resources, rootId, {
       ...options,
       minHeight: 80,
       minWidth: 110,

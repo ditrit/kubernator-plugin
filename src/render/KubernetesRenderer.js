@@ -11,18 +11,31 @@ class KubernetesRenderer extends DefaultRender {
   /**
    * Convert all provided components and links to Kubernetes files.
    *
+   * @param {string} [parentEventId=null] - Parent event id.
    * @returns {FileInput[]} Array of generated files from components and links.
    */
-  renderFiles() {
+  renderFiles(parentEventId = null) {
     console.log('R', this.pluginData.components);
     return this.pluginData.components.filter(
       (component) => !component.getContainerId()
-    ).map((component) =>
-      new FileInput({
+    ).map((component) => {
+      const id = this.pluginData.emitEvent({
+        parent: parentEventId,
+        type: 'Render',
+        action: 'write',
+        status: 'running',
+        files: [component.path],
+        data: {
+          global: false,
+        },
+      });
+      const file = new FileInput({
         path: component.path,
         content: yaml.dump(this.formatComponent(component, false)),
-      })
-    );
+      });
+      this.pluginData.emitEvent({ id, status: 'success' });
+      return file;
+    });
   }
 
   formatComponent(component, isSubComponent) {
