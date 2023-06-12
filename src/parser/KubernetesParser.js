@@ -19,8 +19,8 @@ class KubernetesParser extends DefaultParser {
   /**
    * Convert the content of files into Components.
    *
-   * @param {FileInput[]} [inputs=[]] - Data you want to parse.
-   * @param {string} [parentEventId=null] - Parent event id.
+   * @param {FileInput[]} [inputs] - Data you want to parse.
+   * @param {string} [parentEventId] - Parent event id.
    */
   parse(inputs = [], parentEventId = null) {
     this.pluginData.components = [];

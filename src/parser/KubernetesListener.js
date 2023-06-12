@@ -8,7 +8,7 @@ class KubernetesListener {
    * Default constructor.
    *
    * @param {FileInformation} fileInformation - File information.
-   * @param {ComponentDefinition[]} [definitions=[]] - All component definitions.
+   * @param {ComponentDefinition[]} [definitions] - All component definitions.
    */
   constructor(fileInformation, definitions = []) {
     /**

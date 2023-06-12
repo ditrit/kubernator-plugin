@@ -11,7 +11,7 @@ class KubernetesRenderer extends DefaultRender {
   /**
    * Convert all provided components and links to Kubernetes files.
    *
-   * @param {string} [parentEventId=null] - Parent event id.
+   * @param {string} [parentEventId] - Parent event id.
    * @returns {FileInput[]} Array of generated files from components and links.
    */
   renderFiles(parentEventId = null) {
