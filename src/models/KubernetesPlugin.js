@@ -1,4 +1,4 @@
-import { DefaultPlugin } from 'leto-modelizer-plugin-core';
+import { DefaultPlugin, DefaultConfiguration } from 'leto-modelizer-plugin-core';
 import KubernetesData from './KubernetesData';
 import KubernetesDrawer from '../draw/KubernetesDrawer';
 import KubernetesMetadata from '../metadata/KubernetesMetadata';
@@ -20,7 +20,8 @@ class KubernetesPlugin extends DefaultPlugin {
   constructor(props = {
     event: null,
   }) {
-    const pluginData = new KubernetesData({
+    const configuration = new DefaultConfiguration();
+    const pluginData = new KubernetesData(configuration, {
       name: packageInfo.name,
       version: packageInfo.version,
     }, props.event);
@@ -31,6 +32,7 @@ class KubernetesPlugin extends DefaultPlugin {
       pluginMetadata: new KubernetesMetadata(pluginData),
       pluginParser: new KubernetesParser(pluginData),
       pluginRenderer: new KubernetesRenderer(pluginData),
+      configuration,
     });
   }
 }
