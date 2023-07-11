@@ -1,4 +1,4 @@
-import { DefaultConfiguration } from 'leto-modelizer-plugin-core';
+import { DefaultConfiguration, Tag } from 'leto-modelizer-plugin-core';
 
 /**
  * Terrator configuration.
@@ -11,7 +11,11 @@ class KubernetesConfiguration extends DefaultConfiguration {
   constructor(props) {
     super({
       ...props,
-      tags: ['Kubernetes', 'Infrastructure', 'Containers'],
+      tags: [
+        new Tag({ type: 'language', value: 'Kubernetes' }),
+        new Tag({ type: 'category', value: 'Infrastructure' }),
+        new Tag({ type: 'category', value: 'Containers' }),
+      ],
     });
   }
 }
