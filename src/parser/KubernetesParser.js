@@ -8,13 +8,35 @@ import KubernetesListener from './KubernetesListener';
 class KubernetesParser extends DefaultParser {
   /**
    * Indicate if this parser can parse this file.
-   *
+   *determines if a file is parsable by checking either 
+   its content for specific keywords or its path for a ".yml" or ".yaml" extension
    * @param {FileInformation} [fileInformation] - File information.
    * @returns {boolean} Boolean that indicates if this file can be parsed or not.
    */
-  isParsable(fileInformation) {
-    return /\.ya?ml$/.test(fileInformation.path);
-  }
+
+    isParsable(fileInformation) {
+     if (!fileInformation.content) {
+       return /\.ya?ml$/.test(fileInformation.path);
+     }
+     const keywords = ['apiVersion','kind','metadata'];
+     return keywords.some(keyword => fileInformation.content.includes(keyword)); 
+    }
+    /**
+     * from the parsable files ,it extracts unique "models" (folder paths) and returns them as an array
+     * @param {files} 
+     * @returns {array} return an array of models 
+     */
+    getModels(files = []) {
+      return files.filter((file) => this.isParsable(file))
+        .reduce((acc, { path }) => {
+          const model = path.split('/').slice(0, -1).join('/');
+          if (!acc.includes(model)) {
+            acc.push(model);
+          }
+          return acc;
+        }, []);
+    }
+
 
   /**
    * Convert the content of files into Components.
