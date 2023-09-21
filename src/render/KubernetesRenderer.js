@@ -60,15 +60,15 @@ class KubernetesRenderer extends DefaultRender {
     return attributes.reduce((acc, attribute) => {
       if (attribute.type === 'Object') {
         acc[attribute.name] = this.formatAttributes(attribute.value, component);
-      } else if (attribute.type === 'Array') {
-        acc[attribute.name] = Object.values(this.formatAttributes(attribute.value, component));
-      } else if (attribute.type === 'Link') {
+      }  else if (attribute.definition?.type === 'Link') {
         if (attribute.name === 'selector') {
           acc[attribute.name] =
             this.formatSelectorLinkAttribute(attribute, component);
         } else {
           acc[attribute.name] = attribute.value[0]; // Link attributes are arrays, but we don't want the rendered value to be an array
         }
+      } else if (attribute.type === 'Array') {
+        acc[attribute.name] = Object.values(this.formatAttributes(attribute.value, component));
       } else if (attribute.definition?.type === 'Reference') {
         // Drop attribute in rendered file
       } else {
@@ -116,6 +116,7 @@ class KubernetesRenderer extends DefaultRender {
           formatted.metadata || {}, 'name', component.id,
         )
       );
+
     } else {
       formatted = this.insertFront(formatted, 'name', component.id);
     }

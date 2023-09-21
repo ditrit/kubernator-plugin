@@ -205,7 +205,7 @@ class KubernetesListener {
           childNode.value,
       });
       if (definition && definition.type === 'Link') {
-        attribute.type = 'Link';
+        attribute.type = 'Array';
         if (attribute.name !== 'selector') {
           // Selectors are handled in KubernetesParser.
           attribute.value = attribute.value ? [attribute.value] : []; // DefaultDrawer expects Link attributes to be arrays.
