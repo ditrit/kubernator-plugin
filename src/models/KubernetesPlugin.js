@@ -21,7 +21,7 @@ class KubernetesPlugin extends DefaultPlugin {
   constructor(props = {
     event: null,
   }) {
-    const configuration = new KubernetesConfiguration();
+    const configuration = new KubernetesConfiguration({defaultFileName: 'manifest.yaml', defaultFileExtension: 'yaml'});
     const pluginData = new KubernetesData(configuration, {
       name: packageInfo.name,
       version: packageInfo.version,
