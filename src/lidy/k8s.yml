@@ -328,8 +328,14 @@ deploymentSpec:
           _in: ["RollingUpdate", "Recreate"]
         rollingUpdate:
           _mapFacultative:
-            maxSurge: string
-            maxUnavailable: string
+            maxSurge:
+              _oneOf:
+                - string
+                - int
+            maxUnavailable:
+              _oneOf:
+                - string
+                - int
     revisionHistoryLimit: int
     minReadySeconds: int
     progressDeadlineSeconds: int
