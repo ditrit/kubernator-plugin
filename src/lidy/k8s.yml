@@ -144,7 +144,10 @@ service:
               name: string
               protocol:
                 _in: ["TCP", "UDP", "SCTP"]
-              targetPort: string # improvement: if the target port is a string, check that the port exists in the pod
+              targetPort:
+                _oneOf:
+                  - string # improvement: if the target port is a string, check that the port exists in the pod
+                  - int
             _map:
               port: uint16
         clusterIP: string
