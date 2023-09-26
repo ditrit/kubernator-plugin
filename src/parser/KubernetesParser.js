@@ -26,7 +26,8 @@ class KubernetesParser extends DefaultParser {
      * @param {files} 
      * @returns {array} return an array of models 
      */
-    getModels(files = []) {
+    getModels(files = []
+      ) {
       return files.filter((file) => this.isParsable(file))
         .reduce((acc, { path }) => {
           const model = path.split('/').slice(0, -1).join('/');
