@@ -205,7 +205,7 @@ ingress:
               hosts:
                 _listOf: string
               secretName: string
-    status: ingressLoadBalancerStatus
+    status: any
 ingressBackend:
   _mapFacultative:
     service:
@@ -222,18 +222,6 @@ ingressBackend:
       _map:
         kind: string
         name: string
-ingressLoadBalancerStatus:
-  ingress: ingressLoadBalancerIngress
-ingressLoadBalancerIngress:
-  _mapFacultative:
-    hostname: string
-    ip: string
-    ports: ingressPortStatus
-ingressPortStatus:
-  _mapFacultative:
-    error: string
-  port: int
-  protocol: { _in: ["TCP", "UDP", "SCTP"] }
 
 configMap:
   _map:

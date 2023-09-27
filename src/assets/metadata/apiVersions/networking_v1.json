@@ -162,56 +162,6 @@
             ]
           }
         ]
-      },
-      {
-        "name": "status",
-        "type": "Object",
-        "expanded": true,
-        "attributes":[
-          {
-            "name": "loadBalancer",
-            "type": "Object",
-            "attributes": [
-              {
-                "name": "ingress",
-                "type": "Object",
-                "attributes": [
-                  {
-                    "name": "hostname",
-                    "type": "String"
-                  },
-                  {
-                    "name": "ip",
-                    "type": "String"
-                  },
-                  {
-                    "name": "ports",
-                    "type": "Object",
-                    "attributes": [
-                      {
-                        "name": "error",
-                        "type": "String"
-                      },
-                      {
-                        "name": "port",
-                        "type": "Number",
-                        "required": true
-                      },
-                      {
-                        "name": "protocol",
-                        "type": "String",
-                        "required": true,
-                        "rules": {
-                          "values": ["TCP", "UDP", "SCTP"]
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
       }
     ]
   }
