@@ -8,9 +8,8 @@ class KubernetesListener {
    * Default constructor.
    *
    * @param {FileInformation} fileInformation - File information.
-   * @param {ComponentDefinition[]} [definitions] - All component definitions.
    */
-  constructor(fileInformation, definitions = []) {
+  constructor(fileInformation, pluginData) {
     /**
      * File information.
      *
@@ -22,7 +21,7 @@ class KubernetesListener {
      *
      * @type {ComponentDefinition[]}
      */
-    this.definitions = definitions;
+    this.definitions = pluginData.definitions.components;
     /**
      * Parsed components.
      */
@@ -31,6 +30,8 @@ class KubernetesListener {
      * Parsed subcomponent.
      */
     this.childComponentsByType = {};
+
+    this.pluginData = pluginData;
   }
 
   /**
@@ -48,7 +49,7 @@ class KubernetesListener {
     // So, we don't want to create attributes for them.
     delete rootNode.value.apiVersion;
     delete rootNode.value.kind;
-
+    delete rootNode.value.status;
     const rootComponent = this.createComponentFromTree(rootNode, apiVersion, kind);
     rootComponent.path = this.fileInformation.path;
     rootComponent.definition.childrenTypes.forEach((childType) => {
@@ -64,6 +65,7 @@ class KubernetesListener {
    */
   exit_deploymentSpec(deploymentSpecNode) {
     const templateNode = deploymentSpecNode.value.template;
+
     if (templateNode && Object.keys(templateNode.value).length) {
       const podComponent = this.createComponentFromTree(
         templateNode, 'v1', 'Pod'

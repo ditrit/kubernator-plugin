@@ -81,7 +81,7 @@ class KubernetesParser extends DefaultParser {
           },
         });
 
-        const listener = new KubernetesListener(input, this.pluginData.definitions.components);
+        const listener = new KubernetesListener(input, this.pluginData);
 
         const errors = [];
         const warnings = [];
@@ -101,12 +101,6 @@ class KubernetesParser extends DefaultParser {
             root: root,
           },
         });
-
-        console.log(errors);
-        console.log(warnings);
-        console.log(imports);
-        console.log(alreadyImported);
-        console.log(root);
 
         this.pluginData.components.push(...listener.components);
         this.pluginData.emitEvent({ id, status: 'success' });
