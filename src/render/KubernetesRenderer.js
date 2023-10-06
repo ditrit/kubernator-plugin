@@ -31,7 +31,9 @@ class KubernetesRenderer extends DefaultRender {
       });
       const file = new FileInput({
         path: component.path,
-        content: yaml.dump(this.formatComponent(component, false)),
+        content: yaml.dump(this.formatComponent(component, false), {
+          lineWidth: -1,
+        }),
       });
       this.pluginData.emitEvent({ id, status: 'success' });
       return file;
