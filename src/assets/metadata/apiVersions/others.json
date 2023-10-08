@@ -137,7 +137,7 @@
         ]
       },
       {
-        "name": "ressources",
+        "name": "resources",
         "type": "Object",
         "attributes": [
           {
@@ -605,4 +605,3 @@
     ]
   }
 ]
-
