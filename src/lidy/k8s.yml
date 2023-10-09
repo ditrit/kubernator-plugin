@@ -16,6 +16,7 @@ root:
     - standaloneConfigMapMount
     - standaloneSecretMount
     - standalonePersistentVolumeClaimMount
+    - catchAll
 
 ########## CALLBACKS ###########################################################
 
@@ -434,3 +435,9 @@ standalonePersistentVolumeClaimMount:
         kind: { _in: ["PersistentVolumeClaimMount"] }
     - persistentVolumeClaimVolume
     - volumeMount
+
+# CatchAll stage, just in order to catch all unparsable (unknown/undefined/error) component
+# like this we won't have any display issue with an unparsable component.
+catchAll:
+  _mapOf:
+    any: any

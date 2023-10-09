@@ -51,6 +51,9 @@ class KubernetesListener {
     delete rootNode.value.kind;
     delete rootNode.value.status;
     const rootComponent = this.createComponentFromTree(rootNode, apiVersion, kind);
+    if (!rootComponent) {
+      return;
+    }
     rootComponent.path = this.fileInformation.path;
     rootComponent.definition.childrenTypes.forEach((childType) => {
       this.setParentComponent(rootComponent, this.childComponentsByType[childType]);
@@ -177,6 +180,9 @@ class KubernetesListener {
     const definition = this.definitions.find((definition) =>
       definition.apiVersion === apiVersion && definition.type === kind
     );
+    if (!definition) {
+      return null;
+    }
     const id = node.value.metadata?.value.name?.value || node.value.name?.value
       || this.pluginData.generateComponentId(definition);
 
