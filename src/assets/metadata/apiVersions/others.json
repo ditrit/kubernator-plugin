@@ -603,5 +603,10 @@
         "type": "Boolean"
       }
     ]
+  },
+  {
+    "type": "UnparsableResource",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/red-cross"
   }
 ]
