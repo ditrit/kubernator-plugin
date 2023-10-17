@@ -1,4 +1,4 @@
-import { DefaultParser } from 'leto-modelizer-plugin-core';
+import { DefaultParser, FileInput } from 'leto-modelizer-plugin-core';
 import { parse as lidyParse } from '../lidy/k8s';
 import KubernetesListener from './KubernetesListener';
 
@@ -7,37 +7,35 @@ import KubernetesListener from './KubernetesListener';
  */
 class KubernetesParser extends DefaultParser {
   /**
-   * Indicate if this parser can parse this file.
-   *determines if a file is parsable by checking either 
-   its content for specific keywords or its path for a ".yml" or ".yaml" extension
-   * @param {FileInformation} [fileInformation] - File information.
+   * Indicate if this parser can parse this file by checking its extension and, if it exists, its
+   * content for specific keywords.
+   * @param {FileInformation|FileInput} [file] - File information or file input.
    * @returns {boolean} Boolean that indicates if this file can be parsed or not.
    */
-
-    isParsable(fileInformation) {
-     if (!fileInformation.content) {
-       return /\.ya?ml$/.test(fileInformation.path);
-     }
-     const keywords = ['apiVersion','kind','metadata'];
-     return keywords.some(keyword => fileInformation.content.includes(keyword)); 
+  isParsable(file) {
+    const isYamlExtension = /\.ya?ml$/.test(file.path);
+    if (file.content === undefined) {
+      return isYamlExtension;
     }
-    /**
-     * from the parsable files ,it extracts unique "models" (folder paths) and returns them as an array
-     * @param {files} 
-     * @returns {array} return an array of models 
-     */
-    getModels(files = []
-      ) {
-      return files.filter((file) => this.isParsable(file))
-        .reduce((acc, { path }) => {
-          const model = path.split('/').slice(0, -1).join('/');
-          if (!acc.includes(model)) {
-            acc.push(model);
-          }
-          return acc;
-        }, []);
-    }
+    const keywords = ['apiVersion', 'kind'];
+    return isYamlExtension && keywords.every((keyword) => file.content?.includes(keyword));
+  }
 
+  /**
+   * Get the list of model paths from all files. Diagrams are represented by directories.
+   * @param {FileInformation[]|FileInput[]} [files] - List of files.
+   * @returns {string[]} List of folder paths that represent a model.
+   */
+  getModels(files = []) {
+    return files.filter((file) => this.isParsable(file))
+      .reduce((acc, { path }) => {
+        const dirPath = path.split('/').slice(0, -1).join('/');
+        if (!acc.includes(dirPath)) {
+          acc.push(dirPath);
+        }
+        return acc;
+      }, []);
+  }
 
   /**
    * Convert the content of files into Components.
