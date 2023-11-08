@@ -11,11 +11,14 @@ class KubernetesConfiguration extends DefaultConfiguration {
   constructor(props) {
     super({
       ...props,
+      defaultFileName: 'manifest.yaml',
+      defaultFileExtension: 'yaml',
       tags: [
         new Tag({ type: 'language', value: 'Kubernetes' }),
         new Tag({ type: 'category', value: 'Infrastructure' }),
         new Tag({ type: 'category', value: 'Containers' }),
       ],
+      isFolderTypeDiagram: true,
     });
   }
 }

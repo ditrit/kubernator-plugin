@@ -12,16 +12,15 @@ class KubernetesData extends DefaultData {
    * Create new component.
    *
    * @param {ComponentDefinition} definition - Component definition.
-   * @param {string} [folder=''] - Folder path.
-   * @param {string} [fileName] - File name.
+   * @param {string} diagramPath - Diagram path.
    * @returns {string} Component id.
    */
-  addComponent(definition, folder = '', fileName = this.defaultFileName || '') {
+  addComponent(definition, diagramPath) {
     const id = this.generateComponentId(definition);
     const component = new Component({
       id,
       definition,
-      path: `${folder}${id}.yaml`,
+      path: diagramPath ? `${diagramPath}/${id}.yaml` : `${id}.yaml`,
     });
 
     switch (definition.type) {
