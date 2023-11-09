@@ -49,7 +49,7 @@ class KubernetesParser extends DefaultParser {
     this.pluginData.parseErrors = [];
 
     inputs
-      .filter(({ path }) => path.startsWith(diagram.path))
+      .filter(({ path }) => path.replace(/\/?[^/]*?$/, '') === diagram.path)
       .filter(({ content, path }) => {
         if (content && content.trim() !== '') {
           return true;
