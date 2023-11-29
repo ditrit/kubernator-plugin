@@ -17,7 +17,6 @@ class KubernetesMetadata extends DefaultMetadata {
 
   /**
    * Validate the provided metadata with a schemas.
-   *
    * @returns {boolean} True if metadata is valid.
    */
   validate() {
@@ -30,8 +29,8 @@ class KubernetesMetadata extends DefaultMetadata {
   parse() {
     const componentDefs = Object.keys(metadata.apiVersions).flatMap(
       (apiVersion) => metadata.apiVersions[apiVersion].map(
-        (component) => this.getComponentDefinition(apiVersion, component)
-      )
+        (component) => this.getComponentDefinition(apiVersion, component),
+      ),
     );
     this.setChildrenTypes(componentDefs);
     this.pluginData.definitions.components = componentDefs;
@@ -39,7 +38,6 @@ class KubernetesMetadata extends DefaultMetadata {
 
   /**
    * Convert a JSON component definition object to a KubernetesComponentDefinition.
-   *
    * @param {string} apiVersion - Kubernetes API version of the component definition.
    * @param {object} component - JSON component definition object to parse.
    * @returns {KubernetesComponentDefinition} Parsed component definition.
@@ -51,7 +49,7 @@ class KubernetesMetadata extends DefaultMetadata {
       definedAttributes = [
         ...this.commonAttributes,
         ...definedAttributes,
-      ]
+      ];
     }
     return new KubernetesComponentDefinition({
       apiVersion,
@@ -62,7 +60,6 @@ class KubernetesMetadata extends DefaultMetadata {
 
   /**
    * Convert a JSON attribute object to a ComponentAttributeDefinition.
-   *
    * @param {object} attribute - JSON attribute definition object to parse.
    * @returns {ComponentAttributeDefinition} Parsed attribute definition.
    */
@@ -79,7 +76,6 @@ class KubernetesMetadata extends DefaultMetadata {
 
   /**
    * Set the childrenTypes of all containers from children's parentType.
-   *
    * @param {ComponentDefinition[]} componentDefinitions - Array of component definitions.
    */
   setChildrenTypes(componentDefinitions) {
@@ -101,13 +97,8 @@ class KubernetesMetadata extends DefaultMetadata {
     if (!name || name.includes('.')) {
       return name;
     }
-    switch (name) {
-      case "spec":
-        return "Specification"
-      default:
-        const s = name.replace(/([A-Z])/g, ' $1');
-        return s.charAt(0).toUpperCase() + s.slice(1);
-    }
+    const s = name.replace(/([A-Z])/g, ' $1');
+    return s.charAt(0).toUpperCase() + s.slice(1);
   }
 }
 

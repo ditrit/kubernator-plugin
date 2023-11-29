@@ -1,7 +1,7 @@
 import { DefaultConfiguration, Tag } from 'leto-modelizer-plugin-core';
 
 /**
- * Terrator configuration.
+ * Kubernator configuration.
  */
 class KubernetesConfiguration extends DefaultConfiguration {
   /**

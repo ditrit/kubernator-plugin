@@ -1,4 +1,4 @@
-import { DefaultParser, FileInput } from 'leto-modelizer-plugin-core';
+import { DefaultParser } from 'leto-modelizer-plugin-core';
 import { parse as lidyParse } from '../lidy/k8s';
 import KubernetesListener from './KubernetesListener';
 
@@ -39,7 +39,6 @@ class KubernetesParser extends DefaultParser {
 
   /**
    * Convert the content of files into Components.
-   *
    * @param {FileInformation} diagram - Diagram file information.
    * @param {FileInput[]} [inputs] - Data you want to parse.
    * @param {string} [parentEventId] - Parent event id.
@@ -92,11 +91,11 @@ class KubernetesParser extends DefaultParser {
           listener,
           path: input.path,
           prog: {
-            errors: errors,
-            warnings: warnings,
-            imports: imports,
-            alreadyImported: alreadyImported,
-            root: root,
+            errors,
+            warnings,
+            imports,
+            alreadyImported,
+            root,
           },
         });
 
@@ -105,7 +104,6 @@ class KubernetesParser extends DefaultParser {
       });
 
     this.convertSelectorAttributesToLinks();
-    console.log('P', this.pluginData.components);
   }
 
   convertSelectorAttributesToLinks() {
@@ -129,31 +127,28 @@ class KubernetesParser extends DefaultParser {
 
   __convertSelectorToLinkAttribute(matchLabelsAttribute, targetComponentType) {
     // TODO: support "matchExpressions" selectors
-    matchLabelsAttribute.value =
-      this.pluginData.getComponentsByType(targetComponentType).filter(
-        ({attributes}) => {
-          const targetLabelsAttribute = attributes.find(
-            ({name}) => name === 'metadata'
-          )?.value?.find(
-            ({name}) => name === 'labels'
-          );
-          if (!targetLabelsAttribute) {
-            return false;
-          }
-          const selectorLabels =
-            this.convertObjectAttributeToJsObject(matchLabelsAttribute);
-          const targetLabels =
-            this.convertObjectAttributeToJsObject(targetLabelsAttribute);
-          const selectorLabelsKeys = Object.keys(selectorLabels);
-          return selectorLabelsKeys.length && selectorLabelsKeys.every(
-            (key) => selectorLabels[key] === targetLabels[key]
-          );
+    matchLabelsAttribute.value = this.pluginData.getComponentsByType(targetComponentType).filter(
+      ({ attributes }) => {
+        const targetLabelsAttribute = attributes.find(
+          ({ name }) => name === 'metadata',
+        )?.value?.find(
+          ({ name }) => name === 'labels',
+        );
+        if (!targetLabelsAttribute) {
+          return false;
         }
-      ).map(({id}) => id);
+        const selectorLabels = this.convertObjectAttributeToJsObject(matchLabelsAttribute);
+        const targetLabels = this.convertObjectAttributeToJsObject(targetLabelsAttribute);
+        const selectorLabelsKeys = Object.keys(selectorLabels);
+        return selectorLabelsKeys.length && selectorLabelsKeys.every(
+          (key) => selectorLabels[key] === targetLabels[key],
+        );
+      },
+    ).map(({ id }) => id);
   }
 
   convertObjectAttributeToJsObject(objectAttribute) {
-    return objectAttribute.value.reduce((acc, {name, value}) => {
+    return objectAttribute.value.reduce((acc, { name, value }) => {
       acc[name] = value;
       return acc;
     }, {});

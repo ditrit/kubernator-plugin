@@ -10,7 +10,6 @@ import {
 class KubernetesData extends DefaultData {
   /**
    * Create new component.
-   *
    * @param {ComponentDefinition} definition - Component definition.
    * @param {string} diagramPath - Diagram path.
    * @returns {string} Component id.
@@ -23,12 +22,10 @@ class KubernetesData extends DefaultData {
       path: diagramPath ? `${diagramPath}/${id}.yaml` : `${id}.yaml`,
     });
 
-    switch (definition.type) {
-      case 'Container':
-        component.attributes = [
-          this.__createAttribute('isInitContainer', false, definition),
-        ];
-        break;
+    if (definition.type === 'Container') {
+      component.attributes = [
+        this.__createAttribute('isInitContainer', false, definition),
+      ];
     }
     this.components.push(component);
 
@@ -37,7 +34,7 @@ class KubernetesData extends DefaultData {
 
   __createAttribute(name, value, parentDefinition) {
     const definition = parentDefinition.definedAttributes.find(
-      (attributeDefinition) => attributeDefinition.name === name
+      (attributeDefinition) => attributeDefinition.name === name,
     );
     const attribute = new ComponentAttribute({
       name,

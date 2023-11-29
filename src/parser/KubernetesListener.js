@@ -6,19 +6,17 @@ import { Component, ComponentAttribute } from 'leto-modelizer-plugin-core';
 class KubernetesListener {
   /**
    * Default constructor.
-   *
    * @param {FileInformation} fileInformation - File information.
+   * @param {KubernetesData} pluginData - Plugin data.
    */
   constructor(fileInformation, pluginData) {
     /**
      * File information.
-     *
      * @type {FileInformation}
      */
     this.fileInformation = fileInformation;
     /**
      * Array of component definitions.
-     *
      * @type {ComponentDefinition[]}
      */
     this.definitions = pluginData.definitions.components;
@@ -37,7 +35,6 @@ class KubernetesListener {
   /**
    * Function called when attribute `root` is parsed.
    * Create a component from the parsed root element.
-   *
    * @param {MapNode} rootNode - The Lidy `root` node.
    */
   exit_root(rootNode) {
@@ -60,7 +57,6 @@ class KubernetesListener {
   /**
    * Function called when attribute `podTemplate` is parsed.
    * This function is called before exit_root for Deployment resources.
-   *
    * @param {MapNode} deploymentSpecNode - The Lidy `deploymentSpec` node.
    */
   exit_deploymentSpec(deploymentSpecNode) {
@@ -68,7 +64,9 @@ class KubernetesListener {
 
     if (templateNode && Object.keys(templateNode.value).length) {
       const podComponent = this.createComponentFromTree(
-        templateNode, 'v1', 'Pod'
+        templateNode,
+        'v1',
+        'Pod',
       );
       this.childComponentsByType['Pod'] = [podComponent];
       this.setParentComponent(
@@ -83,27 +81,30 @@ class KubernetesListener {
   exit_podSpec(podSpecNode) {
     this.childComponentsByType['Container'] = [];
     ['initContainers', 'containers'].forEach((k8sContainerAttributeName) => {
-      const k8sContainerComponents =
-        podSpecNode.value[k8sContainerAttributeName]?.value.map(
-          (containerNode) => {
-            const volumeMountComponents =
-              this.createVolumeMountComponentsFromTree(containerNode, podSpecNode);
-            const k8sContainerComponent = this.createComponentFromTree(
-              containerNode, 'others', 'Container'
-            );
-            const isInitContainerAttribute = new ComponentAttribute({
-              name: 'isInitContainer',
-              type: 'Boolean',
-              definition: k8sContainerComponent.definition.definedAttributes.find(
-                ({name}) => name === 'isInitContainer'
-              )
-            });
-            isInitContainerAttribute.value = k8sContainerAttributeName === 'initContainers'; // not set in constructor, because the value 'false' is replaced by null in the constructor (bug)
-            k8sContainerComponent.attributes.push(isInitContainerAttribute);
-            this.setParentComponent(k8sContainerComponent, volumeMountComponents);
-            return k8sContainerComponent;
-          }
-        ) || [];
+      const k8sContainerComponents = podSpecNode.value[k8sContainerAttributeName]?.value.map(
+        (containerNode) => {
+          const volumeMountComponents = this.createVolumeMountComponentsFromTree(
+            containerNode,
+            podSpecNode,
+          );
+          const k8sContainerComponent = this.createComponentFromTree(
+            containerNode,
+            'others',
+            'Container',
+          );
+          const isInitContainerAttribute = new ComponentAttribute({
+            name: 'isInitContainer',
+            type: 'Boolean',
+            definition: k8sContainerComponent.definition.definedAttributes.find(
+              ({ name }) => name === 'isInitContainer',
+            ),
+          });
+          isInitContainerAttribute.value = k8sContainerAttributeName === 'initContainers'; // not set in constructor, because the value 'false' is replaced by null in the constructor (bug)
+          k8sContainerComponent.attributes.push(isInitContainerAttribute);
+          this.setParentComponent(k8sContainerComponent, volumeMountComponents);
+          return k8sContainerComponent;
+        },
+      ) || [];
       this.childComponentsByType['Container'].push(...k8sContainerComponents);
       delete podSpecNode.value[k8sContainerAttributeName]; // prevent exit_{deployment,statefulSet,job}Spec from visiting this node again
     });
@@ -116,14 +117,14 @@ class KubernetesListener {
     containerNode.value.volumeMounts?.value.forEach((volumeMountNode) => {
       const volumeName = volumeMountNode.value.name.value;
       const volumeNode = volumeNodes.find(
-        (volumeNode) => volumeNode.value.name.value === volumeName
+        (volumeNode) => volumeNode.value.name.value === volumeName,
       );
       if (!volumeNode) {
         // TODO: throw error
         return;
       }
       const volumeSpecKeys = Object.keys(volumeNode.value).filter(
-        (key) => volumeNode.value[key].type === 'map'
+        (key) => volumeNode.value[key].type === 'map',
       );
       if (volumeSpecKeys.length !== 1) {
         // TODO: throw error
@@ -140,12 +141,15 @@ class KubernetesListener {
         return;
       }
       const volumeComponent = this.createComponentFromTree(
-        volumeMountNode, 'others', volumeKind
+        volumeMountNode,
+        'others',
+        volumeKind,
       );
       volumeComponent.attributes.push(
         ...this.createAttributesFromTreeNode(
-          volumeNode, volumeComponent.definition
-        ).filter(({name}) => name !== 'name'),
+          volumeNode,
+          volumeComponent.definition,
+        ).filter(({ name }) => name !== 'name'),
       );
       volumeComponents.push(volumeComponent);
     });
@@ -161,10 +165,12 @@ class KubernetesListener {
     const jobTemplateNode = cronJobSpecNode.value.jobTemplate;
     if (jobTemplateNode && Object.keys(jobTemplateNode.value).length) {
       const jobComponent = this.createComponentFromTree(
-        jobTemplateNode, 'batch/v1', 'Job'
+        jobTemplateNode,
+        'batch/v1',
+        'Job',
       );
       this.childComponentsByType['Job'] = [jobComponent];
-      this.setParentComponent(jobComponent, this.childComponentsByType["Pod"]);
+      this.setParentComponent(jobComponent, this.childComponentsByType['Pod']);
     }
     delete cronJobSpecNode.value.jobTemplate; // prevent exit_root from visiting this node again
   }
@@ -174,13 +180,12 @@ class KubernetesListener {
   }
 
   createComponentFromTree(node, apiVersion, kind) {
-    let definition = this.definitions.find((definition) =>
-      definition.apiVersion === apiVersion && definition.type === kind
-    );
+    let definition = this.definitions
+      .find((definition) => definition.apiVersion === apiVersion && definition.type === kind);
     // If no definition found, lets create an Unparsable one.
     if (!definition) {
       definition = this.definitions.find((definition) => definition.type === 'UnparsableResource');
-   }
+    }
 
     const id = node.value.metadata?.value.name?.value || node.value.name?.value
       || this.pluginData.generateComponentId(definition);
@@ -198,18 +203,18 @@ class KubernetesListener {
   }
 
   createAttributesFromTreeNode(parentNode, parentDefinition) {
-    return Object.keys(parentNode.value).map(childKey => {
+    return Object.keys(parentNode.value).map((childKey) => {
       const childNode = parentNode.value[childKey];
       const definition = parentDefinition?.definedAttributes.find(
-        ({ name }) => name === (parentNode.type !== 'list' ? childKey: null)
+        ({ name }) => name === (parentNode.type !== 'list' ? childKey : null),
       ); // note: elements inside a list don't have a name, because it has to match the definition
       const attribute = new ComponentAttribute({
         name: childKey,
         type: this.lidyToLetoType(childNode.type),
         definition,
-        value: (childNode.type === 'map' || childNode.type === 'list') ?
-          this.createAttributesFromTreeNode(childNode, definition) :
-          childNode.value,
+        value: (childNode.type === 'map' || childNode.type === 'list')
+          ? this.createAttributesFromTreeNode(childNode, definition)
+          : childNode.value,
       });
       if (definition && definition.type === 'Link') {
         attribute.type = 'Array';
@@ -248,11 +253,10 @@ class KubernetesListener {
 
   /**
    * Function called when attribute `uint16` is parsed.
-   *
-   * @param {Number} value - the `uint16` value to check.
+   * @param {number} value - the `uint16` value to check.
    */
   exit_uint16({ value }) {
-    if (value < 0 || value >= 2**16) {
+    if (value < 0 || value >= 2 ** 16) {
       // TODO: throw error
     }
   }

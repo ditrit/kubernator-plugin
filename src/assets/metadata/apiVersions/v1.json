@@ -25,6 +25,7 @@
       {
         "name": "spec",
         "type": "Object",
+        "displayName": "Specification",
         "expanded": true,
         "attributes": [
           {
@@ -111,6 +112,7 @@
       {
         "name": "spec",
         "type": "Object",
+        "displayName": "Specification",
         "expanded": true,
         "attributes": [
           {
@@ -218,6 +220,7 @@
       {
         "name": "spec",
         "type": "Object",
+        "displayName": "Specification",
         "expanded": true,
         "attributes": [
           {
