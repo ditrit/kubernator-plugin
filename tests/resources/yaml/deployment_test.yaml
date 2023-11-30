@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app.kubernetes.io/name: nginx
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pod
+  template:
+    metadata:
+      name: pod
+      labels:
+        app.kubernetes.io/name: pod
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:1.4.0
+          volumeMounts:
+            - name: config-map-mount
+              mountPath: /mnt
+            - name: pvc-mount
+              mountPath: /mnt/pvc
+            - name: secret-mount
+              mountPath: /mnt/secret
+      volumes:
+        - name: config-map-mount
+          configMap:
+            name: test-configmap
+        - name: pvc-mount
+          persistentVolumeClaim:
+            claimName: task-pv-volume
+        - name: secret-mount
+          secret:
+            secretName: test-secret

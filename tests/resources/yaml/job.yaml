@@ -1,0 +1,12 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-test
+  labels:
+    app.kubernetes.io/name: job-test
+spec:
+  selector:
+    matchLabels: {}
+  template: {}
+  
+ 

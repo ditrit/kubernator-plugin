@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cron-job
+  labels:
+    app.kubernetes.io/name: cron-job
+spec:
+  jobTemplate:
+    metadata:
+      name: job-test
+      labels:
+        app.kubernetes.io/name: job-test
+   

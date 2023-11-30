@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stateful-set
+  labels:
+    app.kubernetes.io/name: stateful-set
+spec:
+  selector:
+    matchLabels: {}
+  template: {}
