@@ -1,10 +1,10 @@
 import { DefaultPlugin } from 'leto-modelizer-plugin-core';
+import KubernetesConfiguration from './KubernetesConfiguration';
 import KubernetesData from './KubernetesData';
 import KubernetesDrawer from '../draw/KubernetesDrawer';
 import KubernetesMetadata from '../metadata/KubernetesMetadata';
 import KubernetesParser from '../parser/KubernetesParser';
 import KubernetesRenderer from '../render/KubernetesRenderer';
-import KubernetesConfiguration from './KubernetesConfiguration';
 import packageInfo from '../../package.json';
 
 /**
@@ -27,12 +27,12 @@ class KubernetesPlugin extends DefaultPlugin {
     }, props.event);
 
     super({
+      configuration,
       pluginData,
       pluginDrawer: new KubernetesDrawer(pluginData),
       pluginMetadata: new KubernetesMetadata(pluginData),
       pluginParser: new KubernetesParser(pluginData),
       pluginRenderer: new KubernetesRenderer(pluginData),
-      configuration,
     });
   }
 }

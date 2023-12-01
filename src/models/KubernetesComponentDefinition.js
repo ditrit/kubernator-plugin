@@ -1,11 +1,11 @@
 import { ComponentDefinition } from 'leto-modelizer-plugin-core';
 
 /**
- * Kubernetes component definition.
+ * Specific Kubernetes component definition.
  */
 class KubernetesComponentDefinition extends ComponentDefinition {
   /**
-   * Default constructor.
+   * Override ComponentDefinition constructor with apiVersion property.
    * @param {object} [props] - Object that contains all properties to set.
    * @param {string} [props.apiVersion] - Kubernetes apiVersion (<apiGroup>/<version>).
    */
@@ -17,7 +17,7 @@ class KubernetesComponentDefinition extends ComponentDefinition {
      * Kubernetes apiVersion (<apiGroup>/<version>)
      * @type {string}
      */
-    this.apiVersion = props.apiVersion;
+    this.apiVersion = props.apiVersion || null;
   }
 }
 

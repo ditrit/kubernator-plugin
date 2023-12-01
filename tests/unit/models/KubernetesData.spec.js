@@ -1,75 +1,71 @@
-import { ComponentDefinition, ComponentAttribute } from 'leto-modelizer-plugin-core';
+import { Component, ComponentAttribute, ComponentAttributeDefinition } from 'leto-modelizer-plugin-core';
 import KubernetesData from 'src/models/KubernetesData';
+import KubernetesComponentDefinition from 'src/models/KubernetesComponentDefinition';
 
-describe('KubernetesData', () => {
-  let data;
+describe('Test class: KubernetesData', () => {
+  describe('Test method: addComponent', () => {
+    it('Should create a component and add it to the components list', () => {
+      const kubernetesData = new KubernetesData();
+      const definition = new KubernetesComponentDefinition({ type: 'Pod' });
+      const id = kubernetesData.addComponent(definition);
 
-  beforeEach(() => {
-    data = new KubernetesData();
-  });
-
-  describe('addComponent', () => {
-    it('should add a new component and return the generated ID', () => {
-      const definition = new ComponentDefinition({ type: 'Container' }); // Create a component definition
-
-      const id = data.addComponent(definition); // Add the component and get the returned ID
-
-      expect(id).toBeDefined(); // Check if the ID is defined
-
-      // Find the added component in the components array
-      const addedComponent = data.components.find((component) => component.id === id);
-      // Check if the added component is defined
-      expect(addedComponent).toBeDefined();
-      // Check if the added component has the correct ID
-      expect(addedComponent.id).toBe(id);
-      // Check if the added component has the correct definition
-      expect(addedComponent.definition).toBe(definition);
-      // Check if the added component has the correct attributes
-      expect(addedComponent.attributes.length).toBe(1);
-    });
-  });
-
-  describe('__createAttribute', () => {
-    it('should create a new component attribute', () => {
-      const attributeDefinition = {
-        name: 'isInitContainer',
-        type: 'Boolean',
-      };
-      const parentDefinition = {
-        definedAttributes: [attributeDefinition],
-      };
-      const attributeName = 'isInitContainer';
-      const attributeValue = true;
-
-      const attribute = data.__createAttribute(attributeName, attributeValue, parentDefinition);
-
-      // Check if the attribute is an instance of ComponentAttribute
-      expect(attribute).toBeInstanceOf(ComponentAttribute);
-      // Check if the attribute has the correct name
-      expect(attribute.name).toBe(attributeName);
-      // Check if the attribute has the correct value
-      expect(attribute.value).toBe(attributeValue);
-      // Check if the attribute has the correct type
-      expect(attribute.type).toBe(attributeDefinition.type);
-      // Check if the attribute has the correct definition
-      expect(attribute.definition).toBe(attributeDefinition);
+      expect(id).toEqual('Pod_1');
+      expect(kubernetesData.components).toEqual([
+        new Component({
+          id,
+          name: id,
+          definition,
+          path: `${id}.yaml`,
+        }),
+      ]);
     });
 
-    it('should return null for non-existent attribute definition', () => {
-      const attributeDefinition = {
-        name: 'isInitContainer',
-        type: 'Boolean',
-      };
-      const parentDefinition = {
-        definedAttributes: [attributeDefinition],
-      };
-      const attributeName = 'nonExistentAttribute';
-      const attributeValue = true;
+    it('Should create a component and set correct path with folder', () => {
+      const kubernetesData = new KubernetesData();
+      const definition = new KubernetesComponentDefinition({ type: 'Pod' });
+      const id = kubernetesData.addComponent(definition, 'src');
 
-      const attribute = data.__createAttribute(attributeName, attributeValue, parentDefinition);
+      expect(id).toEqual('Pod_1');
+      expect(kubernetesData.components).toEqual([
+        new Component({
+          id,
+          name: id,
+          definition,
+          path: `src/${id}.yaml`,
+        }),
+      ]);
+    });
 
-      // Check if the attribute is null for non-existent attribute definition
-      expect(attribute).toBeNull();
+    it('Should create a Container component with default attribute isInitContainer', () => {
+      const kubernetesData = new KubernetesData();
+      const definition = new KubernetesComponentDefinition({
+        type: 'Container',
+        definedAttributes: [
+          new ComponentAttributeDefinition({
+            name: 'isInitContainer',
+            type: 'Boolean',
+          }),
+        ],
+      });
+      const id = kubernetesData.addComponent(definition);
+
+      expect(id).toEqual('Container_1');
+      expect(kubernetesData.components).toEqual([
+        new Component({
+          id,
+          name: id,
+          definition,
+          path: `${id}.yaml`,
+          attributes: [
+            new ComponentAttribute({
+              name: 'isInitContainer',
+              value: false,
+              type: 'Boolean',
+              definition: definition.definedAttributes[0],
+            }),
+          ],
+        }),
+      ]);
     });
   });
 });

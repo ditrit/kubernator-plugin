@@ -1,4 +1,7 @@
-import { DefaultConfiguration, Tag } from 'leto-modelizer-plugin-core';
+import {
+  DefaultConfiguration,
+  Tag,
+} from 'leto-modelizer-plugin-core';
 
 /**
  * Kubernator configuration.
