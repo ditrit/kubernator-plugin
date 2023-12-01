@@ -1,20 +1,19 @@
 import { Component, ComponentAttribute } from 'leto-modelizer-plugin-core';
-import KubernetesData from '../../../src/models/KubernetesData';
+import KubernetesData from 'src/models/KubernetesData';
 import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
-
 
 const pluginData = new KubernetesData();
 const metadata = new KubernetesMetadata(pluginData);
 metadata.parse();
 
-const jobDef = pluginData.definitions.components.find(({ type }) => type === 'Job');
-const MetadataDef = jobDef.definedAttributes.find(({ name }) => name === 'metadata');
-const jobSpecDef = jobDef.definedAttributes.find(({ name }) => name === 'spec');
+const statefulSetDef = pluginData.definitions.components.find(({ type }) => type === 'StatefulSet');
+const MetadataDef = statefulSetDef.definedAttributes.find(({ name }) => name === 'metadata');
+const statefulSetSpecDef = statefulSetDef.definedAttributes.find(({ name }) => name === 'spec');
 
-const jobComponent = new Component({
-  id: 'job-test',
-  path: './job.yaml',
-  definition: jobDef,
+const statefulsetComponent = new Component({
+  id: 'stateful-set',
+  path: './statefulset.yaml',
+  definition: statefulSetDef,
   attributes: [
     new ComponentAttribute({
       name: 'metadata',
@@ -24,7 +23,7 @@ const jobComponent = new Component({
         new ComponentAttribute({
           name: 'labels',
           type: 'Object',
-          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'), 
+          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
           value: [
             new ComponentAttribute({
               name: 'app.kubernetes.io/name',
@@ -34,21 +33,21 @@ const jobComponent = new Component({
               ).definedAttributes.find(
                 ({ name }) => name === 'app.kubernetes.io/name',
               ),
-              value: 'job-test',
+              value: 'stateful-set',
             }),
           ],
-        }),  
+        }),
       ],
     }),
     new ComponentAttribute({
       name: 'spec',
       type: 'Object',
-      definition: jobSpecDef,
+      definition: statefulSetSpecDef,
       value: [],
     }),
   ],
 });
 
-pluginData.components.push(jobComponent);
+pluginData.components.push(statefulsetComponent);
 
 export default pluginData;

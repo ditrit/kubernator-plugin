@@ -1,5 +1,5 @@
 import { Component, ComponentAttribute } from 'leto-modelizer-plugin-core';
-import KubernetesData from '../../../src/models/KubernetesData';
+import KubernetesData from 'src/models/KubernetesData';
 import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
 
 const pluginData = new KubernetesData();
@@ -11,8 +11,6 @@ const JobSpecDef = JobDef.definedAttributes.find(({ name }) => name === 'parent'
 const cronJobDef = pluginData.definitions.components.find(({ type }) => type === 'CronJob');
 const cronJobMetadataDef = cronJobDef.definedAttributes.find(({ name }) => name === 'metadata');
 const cronJobSpecDef = cronJobDef.definedAttributes.find(({ name }) => name === 'spec');
-
-
 
 const jobComponent = new Component({
   id: 'job-test',
@@ -27,7 +25,7 @@ const jobComponent = new Component({
         new ComponentAttribute({
           name: 'labels',
           type: 'Object',
-          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'), 
+          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
           value: [
             new ComponentAttribute({
               name: 'app.kubernetes.io/name',
@@ -40,14 +38,14 @@ const jobComponent = new Component({
               value: 'job-test',
             }),
           ],
-        }),  
+        }),
       ],
     }),
     new ComponentAttribute({
       name: 'parent',
       type: 'String',
       definition: JobSpecDef,
-      value : 'cron-job',
+      value: 'cron-job',
     }),
   ],
 });
@@ -64,7 +62,7 @@ const cronjobComponent = new Component({
         new ComponentAttribute({
           name: 'labels',
           type: 'Object',
-          definition: cronJobMetadataDef.definedAttributes.find(({ name }) => name === 'labels'), 
+          definition: cronJobMetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
           value: [
             new ComponentAttribute({
               name: 'app.kubernetes.io/name',
@@ -77,7 +75,7 @@ const cronjobComponent = new Component({
               value: 'cron-job',
             }),
           ],
-        }),  
+        }),
       ],
     }),
     new ComponentAttribute({
@@ -86,9 +84,10 @@ const cronjobComponent = new Component({
       containerRef: 'CronJob',
       definition: cronJobSpecDef,
       value: [],
-    }),  
+    }),
   ],
 });
 pluginData.components.push(jobComponent);
 pluginData.components.push(cronjobComponent);
+
 export default pluginData;

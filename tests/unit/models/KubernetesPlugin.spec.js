@@ -4,7 +4,6 @@ describe('Test class: KubernetesPlugin', () => {
   describe('Test constructor', () => {
     it('Check variable initialization', () => {
       const plugin = new KubernetesPlugin();
-
       expect(plugin.data).not.toBeNull();
       expect(plugin.__drawer).not.toBeNull();
       expect(plugin.__metadata).not.toBeNull();

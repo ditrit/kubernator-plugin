@@ -1,23 +1,21 @@
+import { DefaultData } from 'leto-modelizer-plugin-core';
 import KubernetesRenderer from 'src/render/KubernetesRenderer';
-import configMap from 'tests/resources/yaml/configmap';
-import deploy from 'tests/resources/yaml/deployment_test';
-import service from 'tests/resources/yaml/service';
-import pod from 'tests/resources/yaml/pod';
-import cronjob from 'tests/resources/yaml/cronjob';
-import pvc from 'tests/resources/yaml/pvc';
-import secret from 'tests/resources/yaml/secret';
-import { DefaultData} from 'leto-modelizer-plugin-core';
-
-
+import configMap from 'tests/resources/js/configmap';
+import deploy from 'tests/resources/js/deployment_test';
+import service from 'tests/resources/js/service';
+import pod from 'tests/resources/js/pod';
+import cronjob from 'tests/resources/js/cronjob';
+import pvc from 'tests/resources/js/pvc';
+import secret from 'tests/resources/js/secret';
 
 describe('KubernetesRenderer', () => {
   let rendererDep;
   let rendrerService;
   let renderPod;
-  let renderCronJob ;
-  let renderconfigMap ;
-  let renderpvc ;
-  let rendersecret ;
+  let renderCronJob;
+  let renderconfigMap;
+  let renderpvc;
+  let rendersecret;
   let render;
   let render1;
   beforeEach(() => {
@@ -32,7 +30,6 @@ describe('KubernetesRenderer', () => {
     render = new KubernetesRenderer(pluginData);
     render1 = new KubernetesRenderer();
   });
-
 
   it('should render deployment files correctly', () => {
     const files = rendererDep.renderFiles();
@@ -110,30 +107,27 @@ describe('KubernetesRenderer', () => {
 
     const formattedComponent = rendererDep.formatComponent(component);
     // Add assertions to validate the formatted k8s component
-   expect(formattedComponent.apiVersion).toBe('apps/v1');
-
+    expect(formattedComponent.apiVersion).toBe('apps/v1');
   });
 
+  it('should throw error for unknown selector formatSelectorLinkAttribute', () => {
+    const attribute = {
+      name: 'selector',
+      value: ['component2'],
+      type: 'Link',
+    };
+    const component = {
+      id: 'component1',
+      definition: {
+        type: 'Unknown',
+      },
+    };
+    expect(() => render.formatSelectorLinkAttribute(attribute, component)).toThrow(
+      "Unknown selector in component 'component1'.",
+    );
+  });
 
-    it('should throw error for unknown selector formatSelectorLinkAttribute', () => {
-      const attribute = {
-        name: 'selector',
-        value: ['component2'],
-        type: 'Link',
-      };
-      const component = {
-        id: 'component1',
-        definition: {
-          type: 'Unknown',
-        },
-      };
-      expect(() => render.formatSelectorLinkAttribute(attribute, component)).toThrow(
-        "Unknown selector in component 'component1'."
-      );
-    });
-  
-
-   describe('__formatSelectorLinkAttribute', () => {
+  describe('__formatSelectorLinkAttribute', () => {
     it('should format selector link attribute for Service', () => {
       const attribute = {
         name: 'selector',
@@ -163,7 +157,7 @@ describe('KubernetesRenderer', () => {
       };
       const formatted = render1.__formatSelectorLinkAttribute(attribute);
       expect(formatted).toEqual({
-        "app.kubernetes.io/name": "service"
+        'app.kubernetes.io/name': 'service',
       });
       expect(render1.pluginData.getComponentById).toHaveBeenCalledWith('service');
     });
@@ -187,24 +181,24 @@ describe('KubernetesRenderer', () => {
         })),
       };
       const formatted = render1.__formatSelectorLinkAttribute(attribute);
-      expect(formatted).toEqual({"app.kubernetes.io/name": "service"});
+      expect(formatted).toEqual({ 'app.kubernetes.io/name': 'service' });
     });
-     it('should call __formatSelectorLinkAttribute for service to test ligne 87', () => {
-       const attribute = {
-         value: ['targetComponentId'],
-       };
-       const component = {
-         definition: {
-           type: 'Service',
-         },
-         id: 'componentId',
-       };
-       render1.__formatSelectorLinkAttribute = jest.fn();
+    it('should call __formatSelectorLinkAttribute for service to test ligne 87', () => {
+      const attribute = {
+        value: ['targetComponentId'],
+      };
+      const component = {
+        definition: {
+          type: 'Service',
+        },
+        id: 'componentId',
+      };
+      render1.__formatSelectorLinkAttribute = jest.fn();
 
-       render1.formatSelectorLinkAttribute(attribute, component);
+      render1.formatSelectorLinkAttribute(attribute, component);
 
-       expect(render1.__formatSelectorLinkAttribute).toHaveBeenCalledWith(attribute);
-     });
+      expect(render1.__formatSelectorLinkAttribute).toHaveBeenCalledWith(attribute);
+    });
     it('should throw error for unknown selector __formatSelectorLinkAttribute', () => {
       const attribute = {
         name: 'selector',
@@ -215,10 +209,8 @@ describe('KubernetesRenderer', () => {
         getComponentById: jest.fn(() => null),
       };
       expect(() => render1.__formatSelectorLinkAttribute(attribute)).toThrow(
-        "Target component not found 'component2'."
+        "Target component not found 'component2'.",
       );
     });
-
-  }); 
-   
- });
+  });
+});

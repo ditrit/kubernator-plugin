@@ -1,7 +1,6 @@
 import { Component, ComponentAttribute } from 'leto-modelizer-plugin-core';
-import KubernetesData from '../../../src/models/KubernetesData';
+import KubernetesData from 'src/models/KubernetesData';
 import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
-
 
 const pluginData = new KubernetesData();
 const metadata = new KubernetesMetadata(pluginData);
@@ -24,7 +23,7 @@ const pvcComponent = new Component({
         new ComponentAttribute({
           name: 'labels',
           type: 'Object',
-          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'), 
+          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
           value: [
             new ComponentAttribute({
               name: 'app.kubernetes.io/name',
@@ -37,7 +36,7 @@ const pvcComponent = new Component({
               value: 'task-pv-volume',
             }),
           ],
-        }),  
+        }),
       ],
     }),
     new ComponentAttribute({
@@ -51,8 +50,8 @@ const pvcComponent = new Component({
           definition: pvcSpecDef.definedAttributes.find(
             ({ name }) => name === 'storageClassName',
           ),
-          value: "manual",
-          }),
+          value: 'manual',
+        }),
         new ComponentAttribute({
           name: 'accessModes',
           type: 'Array',
@@ -61,14 +60,14 @@ const pvcComponent = new Component({
           ),
           value: [
             new ComponentAttribute({
-                name: '0',
-                type: 'String',
-                definition: pvcSpecDef.definedAttributes.find(
-                  ({ name }) => name === 'accessModes',
-                ).definedAttributes.find(
-                  ({ name }) => name === null,
-                ),
-                value:"ReadWriteOnce",
+              name: '0',
+              type: 'String',
+              definition: pvcSpecDef.definedAttributes.find(
+                ({ name }) => name === 'accessModes',
+              ).definedAttributes.find(
+                ({ name }) => name === null,
+              ),
+              value: 'ReadWriteOnce',
             }),
 
           ],
@@ -81,27 +80,23 @@ const pvcComponent = new Component({
           ),
           value: [
             new ComponentAttribute({
-                name: 'matchLabels',
-                type: 'Object',
-                definition: pvcSpecDef.definedAttributes.find(
-                  ({ name }) => name === 'selector',
-                ).definedAttributes.find(
-                  ({ name }) => name === 'matchLabels',
-                ),
-                value: [
-                  new ComponentAttribute({
-                      name: 'release',
-                      type: 'String',
-                      value: 'stable',
-                  }),
-      
-                ],
+              name: 'matchLabels',
+              type: 'Object',
+              definition: pvcSpecDef.definedAttributes.find(
+                ({ name }) => name === 'selector',
+              ).definedAttributes.find(
+                ({ name }) => name === 'matchLabels',
+              ),
+              value: [
+                new ComponentAttribute({
+                  name: 'release',
+                  type: 'String',
+                  value: 'stable',
+                }),
+              ],
             }),
-
           ],
         }),
-
-        
       ],
     }),
   ],

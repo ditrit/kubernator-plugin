@@ -1,4 +1,3 @@
-
 import { ComponentDefinition, ComponentAttribute } from 'leto-modelizer-plugin-core';
 import KubernetesData from 'src/models/KubernetesData';
 
@@ -20,15 +19,14 @@ describe('KubernetesData', () => {
       // Find the added component in the components array
       const addedComponent = data.components.find((component) => component.id === id);
       // Check if the added component is defined
-      expect(addedComponent).toBeDefined(); 
+      expect(addedComponent).toBeDefined();
       // Check if the added component has the correct ID
-      expect(addedComponent.id).toBe(id); 
+      expect(addedComponent.id).toBe(id);
       // Check if the added component has the correct definition
       expect(addedComponent.definition).toBe(definition);
       // Check if the added component has the correct attributes
       expect(addedComponent.attributes.length).toBe(1);
     });
-
   });
 
   describe('__createAttribute', () => {
@@ -45,15 +43,15 @@ describe('KubernetesData', () => {
 
       const attribute = data.__createAttribute(attributeName, attributeValue, parentDefinition);
 
-       // Check if the attribute is an instance of ComponentAttribute
+      // Check if the attribute is an instance of ComponentAttribute
       expect(attribute).toBeInstanceOf(ComponentAttribute);
       // Check if the attribute has the correct name
-      expect(attribute.name).toBe(attributeName); 
+      expect(attribute.name).toBe(attributeName);
       // Check if the attribute has the correct value
-      expect(attribute.value).toBe(attributeValue); 
+      expect(attribute.value).toBe(attributeValue);
       // Check if the attribute has the correct type
-      expect(attribute.type).toBe(attributeDefinition.type); 
-       // Check if the attribute has the correct definition
+      expect(attribute.type).toBe(attributeDefinition.type);
+      // Check if the attribute has the correct definition
       expect(attribute.definition).toBe(attributeDefinition);
     });
 
@@ -71,7 +69,7 @@ describe('KubernetesData', () => {
       const attribute = data.__createAttribute(attributeName, attributeValue, parentDefinition);
 
       // Check if the attribute is null for non-existent attribute definition
-      expect(attribute).toBeNull(); 
+      expect(attribute).toBeNull();
     });
   });
 });

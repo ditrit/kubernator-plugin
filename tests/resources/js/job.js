@@ -1,20 +1,19 @@
 import { Component, ComponentAttribute } from 'leto-modelizer-plugin-core';
-import KubernetesData from '../../../src/models/KubernetesData';
+import KubernetesData from 'src/models/KubernetesData';
 import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
-
 
 const pluginData = new KubernetesData();
 const metadata = new KubernetesMetadata(pluginData);
 metadata.parse();
 
-const podDef = pluginData.definitions.components.find(({ type }) => type === 'Pod');
-const MetadataDef = podDef.definedAttributes.find(({ name }) => name === 'metadata');
-const podSpecDef = podDef.definedAttributes.find(({ name }) => name === 'spec');
+const jobDef = pluginData.definitions.components.find(({ type }) => type === 'Job');
+const MetadataDef = jobDef.definedAttributes.find(({ name }) => name === 'metadata');
+const jobSpecDef = jobDef.definedAttributes.find(({ name }) => name === 'spec');
 
-const podComponent = new Component({
-  id: 'pod',
-  path: './pod.yaml',
-  definition: podDef,
+const jobComponent = new Component({
+  id: 'job-test',
+  path: './job.yaml',
+  definition: jobDef,
   attributes: [
     new ComponentAttribute({
       name: 'metadata',
@@ -24,31 +23,31 @@ const podComponent = new Component({
         new ComponentAttribute({
           name: 'labels',
           type: 'Object',
-          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'), 
+          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
           value: [
             new ComponentAttribute({
-              name: 'name',
+              name: 'app.kubernetes.io/name',
               type: 'String',
               definition: MetadataDef.definedAttributes.find(
                 ({ name }) => name === 'labels',
               ).definedAttributes.find(
-                ({ name }) => name === 'name',
+                ({ name }) => name === 'app.kubernetes.io/name',
               ),
-              value: 'mon-application',
+              value: 'job-test',
             }),
           ],
-        }),  
+        }),
       ],
     }),
     new ComponentAttribute({
       name: 'spec',
       type: 'Object',
-      definition: podSpecDef,
+      definition: jobSpecDef,
       value: [],
     }),
   ],
 });
 
-pluginData.components.push(podComponent);
+pluginData.components.push(jobComponent);
 
 export default pluginData;

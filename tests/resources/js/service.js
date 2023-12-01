@@ -1,7 +1,6 @@
 import { Component, ComponentAttribute } from 'leto-modelizer-plugin-core';
-import KubernetesData from '../../../src/models/KubernetesData';
+import KubernetesData from 'src/models/KubernetesData';
 import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
-
 
 const pluginData = new KubernetesData();
 const metadata = new KubernetesMetadata(pluginData);
@@ -24,7 +23,7 @@ const serviceComponent = new Component({
         new ComponentAttribute({
           name: 'labels',
           type: 'Object',
-          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'), 
+          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
           value: [
             new ComponentAttribute({
               name: 'app.kubernetes.io/name',
@@ -37,7 +36,7 @@ const serviceComponent = new Component({
               value: 'nginx',
             }),
           ],
-        }),  
+        }),
       ],
     }),
     new ComponentAttribute({
@@ -52,7 +51,7 @@ const serviceComponent = new Component({
             ({ name }) => name === 'selector',
           ),
           value: [],
-          }),
+        }),
         new ComponentAttribute({
           name: 'type',
           type: 'String',
@@ -83,9 +82,9 @@ const serviceComponent = new Component({
                   definition: serviceSpecDef.definedAttributes.find(
                     ({ name }) => name === 'ports',
                   ).definedAttributes.find(
-                    ({ name }) => name ===  null,
+                    ({ name }) => name === null,
                   ).definedAttributes.find(
-                    ({ name }) => name ===  'protocol',
+                    ({ name }) => name === 'protocol',
                   ),
                   value: 'TCP',
                 }),
@@ -95,9 +94,9 @@ const serviceComponent = new Component({
                   definition: serviceSpecDef.definedAttributes.find(
                     ({ name }) => name === 'ports',
                   ).definedAttributes.find(
-                    ({ name }) => name ===  null,
+                    ({ name }) => name === null,
                   ).definedAttributes.find(
-                    ({ name }) => name ===  'port',
+                    ({ name }) => name === 'port',
                   ),
                   value: 80,
                 }),
@@ -107,9 +106,9 @@ const serviceComponent = new Component({
                   definition: serviceSpecDef.definedAttributes.find(
                     ({ name }) => name === 'ports',
                   ).definedAttributes.find(
-                    ({ name }) => name ===  null,
+                    ({ name }) => name === null,
                   ).definedAttributes.find(
-                    ({ name }) => name ===  'targetPort',
+                    ({ name }) => name === 'targetPort',
                   ),
                   value: '80',
                 }),

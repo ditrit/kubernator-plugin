@@ -1,6 +1,6 @@
-import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
 import { Component, ComponentAttribute } from 'leto-modelizer-plugin-core';
-import KubernetesData from '../../../src/models/KubernetesData';
+import KubernetesData from 'src/models/KubernetesData';
+import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
 
 const pluginData = new KubernetesData();
 const metadata = new KubernetesMetadata(pluginData);
@@ -9,7 +9,6 @@ metadata.parse();
 const secretmountDef = pluginData.definitions.components.find(({ type }) => type === 'SecretMount');
 
 const pvcmountDef = pluginData.definitions.components.find(({ type }) => type === 'PersistentVolumeClaimMount');
-
 
 const cmmountDef = pluginData.definitions.components.find(({ type }) => type === 'ConfigMapMount');
 
@@ -24,8 +23,6 @@ const deploymentDef = pluginData.definitions.components.find(({ type }) => type 
 const MetadataDef = deploymentDef.definedAttributes.find(({ name }) => name === 'metadata');
 const deploymentSpecDef = deploymentDef.definedAttributes.find(({ name }) => name === 'spec');
 
-
-
 const cmmountComponent = new Component({
   id: 'config-map-mount',
   path: null,
@@ -34,15 +31,15 @@ const cmmountComponent = new Component({
     new ComponentAttribute({
       name: 'mountPath',
       type: 'String',
-      definition: cmmountDef.definedAttributes.find(({ name }) => name === 'mountPath'), 
-      value : '/mnt',
+      definition: cmmountDef.definedAttributes.find(({ name }) => name === 'mountPath'),
+      value: '/mnt',
     }),
 
     new ComponentAttribute({
       name: 'configMap',
       type: 'Object',
-      definition: cmmountDef.definedAttributes.find(({ name }) => name === 'configMap'), 
-      value : [
+      definition: cmmountDef.definedAttributes.find(({ name }) => name === 'configMap'),
+      value: [
         new ComponentAttribute({
           name: 'name',
           type: 'Link',
@@ -51,23 +48,20 @@ const cmmountComponent = new Component({
             ({ name }) => name === 'configMap',
           ).definedAttributes.find(
             ({ name }) => name === 'name',
-          ),  
-          value :[ "test-configmap" ],
+          ),
+          value: ['test-configmap'],
         }),
-
       ],
     }),
-    
+
     new ComponentAttribute({
       name: 'parent',
       type: 'String',
-      definition: cmmountDef.definedAttributes.find(({ name }) => name === 'parent'), 
-      value : 'nginx-container',
+      definition: cmmountDef.definedAttributes.find(({ name }) => name === 'parent'),
+      value: 'nginx-container',
     }),
-    
   ],
 });
-
 
 const secretmountComponent = new Component({
   id: 'secret-mount',
@@ -77,15 +71,15 @@ const secretmountComponent = new Component({
     new ComponentAttribute({
       name: 'mountPath',
       type: 'String',
-      definition: secretmountDef.definedAttributes.find(({ name }) => name === 'mountPath'), 
-      value : '/mnt/secret',
+      definition: secretmountDef.definedAttributes.find(({ name }) => name === 'mountPath'),
+      value: '/mnt/secret',
     }),
 
     new ComponentAttribute({
       name: 'secret',
       type: 'Object',
-      definition: secretmountDef.definedAttributes.find(({ name }) => name === 'secret'), 
-      value : [
+      definition: secretmountDef.definedAttributes.find(({ name }) => name === 'secret'),
+      value: [
         new ComponentAttribute({
           name: 'secretName',
           type: 'Link',
@@ -94,20 +88,19 @@ const secretmountComponent = new Component({
             ({ name }) => name === 'secret',
           ).definedAttributes.find(
             ({ name }) => name === 'secretName',
-          ),  
-          value :[ "test-secret" ],
+          ),
+          value: ['test-secret'],
         }),
 
       ],
     }),
-    
+
     new ComponentAttribute({
       name: 'parent',
       type: 'String',
-      definition: secretmountDef.definedAttributes.find(({ name }) => name === 'parent'), 
-      value : 'nginx-container',
+      definition: secretmountDef.definedAttributes.find(({ name }) => name === 'parent'),
+      value: 'nginx-container',
     }),
-    
   ],
 });
 
@@ -119,15 +112,15 @@ const pvcmountComponent = new Component({
     new ComponentAttribute({
       name: 'mountPath',
       type: 'String',
-      definition: pvcmountDef.definedAttributes.find(({ name }) => name === 'mountPath'), 
-      value : '/mnt/pvc',
+      definition: pvcmountDef.definedAttributes.find(({ name }) => name === 'mountPath'),
+      value: '/mnt/pvc',
     }),
 
     new ComponentAttribute({
       name: 'persistentVolumeClaim',
       type: 'Object',
-      definition: pvcmountDef.definedAttributes.find(({ name }) => name === 'persistentVolumeClaim'), 
-      value : [
+      definition: pvcmountDef.definedAttributes.find(({ name }) => name === 'persistentVolumeClaim'),
+      value: [
         new ComponentAttribute({
           name: 'claimName',
           type: 'Link',
@@ -136,24 +129,20 @@ const pvcmountComponent = new Component({
             ({ name }) => name === 'persistentVolumeClaim',
           ).definedAttributes.find(
             ({ name }) => name === 'claimName',
-          ),  
-          value :[ "task-pv-volume" ],
+          ),
+          value: ['task-pv-volume'],
         }),
-
       ],
     }),
-    
+
     new ComponentAttribute({
       name: 'parent',
       type: 'String',
-      definition: pvcmountDef.definedAttributes.find(({ name }) => name === 'parent'), 
-      value : 'nginx-container',
+      definition: pvcmountDef.definedAttributes.find(({ name }) => name === 'parent'),
+      value: 'nginx-container',
     }),
-    
   ],
 });
-
-
 
 const containerComponent = new Component({
   id: 'nginx-container',
@@ -163,24 +152,21 @@ const containerComponent = new Component({
     new ComponentAttribute({
       name: 'image',
       type: 'String',
-      definition: containerDef.definedAttributes.find(({ name }) => name === 'image'), 
-      value : 'nginx:1.4.0',
+      definition: containerDef.definedAttributes.find(({ name }) => name === 'image'),
+      value: 'nginx:1.4.0',
     }),
     new ComponentAttribute({
       name: 'isInitContainer',
       type: 'Boolean',
-      definition: containerDef.definedAttributes.find(({ name }) => name === 'isInitContainer'), 
-      value : false,
+      definition: containerDef.definedAttributes.find(({ name }) => name === 'isInitContainer'),
+      value: false,
     }),
-
-    
     new ComponentAttribute({
       name: 'parent',
       type: 'String',
-      definition: containerDef.definedAttributes.find(({ name }) => name === 'parent'), 
-      value : 'pod',
+      definition: containerDef.definedAttributes.find(({ name }) => name === 'parent'),
+      value: 'pod',
     }),
-    
   ],
 });
 
@@ -197,7 +183,7 @@ const podComponent = new Component({
         new ComponentAttribute({
           name: 'labels',
           type: 'Object',
-          definition: podMetadataDef.definedAttributes.find(({ name }) => name === 'labels'), 
+          definition: podMetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
           value: [
             new ComponentAttribute({
               name: 'app.kubernetes.io/name',
@@ -210,10 +196,9 @@ const podComponent = new Component({
               value: 'pod',
             }),
           ],
-        }),  
+        }),
       ],
     }),
-    
     new ComponentAttribute({
       name: 'spec',
       type: 'Object',
@@ -225,49 +210,48 @@ const podComponent = new Component({
       name: 'parentDeployment',
       type: 'String',
       definition: parentDeploymentDef,
-      value : 'nginx',
+      value: 'nginx',
     }),
   ],
 });
 
-
 const deploymentComponent = new Component({
-    id: 'nginx',
-    path: './deployment.yml',
-    definition: deploymentDef,
-    attributes: [
-      new ComponentAttribute({
-        name: 'metadata',
-        type: 'Object',
-        definition: MetadataDef,
-        value: [
-          new ComponentAttribute({
-            name: 'labels',
-            type: 'Object',
-            definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'), 
-            value: [
-              new ComponentAttribute({
-                name: 'app.kubernetes.io/name',
-                type: 'String',
-                definition: MetadataDef.definedAttributes.find(
-                  ({ name }) => name === 'labels',
-                ).definedAttributes.find(
-                  ({ name }) => name === 'app.kubernetes.io/name',
-                ),
-                value: 'nginx',
-              }),
-            ],
-          }),  
-        ],
-      }),
-      new ComponentAttribute({
+  id: 'nginx',
+  path: './deployment.yml',
+  definition: deploymentDef,
+  attributes: [
+    new ComponentAttribute({
+      name: 'metadata',
+      type: 'Object',
+      definition: MetadataDef,
+      value: [
+        new ComponentAttribute({
+          name: 'labels',
+          type: 'Object',
+          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
+          value: [
+            new ComponentAttribute({
+              name: 'app.kubernetes.io/name',
+              type: 'String',
+              definition: MetadataDef.definedAttributes.find(
+                ({ name }) => name === 'labels',
+              ).definedAttributes.find(
+                ({ name }) => name === 'app.kubernetes.io/name',
+              ),
+              value: 'nginx',
+            }),
+          ],
+        }),
+      ],
+    }),
+    new ComponentAttribute({
       name: 'spec',
       type: 'Object',
       containerRef: null,
       definition: deploymentSpecDef,
       value: [],
-    }),  
-    ],
+    }),
+  ],
 });
 
 pluginData.components.push(cmmountComponent);
@@ -276,6 +260,5 @@ pluginData.components.push(secretmountComponent);
 pluginData.components.push(containerComponent);
 pluginData.components.push(podComponent);
 pluginData.components.push(deploymentComponent);
-
 
 export default pluginData;

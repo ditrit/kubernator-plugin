@@ -1,20 +1,19 @@
 import { Component, ComponentAttribute } from 'leto-modelizer-plugin-core';
-import KubernetesData from '../../../src/models/KubernetesData';
+import KubernetesData from 'src/models/KubernetesData';
 import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
-
 
 const pluginData = new KubernetesData();
 const metadata = new KubernetesMetadata(pluginData);
 metadata.parse();
 
-const statefulSetDef = pluginData.definitions.components.find(({ type }) => type === 'StatefulSet');
-const MetadataDef = statefulSetDef.definedAttributes.find(({ name }) => name === 'metadata');
-const statefulSetSpecDef = statefulSetDef.definedAttributes.find(({ name }) => name === 'spec');
+const podDef = pluginData.definitions.components.find(({ type }) => type === 'Pod');
+const MetadataDef = podDef.definedAttributes.find(({ name }) => name === 'metadata');
+const podSpecDef = podDef.definedAttributes.find(({ name }) => name === 'spec');
 
-const statefulsetComponent = new Component({
-  id: 'stateful-set',
-  path: './statefulset.yaml',
-  definition: statefulSetDef,
+const podComponent = new Component({
+  id: 'pod',
+  path: './pod.yaml',
+  definition: podDef,
   attributes: [
     new ComponentAttribute({
       name: 'metadata',
@@ -24,33 +23,31 @@ const statefulsetComponent = new Component({
         new ComponentAttribute({
           name: 'labels',
           type: 'Object',
-          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'), 
+          definition: MetadataDef.definedAttributes.find(({ name }) => name === 'labels'),
           value: [
             new ComponentAttribute({
-              name: 'app.kubernetes.io/name',
+              name: 'name',
               type: 'String',
               definition: MetadataDef.definedAttributes.find(
                 ({ name }) => name === 'labels',
               ).definedAttributes.find(
-                ({ name }) => name === 'app.kubernetes.io/name',
+                ({ name }) => name === 'name',
               ),
-              value: 'stateful-set',
+              value: 'mon-application',
             }),
           ],
-        }),  
+        }),
       ],
     }),
     new ComponentAttribute({
       name: 'spec',
       type: 'Object',
-      definition: statefulSetSpecDef,
-      value:[],
-      
-        }),
-    
+      definition: podSpecDef,
+      value: [],
+    }),
   ],
 });
 
-pluginData.components.push(statefulsetComponent);
+pluginData.components.push(podComponent);
 
 export default pluginData;
