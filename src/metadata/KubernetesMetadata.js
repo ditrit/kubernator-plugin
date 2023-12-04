@@ -9,30 +9,18 @@ import metadata from '../assets/metadata';
  * Class to validate and retrieve component definitions from Kubernetes metadata.
  */
 class KubernetesMetadata extends DefaultMetadata {
-  constructor(pluginData) {
-    super(pluginData);
-    this.commonAttributes = metadata.commonAttributes
-      .map(this.getAttributeDefinition, this);
-  }
-
-  /**
-   * Validate the provided metadata with a schemas.
-   * @returns {boolean} True if metadata is valid.
-   */
-  validate() {
-    return true;
-  }
-
   /**
    * Parse all component definitions from metadata.
    */
   parse() {
+    const commonAttributes = metadata.commonAttributes
+      .map(this.__getAttributeDefinition, this);
     const componentDefs = Object.keys(metadata.apiVersions).flatMap(
       (apiVersion) => metadata.apiVersions[apiVersion].map(
-        (component) => this.getComponentDefinition(apiVersion, component),
+        (component) => this.__getComponentDefinition(apiVersion, component, commonAttributes),
       ),
     );
-    this.setChildrenTypes(componentDefs);
+    this.__setChildrenTypes(componentDefs);
     this.pluginData.definitions.components = componentDefs;
   }
 
@@ -40,14 +28,15 @@ class KubernetesMetadata extends DefaultMetadata {
    * Convert a JSON component definition object to a KubernetesComponentDefinition.
    * @param {string} apiVersion - Kubernetes API version of the component definition.
    * @param {object} component - JSON component definition object to parse.
+   * @param {array} commonAttributes - Attributes common to all components.
    * @returns {KubernetesComponentDefinition} Parsed component definition.
    */
-  getComponentDefinition(apiVersion, component) {
+  __getComponentDefinition(apiVersion, component, commonAttributes) {
     const attributes = component.attributes || [];
-    let definedAttributes = attributes.map(this.getAttributeDefinition, this);
+    let definedAttributes = attributes.map(this.__getAttributeDefinition, this);
     if (apiVersion !== 'others') {
       definedAttributes = [
-        ...this.commonAttributes,
+        ...commonAttributes,
         ...definedAttributes,
       ];
     }
@@ -63,14 +52,13 @@ class KubernetesMetadata extends DefaultMetadata {
    * @param {object} attribute - JSON attribute definition object to parse.
    * @returns {ComponentAttributeDefinition} Parsed attribute definition.
    */
-  getAttributeDefinition(attribute) {
+  __getAttributeDefinition(attribute) {
     const subAttributes = attribute.attributes || [];
     const attributeDef = new ComponentAttributeDefinition({
       ...attribute,
-      displayName: attribute.displayName || this.formatDisplayName(attribute.name),
-      definedAttributes: subAttributes.map(this.getAttributeDefinition, this),
+      displayName: attribute.displayName || this.__formatDisplayName(attribute.name),
+      definedAttributes: subAttributes.map(this.__getAttributeDefinition, this),
     });
-    attributeDef.expanded = attribute.expanded || false;
     return attributeDef;
   }
 
@@ -78,7 +66,7 @@ class KubernetesMetadata extends DefaultMetadata {
    * Set the childrenTypes of all containers from children's parentType.
    * @param {ComponentDefinition[]} componentDefinitions - Array of component definitions.
    */
-  setChildrenTypes(componentDefinitions) {
+  __setChildrenTypes(componentDefinitions) {
     const children = componentDefinitions
       .filter((def) => def.parentTypes.length > 0)
       .reduce((acc, def) => {
@@ -93,7 +81,7 @@ class KubernetesMetadata extends DefaultMetadata {
       });
   }
 
-  formatDisplayName(name) {
+  __formatDisplayName(name) {
     if (!name || name.includes('.')) {
       return name;
     }
