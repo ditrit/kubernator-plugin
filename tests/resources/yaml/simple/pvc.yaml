@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-volume
+  labels:
+    app.kubernetes.io/name: task-pv-volume
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  selector:
+    matchLabels:
+      release: stable

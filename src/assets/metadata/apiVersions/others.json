@@ -1,0 +1,466 @@
+[
+  {
+    "type": "Container",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/container",
+    "parentTypes": ["Pod"],
+    "attributes": [
+      {
+        "name": "parent",
+        "type": "Reference",
+        "containerRef": "Pod",
+        "required": true
+      },
+      {
+        "name": "isInitContainer",
+        "type": "Boolean"
+      },
+      {
+        "name": "image",
+        "type": "String"
+      },
+      {
+        "name": "imagePullPolicy",
+        "type": "String",
+        "rules": {
+          "values": ["Always", "IfNotPresent", "Never"]
+        }
+      },
+      {
+        "name": "workingDir",
+        "type": "String"
+      },
+      {
+        "name": "command",
+        "type": "Array",
+        "description": "Entrypoint array.<br/>Not executed within a shell.<br/>The container image's ENTRYPOINT is used if this is not provided.<br/>Variable references $(VAR_NAME) are expanded using the container's environment.<br/>If a variable cannot be resolved, the reference in the input string will be unchanged.<br/>Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".<br/>Escaped references will never be expanded, regardless of whether the variable exists or not.<br/>Cannot be updated.",
+        "url": "https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell"
+      },
+      {
+        "name": "args",
+        "type": "Array",
+        "description": "Arguments to the entrypoint.<br/>The container image's CMD is used if this is not provided.<br/>Variable references $(VAR_NAME) are expanded using the container's environment.<br/>If a variable cannot be resolved, the reference in the input string will be unchanged.<br/>Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".<br/>Escaped references will never be expanded, regardless of whether the variable exists or not.<br/>Cannot be updated.",
+        "url": "https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell"
+      },
+      {
+        "name": "volumeMounts",
+        "type": "Array",
+        "attributes": [
+          {
+            "name": null,
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "name",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "mountPath",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "subPath",
+                "type": "String"
+              },
+              {
+                "name": "subPathExpr",
+                "type": "String"
+              },
+              {
+                "name": "mountPropagation",
+                "type": "String",
+                "rules": {
+                  "values": ["None", "HostToContainer", "Bidirectional"]
+                }
+              },
+              {
+                "name": "readOnly",
+                "type": "Boolean"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "env",
+        "type": "Array",
+        "attributes": [
+          {
+            "name": null,
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "name",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "value",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "envFrom",
+        "type": "Array",
+        "attributes": [
+          {
+            "name": null,
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "configMapRef",
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "name",
+                    "type": "String"
+                  },
+                  {
+                    "name": "optional",
+                    "type": "Boolean"
+                  }
+                ]
+              },
+              {
+                "name": "secretRef",
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "name",
+                    "type": "String"
+                  },
+                  {
+                    "name": "optional",
+                    "type": "Boolean"
+                  }
+                ]
+              },
+              {
+                "name": "prefix",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ports",
+        "type": "Array",
+        "attributes": [
+          {
+            "name": null,
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "name",
+                "type": "String"
+              },
+              {
+                "name": "containerPort",
+                "type": "String",
+                "required": true
+              },
+              {
+                "name": "protocol",
+                "type": "String",
+                "rules": {
+                  "values": ["TCP", "IDP", "SCTP"]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "resources",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "requests",
+            "type": "Object",
+            "expanded": true,
+            "attributes": [
+              {
+                "name": "memory",
+                "type": "String"
+              },
+              {
+                "name": "cpu",
+                "type": "String"
+              },
+              {
+                "name": "ephemeral-storage",
+                "type": "String"
+              }
+            ]
+          },
+          {
+            "name": "limits",
+            "type": "Object",
+            "expanded": true,
+            "attributes": [
+              {
+                "name": "memory",
+                "type": "String"
+              },
+              {
+                "name": "cpu",
+                "type": "String"
+              },
+              {
+                "name": "ephemeral-storage",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "readinessProbe",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "initialDelaySeconds",
+            "type": "Number"
+          },
+          {
+            "name": "periodSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "timeoutSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "successThreshold",
+            "type": "Number"
+          },
+          {
+            "name": "failureThreshold",
+            "type": "Number"
+          },
+          {
+            "name": "terminationGracePeriodSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "httpGet",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "host",
+                "type": "String"
+              },
+              {
+                "name": "port",
+                "type": "String",
+                "required": false
+              },
+              {
+                "name": "scheme",
+                "type": "String",
+                "rules": {
+                  "values": ["HTTP", "HTTPS"]
+                }
+              },
+              {
+                "name": "path",
+                "type": "String"
+              },
+              {
+                "name": "httpHeaders",
+                "type": "Array",
+                "attributes": [
+                  {
+                    "name": null,
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "name",
+                        "type": "String",
+                        "required": true
+                      },
+                      {
+                        "name": "value",
+                        "type": "String",
+                        "required": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "exec",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "command",
+                "type": "Array"
+              }
+            ]
+          },
+          {
+            "name": "tcpSocket",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "host",
+                "type": "String"
+              },
+              {
+                "name": "port",
+                "type": "String",
+                "required": false
+              }
+            ]
+          },
+          {
+            "name": "grpc",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "port",
+                "type": "String",
+                "required": false
+              },
+              {
+                "name": "service",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "livenessProbe",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "initialDelaySeconds",
+            "type": "Number"
+          },
+          {
+            "name": "periodSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "timeoutSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "successThreshold",
+            "type": "Number"
+          },
+          {
+            "name": "failureThreshold",
+            "type": "Number"
+          },
+          {
+            "name": "terminationGracePeriodSeconds",
+            "type": "Number"
+          },
+          {
+            "name": "httpGet",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "host",
+                "type": "String"
+              },
+              {
+                "name": "port",
+                "type": "String",
+                "required": false
+              },
+              {
+                "name": "scheme",
+                "type": "String",
+                "rules": {
+                  "values": ["HTTP", "HTTPS"]
+                }
+              },
+              {
+                "name": "path",
+                "type": "String"
+              },
+              {
+                "name": "httpHeaders",
+                "type": "Array",
+                "attributes": [
+                  {
+                    "name": null,
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "name",
+                        "type": "String",
+                        "required": true
+                      },
+                      {
+                        "name": "value",
+                        "type": "String",
+                        "required": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "exec",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "command",
+                "type": "Array"
+              }
+            ]
+          },
+          {
+            "name": "tcpSocket",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "host",
+                "type": "String"
+              },
+              {
+                "name": "port",
+                "type": "String",
+                "required": false
+              }
+            ]
+          },
+          {
+            "name": "grpc",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "port",
+                "type": "String",
+                "required": false
+              },
+              {
+                "name": "service",
+                "type": "String"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "UnknownResource",
+    "model": "DefaultModel",
+    "icon": "question-mark"
+  }
+]
