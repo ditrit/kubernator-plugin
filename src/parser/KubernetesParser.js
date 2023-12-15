@@ -101,6 +101,8 @@ class KubernetesParser extends DefaultParser {
         });
 
         console.log(4, this.pluginData.eventLogs);
+        console.log(5, [].findLast);
+        console.log(6, this.pluginData.eventLogs.findLast, [].findLast);
         this.pluginData.emitEvent({ id: eventId, status: 'success' });
       });
 
