@@ -2,11 +2,12 @@ import {
   DefaultPlugin,
   DefaultData,
 } from 'leto-modelizer-plugin-core';
+import KubernetesConfiguration from 'src/models/KubernetesConfiguration';
 import KubernetesDrawer from 'src/draw/KubernetesDrawer';
 import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
 import KubernetesParser from 'src/parser/KubernetesParser';
 import KubernetesRenderer from 'src/render/KubernetesRenderer';
-import { name, version } from 'package.json';
+import packageInfo from 'package.json';
 
 /**
  * Kubernetes plugin.
@@ -14,14 +15,21 @@ import { name, version } from 'package.json';
 class KubernetesPlugin extends DefaultPlugin {
   /**
    * Default constructor.
+   * @param {object} [props] - Object that contains all properties to set.
+   * @param {object} [props.event] - Event manager.
+   * @param {Function} [props.event.next] - Function to emit event.
    */
-  constructor() {
-    const pluginData = new DefaultData({
-      name,
-      version,
-    });
+  constructor(props = {
+    event: null,
+  }) {
+    const configuration = new KubernetesConfiguration();
+    const pluginData = new DefaultData(configuration, {
+      name: packageInfo.name,
+      version: packageInfo.version,
+    }, props.event);
 
     super({
+      configuration,
       pluginData,
       pluginDrawer: new KubernetesDrawer(pluginData),
       pluginMetadata: new KubernetesMetadata(pluginData),
