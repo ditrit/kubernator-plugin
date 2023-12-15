@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod
+  labels:
+    name: mon-application
+spec:
+  initContainers:
+    - name: initcontainer-in-pod

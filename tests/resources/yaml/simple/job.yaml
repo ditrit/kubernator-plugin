@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-test
+  labels:
+    app.kubernetes.io/name: job-test
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pod-in-job
+  template:
+    metadata:
+      name: pod-in-job
+      labels:
+        app.kubernetes.io/name: pod-in-job
+    spec:
+      containers:
+        - name: container-in-job
