@@ -46,6 +46,7 @@ class KubernetesParser extends DefaultParser {
   parse(diagram, inputs = [], parentEventId = null) {
     this.pluginData.components = [];
     this.pluginData.parseErrors = [];
+    console.log(3, this.pluginData.eventLogs);
 
     inputs
       .filter(({ path }) => path.split('/').slice(0, -1).join('/') === diagram.path)
@@ -99,6 +100,7 @@ class KubernetesParser extends DefaultParser {
           },
         });
 
+        console.log(4, this.pluginData.eventLogs);
         this.pluginData.emitEvent({ id: eventId, status: 'success' });
       });
 

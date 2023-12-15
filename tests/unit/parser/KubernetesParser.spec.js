@@ -84,11 +84,13 @@ describe('Test class: KubernetesParser', () => {
      */
     function parse(fileInputs) {
       const pluginData = new KubernetesData();
+      console.log(1, pluginData.eventLogs);
       const metadata = new KubernetesMetadata(pluginData);
       const parser = new KubernetesParser(pluginData);
       const diagram = new FileInformation({ path: '' });
 
       metadata.parse();
+      console.log(2, pluginData.eventLogs);
       parser.parse(diagram, fileInputs);
 
       return pluginData;
