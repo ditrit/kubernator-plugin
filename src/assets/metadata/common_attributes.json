@@ -1,0 +1,56 @@
+[
+  {
+    "name": "metadata",
+    "type": "Object",
+    "expanded": true,
+    "ignoredAttributes": ["creationTimestamp", "deletionGracePeriodSeconds", "deletionTimestamp", "generation", "name", "resourceVersion", "selfLink", "uid"],
+    "attributes": [
+      {
+        "name": "namespace",
+        "type": "String",
+        "description": "Namespace defines the space within which each name must be unique.<br/>An empty namespace is equivalent to the \"default\" namespace, but \"default\" is the canonical representation.<br/>Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.<br/><br/>Must be a DNS_LABEL. Cannot be updated.",
+        "url": "http://kubernetes.io/docs/user-guide/namespaces"
+      },
+      {
+        "name": "labels",
+        "type": "Object",
+        "attributes": [
+          {
+            "name": "app.kubernetes.io/name",
+            "type": "String",
+            "description": "The name of the application."
+          },
+          {
+            "name": "app.kubernetes.io/instance",
+            "type": "String",
+            "description": "A unique name identifying the instance of an application."
+          },
+          {
+            "name": "app.kubernetes.io/version",
+            "type": "String",
+            "description": "The current version of the application (e.g., a <a href=\"https://semver.org/spec/v1.0.0.html\">SemVer 1.0</a>, revision hash, etc.)."
+          },
+          {
+            "name": "app.kubernetes.io/component",
+            "type": "String",
+            "description": "The component within the architecture."
+          },
+          {
+            "name": "app.kubernetes.io/part-of",
+            "type": "String",
+            "description": "The name of a higher level application this one is part of."
+          },
+          {
+            "name": "app.kubernetes.io/managed-by",
+            "type": "String",
+            "description": "The tool being used to manage the operation of an application."
+          }
+        ]
+      },
+      {
+        "name": "annotations",
+        "type": "Object"
+      }
+    ]
+  }
+]

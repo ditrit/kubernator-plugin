@@ -1,0 +1,16 @@
+[
+  {
+    "type": "HorizontalPodAutoscaler",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/hpa",
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "displayName": "Specification",
+        "expanded": true,
+        "attributes": []
+      }
+    ]
+  }
+]
