@@ -1,21 +1,66 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <rect class="component-bg" width="230" height="50"
-          fill="#474262" fill-rule="evenodd"
-          rx="5" ry="5"
-          style="paint-order:stroke fill markers"/>
-    <rect class="icon-bg" width="38" height="38"
-          fill="white" fill-rule="evenodd"
-          rx="4" ry="4" x="6" y="6"
-          style="paint-order:stroke fill markers"/>
-    <svg class="component-icon" x="9" y="9" fill="#474262"></svg>
-    <text class="component-name"
-          x="50" y="21"
-          style="font-family:Calibri;font-size:16px;font-weight:600"
-          fill="white"
-          xml:space="preserve">Component name</text>
-    <text class="component-type"
-          x="50" y="36"
-          style="font-family:Calibri;font-size:12px;font-style:italic"
-          fill="white"
-          xml:space="preserve">Component type</text>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+     class="template"
+     width="96" height="80"
+     overflow="visible">
+    <rect class="component-background component-hitbox"
+          stroke="#224F7C"
+          fill="#FFFFFF"
+          width="100%" height="100%"
+          ry="4" rx="4" />
+
+    <svg x="50%" y="50%"
+         overflow="visible">
+        <g class="component-icon"
+           transform="translate(-22 -34)">
+        </g>
+    </svg>
+
+    {% if hasError %}
+    <g class="component-error">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="15" height="15"
+             x="10" y="5"
+             fill="#F2C037"
+             viewBox="0 0 512 512">
+            <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zm32 224c0 17.7-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32z"/>
+        </svg>
+    </g>
+    {% endif %}
+
+    <svg width="100%"
+         y="50%">
+        <g class="component-informations"
+           stroke="none"
+           fill="#224F7C"
+           font-family="Roboto"
+           transform="translate(0 -40)">
+            <text class="component-name"
+                  font-size="10"
+                  font-weight="bold"
+                  text-anchor="middle"
+                  x="50%" y="62">{{ id }}</text>
+            <text class="component-type"
+                  text-anchor="middle"
+                  font-size="8"
+                  x="50%" y="72">{{ definition.displayName or definition.type }}</text>
+        </g>
+    </svg>
+
+    <g class="anchors"
+       stroke="#5B81A5"
+       fill="#FFFFFF"
+       opacity="1">
+        <circle cx="50%" cy="0%"
+                r="3"
+                anchor="top" />
+        <circle cx="100%" cy="50%"
+                r="3"
+                anchor="right" />
+        <circle cx="50%" cy="100%"
+                r="3"
+                anchor="bottom" />
+        <circle cx="0%" cy="50%"
+                r="3"
+                anchor="left" />
+    </g>
 </svg>

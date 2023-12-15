@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cron-job
+  labels:
+    app.kubernetes.io/name: cron-job
+spec:
+  jobTemplate:
+    metadata:
+      name: job-in-cronjob
+      labels:
+        app.kubernetes.io/name: job-in-cronjob
+    spec:
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: pod-in-cronjob
+      template:
+        metadata:
+          name: pod-in-cronjob
+          labels:
+            app.kubernetes.io/name: pod-in-cronjob
+        spec:
+          containers:
+            - name: container-in-cronjob

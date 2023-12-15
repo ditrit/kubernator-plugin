@@ -1,0 +1,53 @@
+[
+  {
+    "type": "CronJob",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/cronjob",
+    "description": "A CronJob creates Jobs on a repeating schedule.<br/><br/>CronJob is meant for performing regular scheduled actions such as backups, report generation, and so on.<br/>One CronJob object is like one line of a crontab (cron table) file on a Unix system.<br/>It runs a job periodically on a given schedule, written in Cron format.<br/><br/>CronJobs have limitations and idiosyncrasies.<br/>For example, in certain circumstances, a single CronJob can create multiple concurrent Jobs.<br/>See the limitations below.<br/><br/>When the control plane creates new Jobs and (indirectly) Pods for a CronJob, the .metadata.name of the CronJob is part of the basis for naming those Pods.<br/>The name of a CronJob must be a valid DNS subdomain value, but this can produce unexpected results for the Pod hostnames.<br/>For best compatibility, the name should follow the more restrictive rules for a DNS label.<br/>Even when the name is a DNS subdomain, the name must be no longer than 52 characters.<br/>This is because the CronJob controller will automatically append 11 characters to the name you provide and there is a constraint that the length of a Job name is no more than 63 characters.",
+    "url": "https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/",
+    "isContainer": true,
+    "childrenIndex": [
+      {
+        "attributeName": "jobTemplate",
+        "componentType": "Job"
+      }
+    ],
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "displayName": "Specification",
+        "expanded": true,
+        "attributes": []
+      }
+    ]
+  },
+  {
+    "type": "Job",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/job",
+    "isContainer": true,
+    "parentTypes": ["CronJob"],
+    "childrenIndex": [
+      {
+        "attributeName": "template",
+        "componentType": "Pod"
+      }
+    ],
+    "attributes": [
+      {
+        "name": "parent",
+        "type": "Reference",
+        "containerRef": "CronJob"
+      },
+      {
+        "name": "spec",
+        "type": "Object",
+        "displayName": "Specification",
+        "expanded": true,
+        "ignoredAttributes": ["selector"],
+        "attributes": []
+      }
+    ]
+  }
+]
