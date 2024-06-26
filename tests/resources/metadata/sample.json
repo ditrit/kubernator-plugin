@@ -1,0 +1,111 @@
+{
+  "commonAttributes": [
+    {
+      "name": "metadata",
+      "type": "Object",
+      "expanded": true,
+      "attributes": [
+        {
+          "name": "namespace",
+          "type": "String",
+          "description": "Namespace defines the space within which each name must be unique.<br/>An empty namespace is equivalent to the \"default\" namespace, but \"default\" is the canonical representation.<br/>Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.<br/><br/>Must be a DNS_LABEL. Cannot be updated.",
+          "url": "http://kubernetes.io/docs/user-guide/namespaces"
+        },
+        {
+          "name": "labels",
+          "type": "Object",
+          "attributes": [
+            {
+              "name": "app.kubernetes.io/name",
+              "type": "String"
+            },
+            {
+              "name": "app.kubernetes.io/instance",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "annotations",
+          "type": "Object"
+        }
+      ]
+    }
+  ],
+  "apiVersions": {
+    "networking.k8s.io/v1": [
+      {
+        "type": "myComponent1",
+        "attributes": [
+          {
+            "name": "isInitContainer",
+            "type": "Boolean"
+          },
+          {
+            "name": "selector",
+            "type": "Link",
+            "linkRef": "myComponent2"
+          }
+        ]
+      },
+      {
+        "type": "myComponent2",
+        "parentTypes": ["myComponent3"],
+        "attributes": [
+          {
+            "name": "hosts",
+            "type": "Array"
+          },
+          {
+            "name": "parent",
+            "type": "Reference",
+            "containerRef": "myComponent3"
+          }
+        ]
+      }
+    ],
+    "others": [
+      {
+        "type": "myComponent3",
+        "isContainer": true,
+        "attributes": [
+          {
+            "name": "ports",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "name",
+                    "type": "String"
+                  },
+                  {
+                    "name": "protocol",
+                    "type": "String",
+                    "rules": {
+                      "values": ["TCP", "UDP", "SCTP"]
+                    }
+                  },
+                  {
+                    "name": "port",
+                    "type": "Number",
+                    "required": true
+                  },
+                  {
+                    "name": "targetPort",
+                    "type": "String"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "myComponent4"
+      }
+    ]
+  }
+}
