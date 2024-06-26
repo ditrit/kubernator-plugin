@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stateful-set
+  labels:
+    app.kubernetes.io/name: stateful-set
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pod-in-statefulset
+  template:
+    metadata:
+      name: pod-in-statefulset
+      labels:
+        app.kubernetes.io/name: pod-in-statefulset
+    spec:
+      containers:
+        - name: container-in-statefulset
