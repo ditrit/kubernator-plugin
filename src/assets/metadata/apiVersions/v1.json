@@ -1,0 +1,427 @@
+[
+  {
+    "type": "Pod",
+    "model": "DefaultContainer",
+    "icon": "resources/unlabeled/pod",
+    "parentTypes": ["Deployment", "StatefulSet", "Job"],
+    "isContainer": true,
+    "childrenPerLine": 3,
+    "childrenIndex": [
+      {
+        "attributeName": "containers",
+        "componentType": "Container"
+      },
+      {
+        "attributeName": "initContainers",
+        "componentType": "Container"
+      }
+    ],
+    "attributes": [
+      {
+        "name": "parentDeployment",
+        "type": "Reference",
+        "containerRef": "Deployment"
+      },
+      {
+        "name": "parentStatefulSet",
+        "type": "Reference",
+        "containerRef": "StatefulSet"
+      },
+      {
+        "name": "parentJob",
+        "type": "Reference",
+        "containerRef": "Job"
+      },
+      {
+        "name": "spec",
+        "type": "Object",
+        "displayName": "Specification",
+        "expanded": true,
+        "attributes": [
+          {
+            "name": "volumes",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "name",
+                    "type": "String",
+                    "required": true
+                  },
+                  {
+                    "name": "configMap",
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "name",
+                        "type": "Link",
+                        "linkRef": "ConfigMap",
+                        "linkModel": "defaultLink",
+                        "required": true
+                      },
+                      {
+                        "name": "defaultMode",
+                        "type": "Number"
+                      },
+                      {
+                        "name": "items",
+                        "type": "Array",
+                        "attributes": [
+                          {
+                            "name": null,
+                            "type": "Object",
+                            "attributes": [
+                              {
+                                "name": "key",
+                                "type": "String",
+                                "required": true
+                              },
+                              {
+                                "name": "path",
+                                "type": "String",
+                                "required": true
+                              },
+                              {
+                                "name": "mode",
+                                "type": "Number"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "optional",
+                        "type": "Boolean"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "secret",
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "secretName",
+                        "type": "Link",
+                        "linkRef": "Secret",
+                        "linkModel": "defaultLink",
+                        "required": true
+                      },
+                      {
+                        "name": "defaultMode",
+                        "type": "Number"
+                      },
+                      {
+                        "name": "items",
+                        "type": "Array",
+                        "attributes": [
+                          {
+                            "name": null,
+                            "type": "Object",
+                            "attributes": [
+                              {
+                                "name": "key",
+                                "type": "String",
+                                "required": true
+                              },
+                              {
+                                "name": "path",
+                                "type": "String",
+                                "required": true
+                              },
+                              {
+                                "name": "mode",
+                                "type": "Number"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "optional",
+                        "type": "Boolean"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "persistentVolumeClaim",
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "claimName",
+                        "type": "Link",
+                        "linkRef": "PersistentVolumeClaim",
+                        "linkModel": "defaultLink",
+                        "required": true
+                      },
+                      {
+                        "name": "readOnly",
+                        "type": "Boolean"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "topologySpreadConstraints",
+            "type": "Array",
+            "description": "TopologySpreadConstraints describes how a group of pods ought to spread across topology domains.<br/>Scheduler will schedule pods in a way which abides by the constraints.<br/>All topologySpreadConstraints are ANDed.",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "maxSkew",
+                    "type": "Number",
+                    "required": true
+                  },
+                  {
+                    "name": "minDomains",
+                    "type": "Number"
+                  },
+                  {
+                    "name": "topologyKey",
+                    "type": "String",
+                    "required": true
+                  },
+                  {
+                    "name": "whenUnsatisfiable",
+                    "type": "String",
+                    "required": true,
+                    "rules": {
+                      "values": ["DoNotSchedule", "ScheduleAnyway"]
+                    }
+                  },
+                  {
+                    "name": "labelSelector",
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "matchLabels",
+                        "type": "Object",
+                        "expanded": true
+                      },
+                      {
+                        "name": "matchExpressions",
+                        "type": "Array",
+                        "attributes": [
+                          {
+                            "name": null,
+                            "type": "Object",
+                            "attributes": [
+                              {
+                                "name": "key",
+                                "type": "String",
+                                "required": true
+                              },
+                              {
+                                "name": "operator",
+                                "type": "String",
+                                "required": true
+                              },
+                              {
+                                "name": "values",
+                                "type": "Array"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "Service",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/svc",
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "displayName": "Specification",
+        "expanded": true,
+        "attributes": [
+          {
+            "name": "type",
+            "type": "String",
+            "description": "type determines how the Service is exposed.<br/>Defaults to ClusterIP.<br/>Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer.<br/>\"ClusterIP\" allocates a cluster-internal IP address for load-balancing to endpoints.<br/>Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object or EndpointSlice objects.<br/>If clusterIP is \"None\", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP.<br/>\"NodePort\" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP.<br/>\"LoadBalancer\" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP.<br/>\"ExternalName\" aliases this service to the specified externalName.<br/>Several other fields do not apply to ExternalName services.",
+            "url": "https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types",
+            "rules": {
+              "values": ["ClusterIP", "NodePort", "LoadBalancer", "ExternalName"]
+            }
+          },
+          {
+            "name": "selector",
+            "type": "Link",
+            "linkRef": "Pod",
+            "linkModel": "defaultLink"
+          },
+          {
+            "name": "ports",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "name",
+                    "type": "String"
+                  },
+                  {
+                    "name": "protocol",
+                    "type": "String",
+                    "rules": {
+                      "values": ["TCP", "UDP", "SCTP"]
+                    }
+                  },
+                  {
+                    "name": "port",
+                    "type": "Number",
+                    "required": true
+                  },
+                  {
+                    "name": "targetPort",
+                    "type": "String"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "ConfigMap",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/cm",
+    "attributes": [
+      {
+        "name": "data",
+        "type": "Object",
+        "expanded": true
+      },
+      {
+        "name": "binaryData",
+        "type": "Object"
+      },
+      {
+        "name": "immutable",
+        "type": "Boolean"
+      }
+    ]
+  },
+  {
+    "type": "Secret",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/secret",
+    "attributes": [
+      {
+        "name": "type",
+        "type": "String",
+        "rules": {
+          "values": ["Opaque", "kubernetes.io/service-account-token", "kubernetes.io/dockercfg", "kubernetes.io/dockerconfigjson", "kubernetes.io/basic-auth", "kubernetes.io/ssh-auth", "kubernetes.io/tls", "bootstrap.kubernetes.io/token"]
+        }
+      },
+      {
+        "name": "stringData",
+        "type": "Object",
+        "expanded": true
+      },
+      {
+        "name": "data",
+        "type": "Object"
+      },
+      {
+        "name": "immutable",
+        "type": "Boolean"
+      }
+    ]
+  },
+  {
+    "type": "PersistentVolumeClaim",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/pvc",
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "displayName": "Specification",
+        "expanded": true,
+        "attributes": [
+          {
+            "name": "storageClassName",
+            "type": "String"
+          },
+          {
+            "name": "accessModes",
+            "type": "Array"
+          },
+          {
+            "name": "volumeMode",
+            "type": "String",
+            "rules": {
+              "values": ["Filesystem", "Block"]
+            }
+          },
+          {
+            "name": "resources",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "requests",
+                "type": "Object",
+                "expanded": true,
+                "attributes": [
+                  {
+                    "name": "storage",
+                    "type": "String"
+                  }
+                ]
+              },
+              {
+                "name": "limits",
+                "type": "Object",
+                "expanded": true,
+                "attributes": [
+                  {
+                    "name": "storage",
+                    "type": "String"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "volumeName",
+            "type": "String"
+          },
+          {
+            "name": "selector",
+            "type": "Object",
+            "attributes": [
+              {
+                "name": "matchLabels",
+                "type": "Object",
+                "expanded": true
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

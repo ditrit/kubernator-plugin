@@ -1,0 +1,171 @@
+[
+  {
+    "type": "Ingress",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/ing",
+    "attributes": [
+      {
+        "name": "spec",
+        "type": "Object",
+        "displayName": "Specification",
+        "expanded": true,
+        "attributes": [
+          {
+            "name": "ingressClassName",
+            "type": "String",
+            "description": "ingressClassName is the name of an IngressClass cluster resource.<br/>Ingress controller implementations use this field to know whether they should be serving this Ingress resource, by a transitive connection (controller -> IngressClass -> Ingress resource).<br/>Although the `kubernetes.io/ingress.class` annotation (simple constant name) was never formally defined, it was widely supported by Ingress controllers to create a direct binding between Ingress controller and Ingress resources.<br/>Newly created Ingress resources should prefer using the field.<br/>However, even though the annotation is officially deprecated, for backwards compatibility reasons, ingress controllers should still honor that annotation if present."
+          },
+          {
+            "name": "defaultBackend",
+            "type": "Object",
+            "description": "DefaultBackend is the backend that should handle requests that don't match any rule.<br/>If Rules are not specified, DefaultBackend must be specified.<br/>If DefaultBackend is not set, the handling of requests that do not match any of the rules will be up to the Ingress controller.",
+            "expanded": true,
+            "attributes": [
+              {
+                "name": "service",
+                "type": "Object",
+                "expanded": true,
+                "attributes": [
+                  {
+                    "name": "name",
+                    "type": "Link",
+                    "linkRef": "Service",
+                    "linkModel": "defaultLink",
+                    "required": true
+                  },
+                  {
+                    "name": "port",
+                    "type": "Object",
+                    "expanded": true,
+                    "attributes": [
+                      {
+                        "name": "name",
+                        "type": "String",
+                        "description": "Name is the name of the port on the Service.<br/>This is a mutually exclusive setting with \"Number\"."
+                      },
+                      {
+                        "name": "number",
+                        "type": "Number",
+                        "description": "Number is the numerical port number (e.g. 80) on the Service.<br/>This is a mutually exclusive setting with \"Name\"."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "rules",
+            "type": "Array",
+            "description": "A list of host rules used to configure the Ingress.<br/>If unspecified, or no rule matches, all traffic is sent to the default backend.",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "host",
+                    "type": "String"
+                  },
+                  {
+                    "name": "http",
+                    "type": "Object",
+                    "expanded": true,
+                    "attributes": [
+                      {
+                        "name": "paths",
+                        "type": "Array",
+                        "required": true,
+                        "attributes": [
+                          {
+                            "name": null,
+                            "type": "Object",
+                            "attributes": [
+                              {
+                                "name": "pathType",
+                                "type": "String",
+                                "required": true,
+                                "rules": {
+                                  "values": ["Exact", "Prefix", "ImplementationSpecific"]
+                                }
+                              },
+                              {
+                                "name": "path",
+                                "type": "String"
+                              },
+                              {
+                                "name": "backend",
+                                "type": "Object",
+                                "required": true,
+                                "expanded": true,
+                                "attributes": [
+                                  {
+                                    "name": "service",
+                                    "type": "Object",
+                                    "expanded": true,
+                                    "attributes": [
+                                      {
+                                        "name": "name",
+                                        "type": "Link",
+                                        "description": "Name is the referenced service.<br/>The service must exist in the same namespace as the Ingress object.",
+                                        "linkRef": "Service",
+                                        "linkModel": "defaultLink",
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "port",
+                                        "type": "Object",
+                                        "expanded": true,
+                                        "attributes": [
+                                          {
+                                            "name": "name",
+                                            "type": "String",
+                                            "description": "Name is the name of the port on the Service.<br/>This is a mutually exclusive setting with \"Number\"."
+                                          },
+                                          {
+                                            "name": "number",
+                                            "type": "Number",
+                                            "description": "Number is the numerical port number (e.g. 80) on the Service.<br/>This is a mutually exclusive setting with \"Name\"."
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "tls",
+            "type": "Array",
+            "description": "TLS configuration.<br/>Currently the Ingress only supports a single TLS port, 443.<br/>If multiple members of this list specify different hosts, they will be multiplexed on the same port according to the hostname specified through the SNI TLS extension, if the ingress controller fulfilling the ingress supports SNI.",
+            "attributes": [
+              {
+                "name": null,
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "hosts",
+                    "type": "Array"
+                  },
+                  {
+                    "name": "secretName",
+                    "type": "String"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
