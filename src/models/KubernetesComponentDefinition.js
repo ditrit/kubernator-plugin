@@ -29,6 +29,7 @@ class KubernetesComponentDefinition extends ComponentDefinition {
       reservedHeight: props.isContainer ? 80 : 0,
       margin: 15,
       gap: 50,
+      categories: ['Kubernetes'],
     });
     /**
      * Kubernetes API version (<apiGroup>/<version>).
