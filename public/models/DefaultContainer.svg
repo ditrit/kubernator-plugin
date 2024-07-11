@@ -108,6 +108,7 @@
       <circle class="anchor" name="right" r="3" cx="100%" cy="50%" />
     </g>
     {% endif %}
+    {% if not isReadOnly %}
     {% if hasError %}
     <g>
       <svg
@@ -172,6 +173,7 @@
         </g>
       </svg>
     </g>
+    {% endif %}
   </g>
   <g
     class="components"
