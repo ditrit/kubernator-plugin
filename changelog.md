@@ -5,13 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)## [Unreleased]
 
+## [0.2.0] - 2024/07/11
+
 ### Added
 
 - Update models for readOnly.
 
-## [0.1.1] - 2024/09/07
+## [0.1.1] - 2024/07/09
 
-## Changed
+### Changed
 
 - Update plugin-core to version 0.25.0.
 
@@ -29,5 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replace documentation generation library ESDoc by JSDoc
 
+[0.2.0]: https://github.com/ditrit/kubernator-plugin/blob/0.2.0/changelog.md
 [0.1.1]: https://github.com/ditrit/kubernator-plugin/blob/0.1.1/changelog.md
 [0.1.0]: https://github.com/ditrit/kubernator-plugin/blob/0.1.0/changelog.md
