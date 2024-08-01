@@ -26,29 +26,43 @@ describe('Test class: KubernetesParser', () => {
   describe('Test method: isParsable', () => {
     it('Should return true for file names with .yaml extension', () => {
       const parser = new KubernetesParser();
-      expect(parser.isParsable(new FileInformation({ path: 'deployment.yaml' }))).toBe(true);
-      expect(parser.isParsable(new FileInformation({ path: 'folder/service.yaml' }))).toBe(true);
+
+      expect(parser.isParsable(new FileInformation({ path: 'deployment.yaml' }))).toEqual(true);
+      expect(parser.isParsable(new FileInformation({ path: 'folder/service.yaml' }))).toEqual(true);
     });
-    it('Should return true for file names with .yml extensiçon', () => {
+
+    it('Should return true for file names with .yml extension', () => {
       const parser = new KubernetesParser();
-      expect(parser.isParsable(new FileInformation({ path: 'deployment.yml' }))).toBe(true);
-      expect(parser.isParsable(new FileInformation({ path: 'folder/service.yml' }))).toBe(true);
+
+      expect(parser.isParsable(new FileInformation({ path: 'deployment.yml' }))).toEqual(true);
+      expect(parser.isParsable(new FileInformation({ path: 'folder/service.yml' }))).toEqual(true);
     });
+
     it('Should return false for other file names', () => {
       const parser = new KubernetesParser();
-      expect(parser.isParsable(new FileInformation({ path: 'deployment.js' }))).toBe(false);
-      expect(parser.isParsable(new FileInformation({ path: 'folder/service' }))).toBe(false);
+
+      expect(parser.isParsable(new FileInformation({ path: 'deployment.js' }))).toEqual(false);
+      expect(parser.isParsable(new FileInformation({ path: 'folder/service' }))).toEqual(false);
     });
+
+    it('Should return false for github workflow files', () => {
+      const parser = new KubernetesParser();
+
+      expect(parser.isParsable(new FileInformation({ path: 'deployment.js' }))).toEqual(false);
+      expect(parser.isParsable(new FileInformation({ path: 'folder/service' }))).toEqual(false);
+    });
+
     it('Should return false if a FileInput is passed and the file is missing kind or apiVersion', () => {
       const parser = new KubernetesParser();
+
       expect(parser.isParsable(new FileInput({
         path: 'no_kind.yaml',
         content: fs.readFileSync('tests/resources/yaml/advanced/no_kind.yaml', 'utf8'),
-      }))).toBe(false);
+      }))).toEqual(false);
       expect(parser.isParsable(new FileInput({
         path: 'no_api_version.yaml',
         content: fs.readFileSync('tests/resources/yaml/advanced/no_api_version.yaml', 'utf8'),
-      }))).toBe(false);
+      }))).toEqual(false);
     });
   });
 
