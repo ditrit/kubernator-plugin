@@ -13,12 +13,18 @@ class KubernetesParser extends DefaultParser {
    * @returns {boolean} Boolean that indicates if this file can be parsed or not.
    */
   isParsable(file) {
+    if (file.path.indexOf('/.github/') >= 0) {
+      return false;
+    }
+
     const isYamlExtension = /\.ya?ml$/.test(file.path);
-    if (file.content === undefined) {
+    const keywords = ['apiVersion', 'kind'];
+
+    if (!file.content || file.content.trim().length === 0) {
       return isYamlExtension;
     }
-    const keywords = ['apiVersion', 'kind'];
-    return isYamlExtension && keywords.every((keyword) => file.content?.includes(keyword));
+
+    return isYamlExtension && keywords.every((keyword) => file.content.includes(keyword));
   }
 
   /**
