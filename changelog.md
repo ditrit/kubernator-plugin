@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update plugin-core to version 0.26.1.
+- Update plugin-core to version 0.26.2.
 
 ### Fixed
 

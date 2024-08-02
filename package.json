@@ -32,7 +32,7 @@
   "homepage": "https://github.com/ditrit/kubernator-plugin#readme",
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "leto-modelizer-plugin-core": "github:ditrit/leto-modelizer-plugin-core#0.26.1",
+    "leto-modelizer-plugin-core": "github:ditrit/leto-modelizer-plugin-core#0.26.2",
     "lidy-js": "github:ditrit/lidy-js.git#main"
   },
   "devDependencies": {

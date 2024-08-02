@@ -18,7 +18,7 @@ import {
   ComponentAttribute,
   FileInput,
   FileInformation,
-  ParseError,
+  ParserLog,
 } from 'leto-modelizer-plugin-core';
 import fs from 'fs';
 
@@ -155,14 +155,14 @@ describe('Test class: KubernetesParser', () => {
     it('Should create parse errors if a component is missing kind/apiVersion property', () => {
       const pluginData = parse([
         new FileInput({ path: 'no_kind.yaml', content: fs.readFileSync('tests/resources/yaml/advanced/no_kind.yaml', 'utf8') }),
-        new FileInput({ path: 'no_kind.yaml', content: fs.readFileSync('tests/resources/yaml/advanced/no_api_version.yaml', 'utf8') }),
+        new FileInput({ path: 'no_api_version.yaml', content: fs.readFileSync('tests/resources/yaml/advanced/no_api_version.yaml', 'utf8') }),
         new FileInput({ path: 'broken.yaml', content: fs.readFileSync('tests/resources/yaml/advanced/broken.yaml', 'utf8') }),
       ]);
       expect(pluginData.components).toStrictEqual([]);
-      expect(pluginData.parseErrors).toStrictEqual([
-        new ParseError({ message: 'File "/no_kind.yaml" is missing apiVersion or kind.' }),
-        new ParseError({ message: 'File "/no_api_version.yaml" is missing apiVersion or kind.' }),
-        new ParseError({ message: 'File "/broken.yaml" is missing apiVersion or kind.' }),
+      expect(pluginData.parseLogs).toStrictEqual([
+        new ParserLog({ message: 'File "no_kind.yaml" is missing apiVersion or kind.' }),
+        new ParserLog({ message: 'File "no_api_version.yaml" is missing apiVersion or kind.' }),
+        new ParserLog({ message: 'File "broken.yaml" is missing apiVersion or kind.' }),
       ]);
     });
 

@@ -1,7 +1,7 @@
 import {
   Component,
   ComponentAttribute,
-  ParseError,
+  ParserLog,
 } from 'leto-modelizer-plugin-core';
 
 /**
@@ -36,7 +36,7 @@ class KubernetesListener {
     const kind = rootNode?.value.kind?.value;
 
     if (!apiVersion || !kind) {
-      this.pluginData.parseErrors.push(new ParseError({
+      this.pluginData.parseLogs.push(new ParserLog({
         message: `File "${this.path}" is missing apiVersion or kind.`,
       }));
       return;
