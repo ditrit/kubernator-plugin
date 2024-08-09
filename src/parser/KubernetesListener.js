@@ -2,7 +2,7 @@ import {
   Component,
   ComponentAttribute,
   ParserLog,
-} from 'leto-modelizer-plugin-core';
+} from '@ditrit/leto-modelizer-plugin-core';
 
 /**
  * Lidy listener for Kubernetes files.

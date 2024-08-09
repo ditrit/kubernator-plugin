@@ -1,4 +1,4 @@
-import { DefaultParser } from 'leto-modelizer-plugin-core';
+import { DefaultParser } from '@ditrit/leto-modelizer-plugin-core';
 import { parse as lidyParse } from 'src/lidy/k8s';
 import KubernetesListener from 'src/parser/KubernetesListener';
 

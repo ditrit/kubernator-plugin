@@ -4,7 +4,7 @@ import KubernetesData from 'src/models/KubernetesData';
 import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
 import KubernetesParser from 'src/parser/KubernetesParser';
 import KubernetesRenderer from 'src/render/KubernetesRenderer';
-import { DefaultDrawer } from 'leto-modelizer-plugin-core';
+import { DefaultDrawer } from '@ditrit/leto-modelizer-plugin-core';
 
 describe('Test class: KubernetesPlugin', () => {
   describe('Test constructor', () => {
