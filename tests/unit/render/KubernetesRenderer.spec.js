@@ -17,7 +17,7 @@ import emptyLinkSelectorComponents from 'tests/resources/js/advanced/empty_link_
 import wrongLinkSelectorComponents from 'tests/resources/js/advanced/wrong_link_selector';
 import noSpecComponents from 'tests/resources/js/advanced/no_spec';
 
-import { FileInput } from 'leto-modelizer-plugin-core';
+import { FileInput } from '@ditrit/leto-modelizer-plugin-core';
 import fs from 'fs';
 import yaml from 'js-yaml';
 

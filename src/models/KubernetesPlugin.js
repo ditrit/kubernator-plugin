@@ -1,10 +1,10 @@
-import { DefaultPlugin } from 'leto-modelizer-plugin-core';
-import KubernetesConfiguration from 'src/models/KubernetesConfiguration';
-import KubernetesData from 'src/models/KubernetesData';
-import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
-import KubernetesParser from 'src/parser/KubernetesParser';
-import KubernetesRenderer from 'src/render/KubernetesRenderer';
-import packageInfo from 'package.json';
+import { DefaultPlugin } from '@ditrit/leto-modelizer-plugin-core';
+import KubernetesConfiguration from './KubernetesConfiguration';
+import KubernetesData from './KubernetesData';
+import KubernetesMetadata from '../metadata/KubernetesMetadata';
+import KubernetesParser from '../parser/KubernetesParser';
+import KubernetesRenderer from '../render/KubernetesRenderer';
+import packageInfo from '../../package.json';
 
 /**
  * Kubernetes plugin.

@@ -19,7 +19,7 @@ import {
   FileInput,
   FileInformation,
   ParserLog,
-} from 'leto-modelizer-plugin-core';
+} from '@ditrit/leto-modelizer-plugin-core';
 import fs from 'fs';
 
 describe('Test class: KubernetesParser', () => {

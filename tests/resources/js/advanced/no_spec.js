@@ -1,4 +1,4 @@
-import { Component } from 'leto-modelizer-plugin-core';
+import { Component } from '@ditrit/leto-modelizer-plugin-core';
 import KubernetesData from 'src/models/KubernetesData';
 import KubernetesMetadata from 'src/metadata/KubernetesMetadata';
 

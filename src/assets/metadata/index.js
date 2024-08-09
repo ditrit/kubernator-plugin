@@ -1,5 +1,5 @@
-import commonAttributes from 'src/assets/metadata/common_attributes.json';
-import apiVersions from 'src/assets/metadata/apiVersions';
+import commonAttributes from './common_attributes.json';
+import apiVersions from './apiVersions';
 
 export default {
   commonAttributes,

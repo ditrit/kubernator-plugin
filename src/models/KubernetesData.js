@@ -2,7 +2,7 @@ import {
   DefaultData,
   Component,
   ComponentAttribute,
-} from 'leto-modelizer-plugin-core';
+} from '@ditrit/leto-modelizer-plugin-core';
 
 /**
  * Kubernetes plugin data.

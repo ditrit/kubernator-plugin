@@ -1,4 +1,4 @@
-import { ComponentAttributeDefinition } from 'leto-modelizer-plugin-core';
+import { ComponentAttributeDefinition } from '@ditrit/leto-modelizer-plugin-core';
 
 /**
  * Specific Kubernetes component attribute definition.

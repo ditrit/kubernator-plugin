@@ -2,7 +2,7 @@ import yaml from 'js-yaml';
 import {
   DefaultRender,
   FileInput,
-} from 'leto-modelizer-plugin-core';
+} from '@ditrit/leto-modelizer-plugin-core';
 
 /**
  * Class to render Kubernetes files from components.

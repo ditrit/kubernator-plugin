@@ -1,7 +1,7 @@
-import { DefaultMetadata } from 'leto-modelizer-plugin-core';
-import KubernetesComponentDefinition from 'src/models/KubernetesComponentDefinition';
-import KubernetesComponentAttributeDefinition from 'src/models/KubernetesComponentAttributeDefinition';
-import metadata from 'src/assets/metadata';
+import { DefaultMetadata } from '@ditrit/leto-modelizer-plugin-core';
+import KubernetesComponentDefinition from '../models/KubernetesComponentDefinition';
+import KubernetesComponentAttributeDefinition from '../models/KubernetesComponentAttributeDefinition';
+import metadata from '../assets/metadata';
 
 /**
  * Class to retrieve KubernetesComponentDefinitions from metadata JSON files.

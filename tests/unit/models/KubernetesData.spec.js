@@ -1,7 +1,7 @@
 import {
   Component,
   ComponentAttribute,
-} from 'leto-modelizer-plugin-core';
+} from '@ditrit/leto-modelizer-plugin-core';
 import KubernetesData from 'src/models/KubernetesData';
 import KubernetesComponentDefinition from 'src/models/KubernetesComponentDefinition';
 import KubernetesComponentAttributeDefinition from 'src/models/KubernetesComponentAttributeDefinition';
