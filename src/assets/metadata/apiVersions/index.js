@@ -1,9 +1,9 @@
-import appsV1 from 'src/assets/metadata/apiVersions/apps_v1.json';
-import batchV1 from 'src/assets/metadata/apiVersions/batch_v1.json';
-import v1 from 'src/assets/metadata/apiVersions/v1.json';
-import networkingV1 from 'src/assets/metadata/apiVersions/networking_v1.json';
-import autoscalingV2 from 'src/assets/metadata/apiVersions/autoscaling_v2.json';
-import others from 'src/assets/metadata/apiVersions/others.json';
+import appsV1 from './apps_v1.json';
+import batchV1 from './batch_v1.json';
+import v1 from './v1.json';
+import networkingV1 from './networking_v1.json';
+import autoscalingV2 from './autoscaling_v2.json';
+import others from './others.json';
 
 export default {
   'apps/v1': appsV1,
