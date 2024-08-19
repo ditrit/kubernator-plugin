@@ -3,7 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)## [Unreleased]
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
+
+## [Unreleased]
+
+### Changed
+
+- Update plugin-core to version `0.28.0`.
 
 ## [0.3.0] - 2024/08/09
 
@@ -15,13 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update nodejs to version `20.16.0`.
 - Update npm to version `10.8.1`.
-- Update plugin-core to version 0.27.2.
+- Update plugin-core to version `0.27.2`.
 
 ## [0.2.1] - 2024/08/02
 
 ### Changed
 
-- Update plugin-core to version 0.26.2.
+- Update plugin-core to version `0.26.2`.
 
 ### Fixed
 
@@ -37,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update plugin-core to version 0.25.0.
+- Update plugin-core to version `0.25.0`.
 
 ## [0.1.0] - 2024/06/27
 
@@ -47,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add metadata for main Kubernetes resources.
 - Add parser for Kubernetes files.
 - Add renderer for Kubernetes files.
-- Use plugin-core version 0.24.1.
+- Use plugin-core version `0.24.1`.
 
 ### Changed
 
