@@ -48,6 +48,11 @@ class KubernetesConfiguration extends DefaultConfiguration {
         margin: 15,
         gap: 50,
       },
+      i18n: {
+        'en-US': {
+          displayName: 'Kubernetes',
+        },
+      },
     });
   }
 }
