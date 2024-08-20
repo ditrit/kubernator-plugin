@@ -56,6 +56,6 @@
     "webpack-cli": "^5.1.4"
   },
   "peerDependencies": {
-    "@ditrit/leto-modelizer-plugin-core": "=0.27.2"
+    "@ditrit/leto-modelizer-plugin-core": "=0.28.0"
   }
 }
