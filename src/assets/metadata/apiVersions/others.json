@@ -462,5 +462,153 @@
     "type": "UnknownResource",
     "model": "DefaultModel",
     "icon": "question-mark"
+  },
+  {
+    "type": "NetworkPolicy",
+    "model": "DefaultModel",
+    "icon": "resources/unlabeled/netpol",
+    "attributes": [
+      {
+        "name": "metadata",
+        "type": "Object",
+        "attributes": [
+        {
+          "name": "name",
+          "type": "String",
+          "required": true
+        },
+        {
+          "name": "namespace",
+          "type": "String"
+        }
+      ]
+      },
+      {
+        "name": "spec",
+        "type": "Object",
+        "displayName": "Specification",
+        "expanded": true,
+        "attributes": [
+          {
+            "name": "podSelector",
+            "type": "Object",
+            "required": true,
+            "attributes": [
+              {
+                "name": "matchLabels",
+                "type": "Object"
+              }
+            ]
+          },
+          {
+            "name": "policyTypes",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": null,
+                "type": "String",
+                "required": true
+              }
+            ]
+          },
+          {
+            "name": "ingress",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": "from",
+                "type": "Array",
+                "attributes": [
+                  {
+                    "name": "null",
+                    "type": "Array",
+                    "attributes": [
+                      {
+                        "name": "podSelector",
+                        "type": "Object",
+                        "attributes": [
+                          {
+                            "name": "matchLabels",
+                            "type": "Object"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "port",
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "null",
+                        "type": "Array",
+                        "attributes": [
+                          {
+                            "name": "protocol",
+                            "type": "String"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "port",
+                        "type": "Number"
+                      }                      
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "egress",
+            "type": "Array",
+            "attributes": [
+              {
+                "name": "to",
+                "type": "Object",
+                "attributes": [
+                  {
+                    "name": "null",
+                    "type": "Array",
+                    "attributes": [
+                      {
+                        "name": "podSelector",
+                        "type": "Object",
+                        "attributes": [
+                          {
+                            "name": "matchLabels",
+                            "type": "Object"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "port",
+                    "type": "Object",
+                    "attributes": [
+                      {
+                        "name": "null",
+                        "type": "Array",
+                        "attributes": [
+                          {
+                            "name": "protocol",
+                            "type": "String"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "port",
+                        "type": "Number"
+                      }                      
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 ]
